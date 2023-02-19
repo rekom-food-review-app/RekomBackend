@@ -7,6 +7,8 @@ namespace RekomBackend.Database;
 public class RekomContext : DbContext
 {
    private readonly IConfiguration _configuration;
+
+   public DbSet<Account> Accounts { get; set; } = null!;
    
    public RekomContext(DbContextOptions<RekomContext> options, IConfiguration configuration) : base(options)
    {
