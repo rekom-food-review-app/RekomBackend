@@ -1,4 +1,6 @@
-﻿namespace RekomBackend.Configuration;
+﻿using RekomBackend.App.Common.Enums;
+
+namespace RekomBackend.Configuration;
 
 public static class AuthorizationConfiguration
 {
@@ -6,9 +8,9 @@ public static class AuthorizationConfiguration
    {
       services.AddAuthorization(options =>
       {
-         options.AddPolicy("rekomer", policy => policy.RequireClaim("rekomer"));
-         options.AddPolicy("restaurant", policy => policy.RequireClaim("restaurant"));
-         options.AddPolicy("admin", policy => policy.RequireClaim("admin"));
+         options.AddPolicy(Role.Rekomer.ToString(), policy => policy.RequireClaim(Role.Rekomer.ToString()));
+         options.AddPolicy(Role.Restaurant.ToString(), policy => policy.RequireClaim(Role.Restaurant.ToString()));
+         options.AddPolicy(Role.Admin.ToString(), policy => policy.RequireClaim(Role.Admin.ToString()));
       });
       
       return services;
