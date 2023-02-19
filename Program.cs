@@ -2,9 +2,9 @@ using RekomBackend.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
-
 builder.Services.ConfigServiceCollection(builder.Configuration);
+
+var app = builder.Build();
 
 // if (app.Environment.IsDevelopment())
 app.UseSwagger();
