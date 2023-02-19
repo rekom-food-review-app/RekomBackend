@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RekomBackend.App.Common.Enums;
 using RekomBackend.App.Models.Entities;
 
 namespace RekomBackend.Database;
@@ -27,5 +28,12 @@ public class RekomContext : DbContext
          .Property(e => e.UpdatedAt)
          .HasDefaultValueSql("GETUTCDATE()")
          .ValueGeneratedOnUpdate();
+      
+      modelBuilder.Entity<Account>()
+         .Property(a => a.Role)
+         .HasConversion(
+            v => v.ToString(),
+            v => (Role)Enum.Parse(typeof(Role), v)
+         );
    }
 }
