@@ -1,5 +1,6 @@
 ﻿using RekomBackend.App.Helpers;
 using RekomBackend.App.Services;
+using RekomBackend.App.Services.otp;
 
 namespace RekomBackend.Configuration;
 
@@ -23,6 +24,7 @@ public static class DependencyInjectConfiguration
    private static IServiceCollection InjectServices(this IServiceCollection services)
    {
       services.AddScoped<IRegisterService, RegisterService>();
+      services.AddScoped<IOtpService, OtpService>();
       return services;
    }
 
