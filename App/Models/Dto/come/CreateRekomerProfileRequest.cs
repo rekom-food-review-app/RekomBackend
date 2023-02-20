@@ -8,4 +8,6 @@ public class CreateRekomerProfileRequest
    public string FullName { get; set; } = null!;
 
    public IFormFile Avatar { get; set; } = null!;
+
+   public DateTime Dob { get; set; }
 }

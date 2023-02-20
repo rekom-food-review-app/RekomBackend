@@ -13,6 +13,8 @@ public class Rekomer : EntityBase
    [Column(TypeName = "varchar(200)")]
    public string AvatarUrl { get; set; } = null!;
 
+   public DateTime Dob { get; set; }
+
    #endregion
 
    #region ForeignKeys

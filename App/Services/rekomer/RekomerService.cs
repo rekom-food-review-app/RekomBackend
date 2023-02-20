@@ -41,7 +41,8 @@ public class RekomerService : IRekomerService
          Id = account.Id,
          AccountId = account.Id,
          FullName = createRequest.FullName,
-         AvatarUrl = avatarUrl
+         AvatarUrl = avatarUrl,
+         Dob = createRequest.Dob
       };
 
       _context.Rekomers.Add(rekomer);
