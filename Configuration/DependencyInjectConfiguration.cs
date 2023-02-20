@@ -27,12 +27,15 @@ public static class DependencyInjectConfiguration
       services.AddScoped<IRegisterService, RegisterService>();
       services.AddScoped<IOtpService, OtpService>();
       services.AddScoped<IMailService, MailService>();
+      services.AddScoped<ITokenService, TokenService>();
+      services.AddScoped<IAuthService, AuthService>();
       return services;
    }
 
    private static IServiceCollection InjectHelpers(this IServiceCollection services)
    {
       services.AddScoped<IMailHelper, MailHelper>();
+      services.AddScoped<IJwtHelper, JwtHelper>();
       return services;
    }
 }

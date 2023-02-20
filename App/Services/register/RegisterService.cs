@@ -13,13 +13,15 @@ public class RegisterService : IRegisterService
    private readonly IMapper _mapper;
    private readonly IOtpService _otpService;
    private readonly IMailService _mailService;
+   private readonly ITokenService _tokenService;
    
-   public RegisterService(RekomContext context, IMapper mapper, IOtpService otpService, IMailService mailService)
+   public RegisterService(RekomContext context, IMapper mapper, IOtpService otpService, IMailService mailService, ITokenService tokenService)
    {
       _context = context;
       _mapper = mapper;
       _otpService = otpService;
       _mailService = mailService;
+      _tokenService = tokenService;
    }
 
    public async Task<AuthToken> RegisterWithEmail(RegisterWithEmailRequest registerRequest)
@@ -34,10 +36,6 @@ public class RegisterService : IRegisterService
 
       _ = _mailService.SendEmailToConfirmAccountAsync(account.Email, otp.Code);
 
-      return new AuthToken()
-      {
-         AccessToken = "stupid",
-         RefreshToken = "hahahah"
-      };
+      return _tokenService.CreateAuthToken(account);
    }
 }
