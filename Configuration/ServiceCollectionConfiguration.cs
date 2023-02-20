@@ -17,7 +17,7 @@ public static class ServiceCollectionConfiguration
 
       services.ConfigRekomContext(configuration);
       services.InjectDependencies();
-      // services.ConfigSettingOption(configuration);
+      services.ConfigSettingOption(configuration);
 
       services.AddAutoMapper(typeof(Program).Assembly);
       
