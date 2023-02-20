@@ -4,7 +4,7 @@ namespace RekomBackend.App.Services.otp;
 
 public interface IOtpService
 {
-   public Task<Otp> CreateOtp(Account account);
+   public Task<Otp> CreateOtpAsync(Account account);
    
-   public Task<Otp> CreateOtp(string accountId);
+   public Task<Otp> CreateOtpAsync(string accountId);
 }

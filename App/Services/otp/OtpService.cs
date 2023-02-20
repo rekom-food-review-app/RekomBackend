@@ -15,22 +15,22 @@ public class OtpService : IOtpService
       _expireSecond = configuration.GetValue<int>("OtpExpireSecond");
    }
 
-   public Task<Otp> CreateOtp(Account account)
+   public Task<Otp> CreateOtpAsync(Account account)
    {
       throw new NotImplementedException();
    }
 
-   public async Task<Otp> CreateOtp(string accountId)
+   public async Task<Otp> CreateOtpAsync(string accountId)
    {
       var otp = new Otp
       {
+         Id = Guid.NewGuid().ToString(),
          AccountId = accountId,
          Code = new Random().Next(1111, 9999).ToString(),
          Expiration = DateTime.Now.AddSeconds(_expireSecond)
       };
 
       _context.Otps.Add(otp);
-
       _ = await _context.SaveChangesAsync();
 
       return otp;
