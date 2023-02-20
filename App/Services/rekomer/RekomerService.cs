@@ -21,21 +21,25 @@ public class RekomerService : IRekomerService
       _s3Helper = s3Helper;
    }
 
-   public async Task CreateProfileAsync(CreateRekomerProfileRequest createRequest)
+   private async Task<Account> GetRekomerAccountByReadingAccessToken()
    {
       var accountId = _tokenService.ReadClaimFromAccessToken(ClaimTypes.Sid);
-      
       var account = await _context.Accounts
          .Where(a => a.Id == accountId)
          .Include(a => a.Rekomer)
          .FirstOrDefaultAsync();
       
       if (account is null) { throw new InvalidAccessTokenException(); }
+      
+      return account;
+   }
 
+   public async Task CreateProfileAsync(CreateRekomerProfileRequest createRequest)
+   {
+      var account = await GetRekomerAccountByReadingAccessToken();
       if (account.Rekomer is not null) { throw new RekomerProfileIsAlreadyCreatedException(); }
 
       var avatarUrl = await _s3Helper.UploadOneFileAsync(createRequest.Avatar);
-      
       var rekomer = new Rekomer
       {
          Id = account.Id,
@@ -47,5 +51,28 @@ public class RekomerService : IRekomerService
 
       _context.Rekomers.Add(rekomer);
       await _context.SaveChangesAsync();
+   }
+
+   public async Task FollowOtherRekomerAsync(string rekomerId)
+   {
+      var accountPromise = GetRekomerAccountByReadingAccessToken();
+      var followingPromise = _context.Rekomers.FindAsync(rekomerId);
+      
+      var follower = (await accountPromise).Rekomer;
+      var following = await followingPromise;
+      
+      if (follower is null) { throw new YourProfileIsNotCreatedYetException(); }
+      if (following is null) { throw new NotFoundRekomerProfileException();}
+      if (follower.Id == following.Id) { throw new FollowYourSelfException(); }
+      
+      var follow = new Follow
+      {
+         Id = Guid.NewGuid().ToString(),
+         Follower = follower,
+         Following = following
+      };
+
+      _context.Follows.Add(follow);
+      _ = _context.SaveChangesAsync();
    }
 }

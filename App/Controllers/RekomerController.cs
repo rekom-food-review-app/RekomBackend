@@ -43,4 +43,43 @@ public class RekomerController : ControllerBase
          });
       }
    }
+
+   [HttpPost("{id}/following"), Authorize(Roles = "Rekomer")]
+   public async Task<IActionResult> FollowOtherRekomer(string id)
+   {
+      try
+      {
+         await _rekomerService.FollowOtherRekomerAsync(id);
+
+         return Ok(new
+         {
+            code = "FS",
+            message = "Follow Rekomer Successfully."
+         });
+      }
+      catch (YourProfileIsNotCreatedYetException e)
+      {
+         return BadRequest(new
+         {
+            code = "YPCY",
+            message = "Please Create Your Profile First."
+         });
+      }
+      catch (NotFoundRekomerProfileException e)
+      {
+         return NotFound(new
+         {
+            code = "NFR",
+            message = "This Rekomer Is Not Existed."
+         });
+      }
+      catch (FollowYourSelfException e)
+      {
+         return BadRequest(new
+         {
+            code = "FYSE",
+            message = "Don't Try Follow Your Self."
+         });
+      }
+   }
 }
