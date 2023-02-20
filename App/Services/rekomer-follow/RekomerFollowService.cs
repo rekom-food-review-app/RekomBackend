@@ -19,25 +19,10 @@ public class RekomerFollowService : IRekomerFollowService
       _tokenService = tokenService;
       _s3Helper = s3Helper;
    }
-   
-   // need to fix this
-   private async Task<Account> GetRekomerAccountByReadingAccessToken()
-   {
-      var accountId = _tokenService.ReadClaimFromAccessToken(ClaimTypes.Sid);
-      var account = await _context.Accounts
-         .AsNoTracking()
-         .Where(a => a.Id == accountId)
-         .Include(a => a.Rekomer)
-         .FirstOrDefaultAsync();
-      
-      if (account is null) { throw new InvalidAccessTokenException(); }
-      
-      return account;
-   }
 
    public async Task FollowOtherRekomerAsync(string rekomerId)
    {
-      var accountPromise = GetRekomerAccountByReadingAccessToken();
+      var accountPromise = _tokenService.GetRekomerAccountByReadingAccessToken();
       var followingPromise = _context.Rekomers.FindAsync(rekomerId);
       
       var follower = (await accountPromise).Rekomer;
@@ -60,7 +45,7 @@ public class RekomerFollowService : IRekomerFollowService
 
    public async Task UnfollowOtherRekomerAsync(string rekomerId)
    {
-      var accountPromise = GetRekomerAccountByReadingAccessToken();
+      var accountPromise = _tokenService.GetRekomerAccountByReadingAccessToken();
       var followingPromise = _context.Rekomers.FindAsync(rekomerId);
       
       var follower = (await accountPromise).Rekomer;

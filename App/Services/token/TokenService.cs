@@ -1,6 +1,9 @@
 ﻿using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using RekomBackend.App.Exceptions;
 using RekomBackend.App.Helpers;
 using RekomBackend.App.Models.Entities;
+using RekomBackend.Database;
 
 namespace RekomBackend.App.Services;
 
@@ -9,15 +12,17 @@ public class TokenService : ITokenService
    private readonly IJwtHelper _jwtHelper;
    private readonly IConfiguration _configuration;
    private readonly IHttpContextAccessor _httpContextAccessor;
+   private readonly RekomContext _context;
    
    private readonly int _accessTokenExpireHours;
    private readonly int _refreshTokenExpireMonths;
 
-   public TokenService(IJwtHelper jwtHelper, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+   public TokenService(IJwtHelper jwtHelper, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, RekomContext context)
    {
       _jwtHelper = jwtHelper;
       _configuration = configuration;
       _httpContextAccessor = httpContextAccessor;
+      _context = context;
       _accessTokenExpireHours = _configuration.GetValue<int>("AccessTokenExpireHour");
       _refreshTokenExpireMonths = _configuration.GetValue<int>("RefreshTokenExpireMonth");
    }
@@ -25,6 +30,20 @@ public class TokenService : ITokenService
    public string? ReadClaimFromAccessToken(string name)
    {
       return _httpContextAccessor.HttpContext?.User.FindFirstValue(name);
+   }
+   
+   public async Task<Account> GetRekomerAccountByReadingAccessToken()
+   {
+      var accountId = ReadClaimFromAccessToken(ClaimTypes.Sid);
+      var account = await _context.Accounts
+         .AsNoTracking()
+         .Where(a => a.Id == accountId)
+         .Include(a => a.Rekomer)
+         .FirstOrDefaultAsync();
+      
+      if (account is null) { throw new InvalidAccessTokenException(); }
+      
+      return account;
    }
    
    public AuthToken CreateAuthToken(Account account)

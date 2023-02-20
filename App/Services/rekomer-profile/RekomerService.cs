@@ -21,24 +21,9 @@ public class RekomerService : IRekomerService
       _s3Helper = s3Helper;
    }
    
-   // need to fix this
-   private async Task<Account> GetRekomerAccountByReadingAccessToken()
-   {
-      var accountId = _tokenService.ReadClaimFromAccessToken(ClaimTypes.Sid);
-      var account = await _context.Accounts
-         .AsNoTracking()
-         .Where(a => a.Id == accountId)
-         .Include(a => a.Rekomer)
-         .FirstOrDefaultAsync();
-      
-      if (account is null) { throw new InvalidAccessTokenException(); }
-      
-      return account;
-   }
-
    public async Task CreateProfileAsync(CreateRekomerProfileRequest createRequest)
    {
-      var account = await GetRekomerAccountByReadingAccessToken();
+      var account = await _tokenService.GetRekomerAccountByReadingAccessToken();
       if (account.Rekomer is not null) { throw new RekomerProfileIsAlreadyCreatedException(); }
 
       var avatarUrl = await _s3Helper.UploadOneFileAsync(createRequest.Avatar);
