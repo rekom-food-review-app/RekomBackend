@@ -1,4 +1,5 @@
 ﻿using RekomBackend.App.Helpers;
+using RekomBackend.App.Services;
 
 namespace RekomBackend.Configuration;
 
@@ -21,6 +22,7 @@ public static class DependencyInjectConfiguration
    
    private static IServiceCollection InjectServices(this IServiceCollection services)
    {
+      services.AddScoped<IRegisterService, RegisterService>();
       return services;
    }
 
