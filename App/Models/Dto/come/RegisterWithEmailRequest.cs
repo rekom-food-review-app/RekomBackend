@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using RekomBackend.App.Common.Enums;
 
 namespace RekomBackend.App.Models.Dto;
 
@@ -12,4 +13,6 @@ public class RegisterWithEmailRequest
 
    [MinLength(6, ErrorMessage = "at least 6 characters")]
    public string Password { get; set; } = null!;
+
+   public Role Role { get; set; }
 }
