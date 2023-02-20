@@ -21,7 +21,9 @@ public class Account : EntityBase
    public string PasswordHash { get; set; } = null!;
 
    [Column(TypeName = "enum('Rekomer', 'Restaurant', 'Admin')")]
-   public Role Role { get; set; }
+   public Role Role { get; init; }
+
+   public bool IsConfirmed { get; set; } = false;
 
    #endregion
 
@@ -31,6 +33,8 @@ public class Account : EntityBase
 
    #region Relationships
 
+   public Otp? Otp { get; set; }
+   
    #endregion
 
    #region Methods
