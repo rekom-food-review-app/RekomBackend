@@ -1,4 +1,4 @@
-﻿using RekomBackend.App.Helpers.mail;
+﻿using RekomBackend.App.Helpers;
 
 namespace RekomBackend.Configuration;
 
