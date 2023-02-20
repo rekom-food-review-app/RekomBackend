@@ -4,5 +4,5 @@ namespace RekomBackend.App.Services;
 
 public interface IRegisterService
 {
-   public Task<bool> RegisterWithEmail(RegisterWithEmailRequest registerRequest);
+   public Task<AuthToken> RegisterWithEmail(RegisterWithEmailRequest registerRequest);
 }
