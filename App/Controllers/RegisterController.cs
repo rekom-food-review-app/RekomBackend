@@ -18,7 +18,7 @@ public class RegisterController : ControllerBase
    [HttpPost("email")]
    public async Task<IActionResult> RegisterWithEmail(RegisterWithEmailRequest registerRequest)
    {
-      var authToken = await _registerService.RegisterWithEmail(registerRequest);
+      var authToken = await _registerService.RegisterWithEmailAsync(registerRequest);
 
       return StatusCode(201, new
       {

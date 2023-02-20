@@ -21,7 +21,7 @@ public class AuthController : ControllerBase
    {
       try
       {
-         var authToken = await _authService.AuthWithEmail(authRequest);
+         var authToken = await _authService.AuthWithEmailAsync(authRequest);
 
          if (authToken is null)
          {

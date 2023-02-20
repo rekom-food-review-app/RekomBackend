@@ -1,7 +1,5 @@
 ﻿using RekomBackend.App.Helpers;
 using RekomBackend.App.Services;
-using RekomBackend.App.Services.mail;
-using RekomBackend.App.Services.otp;
 
 namespace RekomBackend.Configuration;
 
@@ -29,6 +27,7 @@ public static class DependencyInjectConfiguration
       services.AddScoped<IMailService, MailService>();
       services.AddScoped<ITokenService, TokenService>();
       services.AddScoped<IAuthService, AuthService>();
+      services.AddScoped<IAccountService, AccountService>();
       return services;
    }
 

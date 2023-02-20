@@ -17,6 +17,18 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.Use(async (context, next) =>
+{
+   try
+   {
+      await next(context);
+   }
+   catch (Exception e)
+   {
+      context.Response.StatusCode = 500;
+   }
+});
+
 app.MapControllers();
 
 app.Run();

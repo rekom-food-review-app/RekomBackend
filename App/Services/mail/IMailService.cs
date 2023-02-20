@@ -1,6 +1,6 @@
 ﻿using RekomBackend.App.Models.Entities;
 
-namespace RekomBackend.App.Services.mail;
+namespace RekomBackend.App.Services;
 
 public interface IMailService
 {

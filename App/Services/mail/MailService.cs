@@ -1,6 +1,6 @@
 ﻿using RekomBackend.App.Helpers;
 
-namespace RekomBackend.App.Services.mail;
+namespace RekomBackend.App.Services;
 
 public class MailService : IMailService
 {

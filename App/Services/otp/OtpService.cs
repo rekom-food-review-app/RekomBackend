@@ -1,13 +1,13 @@
-﻿using RekomBackend.App.Models.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using RekomBackend.App.Models.Entities;
 using RekomBackend.Database;
 
-namespace RekomBackend.App.Services.otp;
+namespace RekomBackend.App.Services;
 
 public class OtpService : IOtpService
 {
    private readonly RekomContext _context;
    private readonly int _expireSecond;
-   // private readonly IConfiguration _configuration;
 
    public OtpService(RekomContext context, IConfiguration configuration)
    {
@@ -34,5 +34,18 @@ public class OtpService : IOtpService
       _ = await _context.SaveChangesAsync();
 
       return otp;
+   }
+
+   public async Task<bool> VerifyOtpAsync(string accountId, string otpCode)
+   {
+      var foundOtp = await _context.Otps.SingleOrDefaultAsync(
+         o => o.AccountId == accountId && o.Code == otpCode);
+
+      if (foundOtp is null) { return false; }
+
+      _context.Otps.Remove(foundOtp);
+      await _context.SaveChangesAsync();
+      
+      return true;
    }
 }

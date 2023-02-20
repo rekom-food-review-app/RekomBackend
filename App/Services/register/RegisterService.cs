@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using RekomBackend.App.Models.Dto;
 using RekomBackend.App.Models.Entities;
-using RekomBackend.App.Services.mail;
-using RekomBackend.App.Services.otp;
 using RekomBackend.Database;
 
 namespace RekomBackend.App.Services;
@@ -24,7 +22,7 @@ public class RegisterService : IRegisterService
       _tokenService = tokenService;
    }
 
-   public async Task<AuthToken> RegisterWithEmail(RegisterWithEmailRequest registerRequest)
+   public async Task<AuthToken> RegisterWithEmailAsync(RegisterWithEmailRequest registerRequest)
    {
       var account = _mapper.Map<Account>(registerRequest);
       account.PasswordHash = registerRequest.Password;

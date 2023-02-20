@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Models.Dto;
 using RekomBackend.Database;
@@ -17,7 +16,7 @@ public class AuthService : IAuthService
       _tokenService = tokenService;
    }
 
-   public async Task<AuthToken?> AuthWithEmail(AuthWithEmailRequest authRequest)
+   public async Task<AuthToken?> AuthWithEmailAsync(AuthWithEmailRequest authRequest)
    {
       var account = await _context.Accounts.SingleOrDefaultAsync(a => a.Email == authRequest.Email);
 

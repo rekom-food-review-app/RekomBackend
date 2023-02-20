@@ -4,5 +4,5 @@ namespace RekomBackend.App.Services;
 
 public interface IAuthService
 {
-   public Task<AuthToken?> AuthWithEmail(AuthWithEmailRequest authRequest);
+   public Task<AuthToken?> AuthWithEmailAsync(AuthWithEmailRequest authRequest);
 }
