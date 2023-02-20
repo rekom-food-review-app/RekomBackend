@@ -1,4 +1,5 @@
 ﻿using RekomBackend.App.Helpers;
+using RekomBackend.App.Helpers.s3;
 using RekomBackend.App.Services;
 
 namespace RekomBackend.Configuration;
@@ -36,6 +37,7 @@ public static class DependencyInjectConfiguration
    {
       services.AddScoped<IMailHelper, MailHelper>();
       services.AddScoped<IJwtHelper, JwtHelper>();
+      services.AddScoped<IS3Helper, S3Helper>();
       return services;
    }
 }
