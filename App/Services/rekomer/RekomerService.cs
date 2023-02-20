@@ -25,6 +25,7 @@ public class RekomerService : IRekomerService
    {
       var accountId = _tokenService.ReadClaimFromAccessToken(ClaimTypes.Sid);
       var account = await _context.Accounts
+         .AsNoTracking()
          .Where(a => a.Id == accountId)
          .Include(a => a.Rekomer)
          .FirstOrDefaultAsync();
@@ -74,5 +75,24 @@ public class RekomerService : IRekomerService
 
       _context.Follows.Add(follow);
       _ = _context.SaveChangesAsync();
+   }
+
+   public async Task UnfollowOtherRekomerAsync(string rekomerId)
+   {
+      var accountPromise = GetRekomerAccountByReadingAccessToken();
+      var followingPromise = _context.Rekomers.FindAsync(rekomerId);
+      
+      var follower = (await accountPromise).Rekomer;
+      var following = await followingPromise;
+      
+      if (follower is null) { throw new YourProfileIsNotCreatedYetException(); }
+      if (following is null || follower.Id == following.Id) { throw new NotFoundRekomerProfileException(); }
+
+      var follow = await _context.Follows.SingleOrDefaultAsync(f => f.FollowerId == follower.Id && f.FollowingId == following.Id);
+
+      if (follow is null) { throw new YouDidNotFollowThisRekomerYetException(); }
+
+      _context.Follows.Remove(follow);
+      await _context.SaveChangesAsync();
    }
 }

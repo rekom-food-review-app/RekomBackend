@@ -44,7 +44,7 @@ public class RekomerController : ControllerBase
       }
    }
 
-   [HttpPost("{id}/following"), Authorize(Roles = "Rekomer")]
+   [HttpPost("{id}/follow"), Authorize(Roles = "Rekomer")]
    public async Task<IActionResult> FollowOtherRekomer(string id)
    {
       try
@@ -79,6 +79,37 @@ public class RekomerController : ControllerBase
          {
             code = "FYSE",
             message = "Don't Try Follow Your Self."
+         });
+      }
+   }
+
+   [HttpDelete("{id}/unfollow"), Authorize(Roles = "Rekomer")]
+   public async Task<IActionResult> UnfollowOtherRekomer(string id)
+   {
+      try
+      {
+         await _rekomerService.UnfollowOtherRekomerAsync(id);
+
+         return Ok(new
+         {
+            code = "UFS",
+            message = "Unfollow Rekomer Successfully."
+         });
+      }
+      catch (YourProfileIsNotCreatedYetException e)
+      {
+         return BadRequest(new
+         {
+            code = "YPCY",
+            message = "Please Create Your Profile First."
+         });
+      }
+      catch (NotFoundRekomerProfileException e)
+      {
+         return NotFound(new
+         {
+            code = "NFR",
+            message = "This Rekomer Is Not Existed."
          });
       }
    }
