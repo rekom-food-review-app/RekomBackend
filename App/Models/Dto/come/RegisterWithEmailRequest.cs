@@ -14,5 +14,6 @@ public class RegisterWithEmailRequest
    [MinLength(6, ErrorMessage = "at least 6 characters")]
    public string Password { get; set; } = null!;
 
-   public Role Role { get; set; }
+   [Required, RegularExpression("^(Rekomer|Restaurant)$")]
+   public string Role { get; set; } = null!;
 }

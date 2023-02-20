@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using RekomBackend.App.Common.Enums;
 using RekomBackend.App.Models.Dto;
 using RekomBackend.App.Models.Entities;
 
@@ -23,7 +24,7 @@ public class AccountMapper : Profile
       )
       .ForMember(
          dest => dest.Role,
-         opt => opt.MapFrom(src => src.Role)
+         opt => opt.MapFrom(src => (Role)Enum.Parse(typeof(Role), src.Role))
       );
    }
 }
