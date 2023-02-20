@@ -1,6 +1,6 @@
 ﻿namespace RekomBackend.App.Models.Entities;
 
-public class EntityBase
+public abstract class EntityBase
 {
    #region Columns
 
