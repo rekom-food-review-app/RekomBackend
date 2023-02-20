@@ -1,4 +1,6 @@
-﻿namespace RekomBackend.Configuration;
+﻿using RekomBackend.App.Helpers.mail;
+
+namespace RekomBackend.Configuration;
 
 public static class DependencyInjectConfiguration
 {
@@ -24,7 +26,7 @@ public static class DependencyInjectConfiguration
 
    private static IServiceCollection InjectHelpers(this IServiceCollection services)
    {
-
+      services.AddScoped<IMailHelper, MailHelper>();
       return services;
    }
 }
