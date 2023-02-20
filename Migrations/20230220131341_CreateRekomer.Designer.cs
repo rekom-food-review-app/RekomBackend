@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RekomBackend.Database;
 
@@ -10,9 +11,11 @@ using RekomBackend.Database;
 namespace RekomBackend.Migrations
 {
     [DbContext(typeof(RekomContext))]
-    partial class RekomContextModelSnapshot : ModelSnapshot
+    [Migration("20230220131341_CreateRekomer")]
+    partial class CreateRekomer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,34 +63,6 @@ namespace RekomBackend.Migrations
                         .IsUnique();
 
                     b.ToTable("Accounts");
-                });
-
-            modelBuilder.Entity("RekomBackend.App.Models.Entities.Follow", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("FollowerId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("FollowingId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FollowerId");
-
-                    b.HasIndex("FollowingId");
-
-                    b.ToTable("Follows");
                 });
 
             modelBuilder.Entity("RekomBackend.App.Models.Entities.Otp", b =>
@@ -151,25 +126,6 @@ namespace RekomBackend.Migrations
                     b.ToTable("Rekomers");
                 });
 
-            modelBuilder.Entity("RekomBackend.App.Models.Entities.Follow", b =>
-                {
-                    b.HasOne("RekomBackend.App.Models.Entities.Rekomer", "Follower")
-                        .WithMany("Followings")
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RekomBackend.App.Models.Entities.Rekomer", "Following")
-                        .WithMany("Followers")
-                        .HasForeignKey("FollowingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Follower");
-
-                    b.Navigation("Following");
-                });
-
             modelBuilder.Entity("RekomBackend.App.Models.Entities.Otp", b =>
                 {
                     b.HasOne("RekomBackend.App.Models.Entities.Account", "Account")
@@ -197,13 +153,6 @@ namespace RekomBackend.Migrations
                     b.Navigation("Otp");
 
                     b.Navigation("Rekomer");
-                });
-
-            modelBuilder.Entity("RekomBackend.App.Models.Entities.Rekomer", b =>
-                {
-                    b.Navigation("Followers");
-
-                    b.Navigation("Followings");
                 });
 #pragma warning restore 612, 618
         }

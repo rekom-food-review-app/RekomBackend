@@ -10,6 +10,8 @@ public class RekomContext : DbContext
 
    public DbSet<Account> Accounts { get; set; } = null!;
    public DbSet<Otp> Otps { get; set; } = null!;
+   public DbSet<Rekomer> Rekomers { get; set; } = null!;
+   public DbSet<Follow> Follows { get; set; } = null!;
    
    public RekomContext(DbContextOptions<RekomContext> options, IConfiguration configuration) : base(options)
    {
@@ -38,6 +40,21 @@ public class RekomContext : DbContext
             v => v.ToString(),
             v => (Role)Enum.Parse(typeof(Role), v)
          );
+      
+      modelBuilder.Entity<Follow>()
+         .HasKey(f => f.Id);
+
+      modelBuilder.Entity<Follow>()
+         .HasOne(f => f.Follower)
+         .WithMany(u => u.Followings)
+         .HasForeignKey(f => f.FollowerId)
+         .OnDelete(DeleteBehavior.Cascade);
+
+      modelBuilder.Entity<Follow>()
+         .HasOne(f => f.Following)
+         .WithMany(u => u.Followers)
+         .HasForeignKey(f => f.FollowingId)
+         .OnDelete(DeleteBehavior.Cascade);
    }
    
    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

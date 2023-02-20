@@ -34,6 +34,8 @@ public class Account : EntityBase
    #region Relationships
 
    public Otp? Otp { get; set; }
+
+   public Rekomer? Rekomer { get; set; }
    
    #endregion
 
