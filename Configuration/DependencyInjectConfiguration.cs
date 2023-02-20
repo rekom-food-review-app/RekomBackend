@@ -1,6 +1,7 @@
 ﻿using RekomBackend.App.Helpers;
 using RekomBackend.App.Helpers.s3;
 using RekomBackend.App.Services;
+using RekomBackend.App.Services.rekomer_follow;
 
 namespace RekomBackend.Configuration;
 
@@ -30,6 +31,7 @@ public static class DependencyInjectConfiguration
       services.AddScoped<IAuthService, AuthService>();
       services.AddScoped<IAccountService, AccountService>();
       services.AddScoped<IRekomerService, RekomerService>();
+      services.AddScoped<IRekomerFollowService, RekomerFollowService>();
       return services;
    }
 
