@@ -36,14 +36,14 @@ public class S3Helper : IS3Helper
       var uploadRequest = new TransferUtilityUploadRequest()
       {
          InputStream = memoryStr,
-         Key = $"{Guid.NewGuid()}.{file.ContentType}",
+         Key = $"{Guid.NewGuid()}.{Path.GetExtension(file.Name)}",
          BucketName = _bucketName,
          CannedACL = S3CannedACL.NoACL
       };
       
       using var s3Client = new AmazonS3Client(credentials, s3Config);
       var transferUtility = new TransferUtility(s3Client);
-      _ = transferUtility.UploadAsync(uploadRequest);
+      await transferUtility.UploadAsync(uploadRequest);
 
       return uploadRequest.Key;
    }
