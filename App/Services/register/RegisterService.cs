@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using RekomBackend.App.Common.Enums;
 using RekomBackend.App.Models.Dto;
 using RekomBackend.App.Models.Entities;
 using RekomBackend.Database;
@@ -26,8 +27,21 @@ public class RegisterService : IRegisterService
    {
       var account = _mapper.Map<Account>(registerRequest);
       account.PasswordHash = registerRequest.Password;
-      
+
       _context.Accounts.Add(account);
+
+      if (account.Role == Role.Rekomer)
+      {
+         var rekomerProfile = new Rekomer()
+         {
+            Id = account.Id,
+            AccountId = account.Id,
+            AvatarUrl = "55f3aeb4-ea58-4b7b-b928-4d9fdf5b7663."
+         };
+
+         account.Rekomer = rekomerProfile;
+      }
+      
       _ = await _context.SaveChangesAsync();
 
       var otp = await _otpService.CreateOtpAsync(account.Id);
