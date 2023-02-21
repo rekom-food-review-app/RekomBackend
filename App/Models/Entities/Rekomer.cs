@@ -8,12 +8,12 @@ public class Rekomer : EntityBase
    #region Columns
 
    [Column(TypeName = "varchar(200)"), MinLength(1)]
-   public string FullName { get; set; } = null!;
+   public string? FullName { get; set; }
 
    [Column(TypeName = "varchar(200)")]
    public string AvatarUrl { get; set; } = null!;
 
-   public DateTime Dob { get; set; }
+   public DateTime? Dob { get; set; }
 
    [Column(TypeName = "varchar(100)")]
    public string? Description { get; set; }
