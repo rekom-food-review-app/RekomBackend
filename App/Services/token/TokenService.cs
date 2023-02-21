@@ -36,7 +36,6 @@ public class TokenService : ITokenService
    {
       var accountId = ReadClaimFromAccessToken(ClaimTypes.Sid);
       var account = await _context.Accounts
-         .AsNoTracking()
          .Where(a => a.Id == accountId)
          .Include(a => a.Rekomer)
          .FirstOrDefaultAsync();
