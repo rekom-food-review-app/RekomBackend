@@ -12,6 +12,8 @@ public class RekomContext : DbContext
    public DbSet<Otp> Otps { get; set; } = null!;
    public DbSet<Rekomer> Rekomers { get; set; } = null!;
    public DbSet<Follow> Follows { get; set; } = null!;
+   public DbSet<Restaurant> Restaurants { get; set; } = null!;
+   public DbSet<Food> Foods { get; set; } = null!;
    
    public RekomContext(DbContextOptions<RekomContext> options, IConfiguration configuration) : base(options)
    {

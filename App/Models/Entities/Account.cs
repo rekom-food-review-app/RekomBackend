@@ -37,6 +37,8 @@ public class Account : EntityBase
 
    public Rekomer? Rekomer { get; set; }
    
+   public Restaurant? Restaurant { get; set; }
+   
    #endregion
 
    #region Methods
