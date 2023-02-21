@@ -15,6 +15,9 @@ public class Rekomer : EntityBase
 
    public DateTime Dob { get; set; }
 
+   [Column(TypeName = "varchar(100)")]
+   public string? Description { get; set; }
+
    #endregion
 
    #region ForeignKeys
