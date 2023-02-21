@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using RekomBackend.App.Models.Dto.go;
+using RekomBackend.App.Models.Dto;
 using RekomBackend.App.Models.Entities;
 
 namespace RekomBackend.App.Profiles;
@@ -19,7 +19,7 @@ public class RekomerMapper : Profile
          )
          .ForMember(
             dest => dest.AvatarUrl,
-            opt => opt.MapFrom(src => $"https://s3.console.aws.amazon.com/s3/object/rekom-bucket?region=ap-northeast-1&prefix={src.AvatarUrl}")
+            opt => opt.MapFrom(src => $"https://rekom-bucket.s3.ap-northeast-1.amazonaws.com/{src.AvatarUrl}")
          )
          .ForMember(
             dest => dest.FullName,
