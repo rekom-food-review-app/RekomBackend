@@ -1,7 +1,6 @@
 ﻿using RekomBackend.App.Helpers;
 using RekomBackend.App.Helpers.s3;
 using RekomBackend.App.Services;
-using RekomBackend.App.Services.rekomer_follow;
 
 namespace RekomBackend.Configuration;
 

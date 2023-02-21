@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Services;
-using RekomBackend.App.Services.rekomer_follow;
 
 namespace RekomBackend.App.Controllers;
 
 [ApiController]
 [Route("rekomers")]
+[Authorize(Roles = "Rekomer")]
 public class RekomerFollowController : ControllerBase
 {
    private readonly IRekomerFollowService _rekomerFollowService;
@@ -17,17 +18,17 @@ public class RekomerFollowController : ControllerBase
       _rekomerFollowService = rekomerFollowService;
    }
 
-   [HttpGet("me/followers"), Authorize(Roles = "Rekomer")]
-   public async Task<IActionResult> GetMyFollowers()
+   [HttpGet("me/followers")]
+   public async Task<IActionResult> GetMyFollowers([FromQuery, RegularExpression("^[1-9]\\d*$")] int? page, [FromQuery, RegularExpression("^[1-9]\\d*$")] int? limit)
    {
       try
       {
-         var myFollowers = await _rekomerFollowService.GetMyFollowers();
+         var myFollowers = await _rekomerFollowService.GetMyFollowersAsync(page, limit);
 
          return Ok(new
          {
             code = "S",
-            message = "Here Is Your Followers",
+            message = "Here Are Followers",
             myFollowers
          });
       }
@@ -36,10 +37,72 @@ public class RekomerFollowController : ControllerBase
          Console.WriteLine(e);
          throw;
       }
-      throw new NotImplementedException();
+   }
+   
+   [HttpGet("{id}/followers")]
+   public async Task<IActionResult> GetOtherFollowers(string id, [FromQuery, RegularExpression("^[1-9]\\d*$")] int? page, [FromQuery, RegularExpression("^[1-9]\\d*$")] int? limit)
+   {
+      try
+      {
+         var myFollowers = await _rekomerFollowService.GetOtherFollowersAsync(id, page, limit);
+
+         return Ok(new
+         {
+            code = "S",
+            message = "Here Are Followers",
+            myFollowers
+         });
+      }
+      catch (Exception e)
+      {
+         Console.WriteLine(e);
+         throw;
+      }
+   }
+   
+   [HttpGet("me/followings")]
+   public async Task<IActionResult> GetMyFollowings([FromQuery, RegularExpression("^[1-9]\\d*$")] int? page, [FromQuery, RegularExpression("^[1-9]\\d*$")] int? limit)
+   {
+      try
+      {
+         var myFollowers = await _rekomerFollowService.GetMyFollowingsAsync(page, limit);
+
+         return Ok(new
+         {
+            code = "S",
+            message = "Here Are Followings",
+            myFollowers
+         });
+      }
+      catch (Exception e)
+      {
+         Console.WriteLine(e);
+         throw;
+      }
+   }
+   
+   [HttpGet("{id}/followings")]
+   public async Task<IActionResult> GetOtherFollowings(string id, [FromQuery, RegularExpression("^[1-9]\\d*$")] int? page, [FromQuery, RegularExpression("^[1-9]\\d*$")] int? limit)
+   {
+      try
+      {
+         var myFollowers = await _rekomerFollowService.GetOtherFollowingsAsync(id, page, limit);
+
+         return Ok(new
+         {
+            code = "S",
+            message = "Here Are Followings",
+            myFollowers
+         });
+      }
+      catch (Exception e)
+      {
+         Console.WriteLine(e);
+         throw;
+      }
    }
 
-   [HttpPost("{id}/follow"), Authorize(Roles = "Rekomer")]
+   [HttpPost("{id}/follow")]
    public async Task<IActionResult> FollowOtherRekomer(string id)
    {
       try
@@ -78,7 +141,7 @@ public class RekomerFollowController : ControllerBase
       }
    }
 
-   [HttpDelete("{id}/unfollow"), Authorize(Roles = "Rekomer")]
+   [HttpDelete("{id}/unfollow")]
    public async Task<IActionResult> UnfollowOtherRekomer(string id)
    {
       try
@@ -105,6 +168,14 @@ public class RekomerFollowController : ControllerBase
          {
             code = "NFR",
             message = "This Rekomer Is Not Existed."
+         });
+      }
+      catch (YouDidNotFollowThisRekomerYetException e)
+      {
+         return BadRequest(new
+         {
+            code = "UFF",
+            message = "You Did Not Follow This Rekomer Yet."
          });
       }
    }
