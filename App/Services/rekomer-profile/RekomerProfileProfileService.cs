@@ -22,24 +22,25 @@ public class RekomerProfileProfileService : IRekomerProfileService
       _mapper = mapper;
    }
    
-   // public async Task CreateProfileAsync(CreateRekomerProfileRequest createRequest)
-   // {
-   //    var account = await _tokenService.GetRekomerAccountByReadingAccessToken();
-   //    if (account.Rekomer is not null) { throw new RekomerProfileIsAlreadyCreatedException(); }
-   //
-   //    var avatarUrl = await _s3Helper.UploadOneFileAsync(createRequest.Avatar);
-   //    var rekomer = new Rekomer
-   //    {
-   //       Id = account.Id,
-   //       AccountId = account.Id,
-   //       FullName = createRequest.FullName,
-   //       AvatarUrl = avatarUrl,
-   //       Dob = createRequest.Dob
-   //    };
-   //
-   //    _context.Rekomers.Add(rekomer);
-   //    await _context.SaveChangesAsync();
-   // }
+   public async Task UpdateProfileAsync(PutRekomerProfileRequest putRequest)
+   {
+      var account = await _tokenService.GetRekomerAccountByReadingAccessToken();
+      // if (account.Rekomer is not null) { throw new RekomerProfileIsAlreadyCreatedException(); }
+      
+      var avatarUrl = await _s3Helper.UploadOneFileAsync(putRequest.Avatar);
+      
+      account.Rekomer = new Rekomer
+      {
+         Id = account.Id,
+         AccountId = account.Id,
+         FullName = putRequest.FullName,
+         AvatarUrl = avatarUrl,
+         Description = putRequest.Description,
+         Dob = putRequest.Dob
+      };
+      
+      await _context.SaveChangesAsync();
+   }
 
    public async Task<RekomerProfileResponse> GetMyProfileAsync()
    {

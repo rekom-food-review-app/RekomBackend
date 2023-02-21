@@ -4,7 +4,7 @@ namespace RekomBackend.App.Services;
 
 public interface IRekomerProfileService
 {
-   // public Task CreateProfileAsync(CreateRekomerProfileRequest createRequest);
+   public Task UpdateProfileAsync(PutRekomerProfileRequest putRequest);
 
    public Task<RekomerProfileResponse> GetMyProfileAsync();
 }

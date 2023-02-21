@@ -17,32 +17,32 @@ public class RekomerProfileController : ControllerBase
       _rekomerProfileService = rekomerProfileService;
    }
    
-   // [HttpPost("me/profile"), Authorize(Roles = "Rekomer")]
-   // public async Task<IActionResult> CreateProfile([FromForm] CreateRekomerProfileRequest createRequest)
-   // {
-   //    try
-   //    {
-   //       await _rekomerProfileService.CreateProfileAsync(createRequest);
-   //    
-   //       return Ok(new
-   //       {
-   //          code = "CPS",
-   //          message = "Create Profile Successfully."
-   //       });
-   //    }
-   //    catch (InvalidAccessTokenException e)
-   //    {
-   //       return Unauthorized();
-   //    }
-   //    catch (RekomerProfileIsAlreadyCreatedException e)
-   //    {
-   //       return BadRequest(new
-   //       {
-   //          code = "PAC",
-   //          message = "Your Profile Is Already Created."
-   //       });
-   //    }
-   // }
+   [HttpPut("me/profile"), Authorize(Roles = "Rekomer")]
+   public async Task<IActionResult> CreateProfile([FromForm] PutRekomerProfileRequest putRequest)
+   {
+      try
+      {
+         await _rekomerProfileService.UpdateProfileAsync(putRequest);
+      
+         return Ok(new
+         {
+            code = "CPS",
+            message = "Create Profile Successfully."
+         });
+      }
+      catch (InvalidAccessTokenException e)
+      {
+         return Unauthorized();
+      }
+      catch (RekomerProfileIsAlreadyCreatedException e)
+      {
+         return BadRequest(new
+         {
+            code = "PAC",
+            message = "Your Profile Is Already Created."
+         });
+      }
+   }
 
    [HttpGet("me/profile"), Authorize(Roles = "Rekomer")]
    public async Task<IActionResult> GetMyProfile()
