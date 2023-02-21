@@ -1,7 +1,10 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections;
+using System.Linq.Expressions;
 using System.Security.Claims;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using RekomBackend.App.Exceptions;
+using RekomBackend.App.Models.Dto;
 using RekomBackend.App.Models.Entities;
 using RekomBackend.Database;
 
@@ -11,11 +14,13 @@ public class RekomerFollowService : IRekomerFollowService
 {
    private readonly RekomContext _context;
    private readonly ITokenService _tokenService;
+   private readonly IMapper _mapper;
    
-   public RekomerFollowService(RekomContext context, ITokenService tokenService)
+   public RekomerFollowService(RekomContext context, ITokenService tokenService, IMapper mapper)
    {
       _context = context;
       _tokenService = tokenService;
+      _mapper = mapper;
    }
 
    public async Task FollowOtherRekomerAsync(string rekomerId)
@@ -60,64 +65,67 @@ public class RekomerFollowService : IRekomerFollowService
       await _context.SaveChangesAsync();
    }
 
-   private async Task<List<TResult?>> GetFollowsAsync<TResult>(
-      Expression<Func<Follow, bool>> predicate, 
-      Expression<Func<Follow, TResult>> selector,
-      int? page = null, int? limit = null)
+   public async Task<IEnumerable<RekomerProfileResponse?>> GetMyFollowersAsync(int? page = null, int? limit = null)
    {
-      var follows = _context.Follows
-         .Where(predicate)
-         .Select(selector)
+      var accountId = _tokenService.ReadClaimFromAccessToken(ClaimTypes.Sid)!;
+
+      var followersQuery = _context.Follows
+         .Where(f => f.FollowingId == accountId)
+         .Include(f => f.Follower!.Account)
+         .Select(f => f.Follower!)
          .AsQueryable();
 
-      var totalFollow = follows.Count();
-
-      if (limit is not null && page is not null) { follows = follows.Skip((int)((totalFollow / limit) * (page - 1))!).Take((int)limit); }
-
-      return (await follows.ToListAsync())!;
+      var totalFollow = followersQuery.Count();
+      
+      if (limit is not null && page is not null) { followersQuery = followersQuery.Skip((int)((totalFollow / limit) * (page - 1))!).Take((int)limit); }
+      
+      return (await followersQuery.ToListAsync()).Select(flr => _mapper.Map<RekomerProfileResponse>(flr));
    }
 
-   public async Task<List<Rekomer?>> GetMyFollowersAsync(int? page = null, int? limit = null)
+   public async Task<IEnumerable<RekomerProfileResponse?>> GetMyFollowingsAsync(int? page = null, int? limit = null)
    {
       var accountId = _tokenService.ReadClaimFromAccessToken(ClaimTypes.Sid)!;
+
+      var followingsQuery = _context.Follows
+         .Where(f => f.FollowerId == accountId)
+         .Include(f => f.Following!.Account)
+         .Select(f => f.Following!)
+         .AsQueryable();
+
+      var totalFollow = followingsQuery.Count();
       
-      return await GetFollowsAsync<Rekomer>(
-         follow => follow.FollowingId == accountId,
-         follow => follow.Follower!,
-         page,
-         limit
-      );
-   }
-   
-   public async Task<List<Rekomer?>> GetMyFollowingsAsync(int? page = null, int? limit = null)
-   {
-      var accountId = _tokenService.ReadClaimFromAccessToken(ClaimTypes.Sid)!;
+      if (limit is not null && page is not null) { followingsQuery = followingsQuery.Skip((int)((totalFollow / limit) * (page - 1))!).Take((int)limit); }
       
-      return await GetFollowsAsync<Rekomer>(
-         follow => follow.FollowerId == accountId,
-         follow => follow.Following!,
-         page,
-         limit
-      );
+      return (await followingsQuery.ToListAsync()).Select(flr => _mapper.Map<RekomerProfileResponse>(flr));
    }
-   
-   public async Task<List<Rekomer?>> GetOtherFollowersAsync(string rekomerId, int? page = null, int? limit = null)
+
+   public async Task<IEnumerable<RekomerProfileResponse?>> GetOtherFollowersAsync(string rekomerId, int? page = null, int? limit = null)
    {
-      return await GetFollowsAsync<Rekomer>(
-         follow => follow.FollowingId == rekomerId,
-         follow => follow.Follower!,
-         page,
-         limit
-      );
+      var followersQuery = _context.Follows
+         .Where(f => f.FollowingId == rekomerId)
+         .Include(f => f.Follower!.Account)
+         .Select(f => f.Follower!)
+         .AsQueryable();
+
+      var totalFollow = followersQuery.Count();
+      
+      if (limit is not null && page is not null) { followersQuery = followersQuery.Skip((int)((totalFollow / limit) * (page - 1))!).Take((int)limit); }
+      
+      return (await followersQuery.ToListAsync()).Select(flr => _mapper.Map<RekomerProfileResponse>(flr));
    }
-   
-   public async Task<List<Rekomer?>> GetOtherFollowingsAsync(string rekomerId, int? page = null, int? limit = null)
+
+   public async Task<IEnumerable<RekomerProfileResponse?>> GetOtherFollowingsAsync(string rekomerId, int? page = null, int? limit = null)
    {
-      return await GetFollowsAsync<Rekomer>(
-         follow => follow.FollowerId == rekomerId,
-         follow => follow.Following!,
-         page,
-         limit
-      );
+      var followingsQuery = _context.Follows
+         .Where(f => f.FollowerId == rekomerId)
+         .Include(f => f.Following!.Account)
+         .Select(f => f.Following!)
+         .AsQueryable();
+
+      var totalFollow = followingsQuery.Count();
+      
+      if (limit is not null && page is not null) { followingsQuery = followingsQuery.Skip((int)((totalFollow / limit) * (page - 1))!).Take((int)limit); }
+      
+      return (await followingsQuery.ToListAsync()).Select(flr => _mapper.Map<RekomerProfileResponse>(flr));
    }
 }

@@ -1,4 +1,4 @@
-﻿namespace RekomBackend.App.Models.Dto.go;
+﻿namespace RekomBackend.App.Models.Dto;
 
 public class RekomerProfileResponse
 {

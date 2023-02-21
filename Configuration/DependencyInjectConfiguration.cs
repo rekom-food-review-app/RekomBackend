@@ -29,7 +29,7 @@ public static class DependencyInjectConfiguration
       services.AddScoped<ITokenService, TokenService>();
       services.AddScoped<IAuthService, AuthService>();
       services.AddScoped<IAccountService, AccountService>();
-      services.AddScoped<IRekomerService, RekomerService>();
+      services.AddScoped<IRekomerProfileService, RekomerProfileProfileService>();
       services.AddScoped<IRekomerFollowService, RekomerFollowService>();
       return services;
    }

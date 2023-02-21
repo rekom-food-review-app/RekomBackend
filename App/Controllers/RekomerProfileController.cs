@@ -10,37 +10,56 @@ namespace RekomBackend.App.Controllers;
 [Route("rekomers")]
 public class RekomerProfileController : ControllerBase
 {
-   private readonly IRekomerService _rekomerService;
+   private readonly IRekomerProfileService _rekomerProfileService;
 
-   public RekomerProfileController(IRekomerService rekomerService)
+   public RekomerProfileController(IRekomerProfileService rekomerProfileService)
    {
-      _rekomerService = rekomerService;
+      _rekomerProfileService = rekomerProfileService;
    }
    
-   [HttpPost("me/profile"), Authorize(Roles = "Rekomer")]
-   public async Task<IActionResult> CreateProfile([FromForm] CreateRekomerProfileRequest createRequest)
+   // [HttpPost("me/profile"), Authorize(Roles = "Rekomer")]
+   // public async Task<IActionResult> CreateProfile([FromForm] CreateRekomerProfileRequest createRequest)
+   // {
+   //    try
+   //    {
+   //       await _rekomerProfileService.CreateProfileAsync(createRequest);
+   //    
+   //       return Ok(new
+   //       {
+   //          code = "CPS",
+   //          message = "Create Profile Successfully."
+   //       });
+   //    }
+   //    catch (InvalidAccessTokenException e)
+   //    {
+   //       return Unauthorized();
+   //    }
+   //    catch (RekomerProfileIsAlreadyCreatedException e)
+   //    {
+   //       return BadRequest(new
+   //       {
+   //          code = "PAC",
+   //          message = "Your Profile Is Already Created."
+   //       });
+   //    }
+   // }
+
+   [HttpGet("me/profile"), Authorize(Roles = "Rekomer")]
+   public async Task<IActionResult> GetMyProfile()
    {
       try
       {
-         await _rekomerService.CreateProfileAsync(createRequest);
-      
+         var myProfile = await _rekomerProfileService.GetMyProfileAsync();
+
          return Ok(new
          {
-            code = "CPS",
-            message = "Create Profile Successfully."
+            myProfile
          });
       }
-      catch (InvalidAccessTokenException e)
+      catch (Exception e)
       {
-         return Unauthorized();
-      }
-      catch (RekomerProfileIsAlreadyCreatedException e)
-      {
-         return BadRequest(new
-         {
-            code = "PAC",
-            message = "Your Profile Is Already Created."
-         });
+         Console.WriteLine(e);
+         throw;
       }
    }
 }

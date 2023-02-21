@@ -30,9 +30,9 @@ public class Rekomer : EntityBase
 
    public Account? Account { get; set; }
 
-   public virtual ICollection<Follow>? Followers { get; set; }
+   public virtual IEnumerable<Follow>? Followers { get; set; }
    
-   public virtual ICollection<Follow>? Followings { get; set; }
+   public virtual IEnumerable<Follow>? Followings { get; set; }
    
    #endregion
 

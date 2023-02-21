@@ -1,4 +1,5 @@
-﻿using RekomBackend.App.Models.Entities;
+﻿using RekomBackend.App.Models.Dto;
+using RekomBackend.App.Models.Entities;
 
 namespace RekomBackend.App.Services;
 
@@ -8,11 +9,11 @@ public interface IRekomerFollowService
    
    public Task UnfollowOtherRekomerAsync(string rekomerId);
 
-   public Task<List<Rekomer?>> GetMyFollowersAsync(int? page = null, int? limit = null);
+   public Task<IEnumerable<RekomerProfileResponse?>> GetMyFollowersAsync(int? page = null, int? limit = null);
 
-   public Task<List<Rekomer?>> GetMyFollowingsAsync(int? page = null, int? limit = null);
+   public Task<IEnumerable<RekomerProfileResponse?>> GetMyFollowingsAsync(int? page = null, int? limit = null);
 
-   public Task<List<Rekomer?>> GetOtherFollowersAsync(string rekomerId, int? page = null, int? limit = null);
+   public Task<IEnumerable<RekomerProfileResponse?>> GetOtherFollowersAsync(string rekomerId, int? page = null, int? limit = null);
    
-   public Task<List<Rekomer?>> GetOtherFollowingsAsync(string rekomerId, int? page = null, int? limit = null);
+   public Task<IEnumerable<RekomerProfileResponse?>> GetOtherFollowingsAsync(string rekomerId, int? page = null, int? limit = null);
 }
