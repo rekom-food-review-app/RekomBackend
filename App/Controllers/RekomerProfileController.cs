@@ -8,6 +8,7 @@ namespace RekomBackend.App.Controllers;
 
 [ApiController]
 [Route("rekomers")]
+[Authorize(Roles = "Rekomer")]
 public class RekomerProfileController : ControllerBase
 {
    private readonly IRekomerProfileService _rekomerProfileService;
@@ -17,8 +18,8 @@ public class RekomerProfileController : ControllerBase
       _rekomerProfileService = rekomerProfileService;
    }
    
-   [HttpPut("me/profile"), Authorize(Roles = "Rekomer")]
-   public async Task<IActionResult> CreateProfile([FromForm] PutRekomerProfileRequest putRequest)
+   [HttpPut("me/profile")]
+   public async Task<IActionResult> CreateProfile([FromBody] PutRekomerProfileRequest putRequest)
    {
       try
       {
@@ -44,7 +45,7 @@ public class RekomerProfileController : ControllerBase
       }
    }
 
-   [HttpGet("me/profile"), Authorize(Roles = "Rekomer")]
+   [HttpGet("me/profile")]
    public async Task<IActionResult> GetMyProfile()
    {
       try
@@ -60,6 +61,24 @@ public class RekomerProfileController : ControllerBase
       {
          Console.WriteLine(e);
          throw;
+      }
+   }
+
+   [HttpGet("{id}/profile")]
+   public async Task<IActionResult> GetOtherProfile(string id)
+   {
+      try
+      {
+         var otherProfile = await _rekomerProfileService.GetOtherProfile(id);
+
+         return Ok(new
+         {
+            otherProfile
+         });
+      }
+      catch (NotFoundRekomerProfileException e)
+      {
+         return NotFound();
       }
    }
 }

@@ -1,5 +1,4 @@
 ﻿using RekomBackend.App.Models.Dto;
-using RekomBackend.App.Models.Entities;
 
 namespace RekomBackend.App.Services;
 

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Linq.Expressions;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using RekomBackend.App.Exceptions;
@@ -79,7 +77,12 @@ public class RekomerFollowService : IRekomerFollowService
       
       if (limit is not null && page is not null) { followersQuery = followersQuery.Skip((int)((totalFollow / limit) * (page - 1))!).Take((int)limit); }
       
-      return (await followersQuery.ToListAsync()).Select(flr => _mapper.Map<RekomerProfileResponse>(flr));
+      return (await followersQuery.ToListAsync()).Select(flr =>
+      {
+         var response = _mapper.Map<RekomerProfileResponse>(flr);
+         response.IsFollowed = true;
+         return response;
+      });
    }
 
    public async Task<IEnumerable<RekomerProfileResponse?>> GetMyFollowingsAsync(int? page = null, int? limit = null)

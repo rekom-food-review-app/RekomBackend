@@ -7,4 +7,6 @@ public interface IRekomerProfileService
    public Task UpdateProfileAsync(PutRekomerProfileRequest putRequest);
 
    public Task<RekomerProfileResponse> GetMyProfileAsync();
+
+   public Task<RekomerProfileResponse> GetOtherProfile(string rekomerId);
 }

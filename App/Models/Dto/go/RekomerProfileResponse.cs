@@ -11,4 +11,12 @@ public class RekomerProfileResponse
    public string FullName { get; set; } = null!;
    
    public string Description { get; set; } = null!;
+
+   public bool? IsFollowed { get; set; }
+   
+   public int TotalFollowers { get; set; }
+   
+   public int TotalFollowings { get; set; }
+   
+   public int TotalReviews { get; set; }
 }
