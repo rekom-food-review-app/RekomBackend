@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using RekomBackend.App.Exceptions;
+using RekomBackend.App.Models.Dto;
 
 namespace RekomBackend.App.Models.Entities;
 
@@ -37,6 +39,50 @@ public class Restaurant : EntityBase
    #endregion
 
    #region Methods
+
+   public RatingResultDto CalculateRatingResult()
+   {
+      if (Reviews is null) throw new NotIncludeRelationshipException();
+
+      var result = new RatingResultDto();
+      uint total = 0;
+      uint amountFive = 0, amountFour = 0, amountThree = 0, amountTwo = 0, amountOne = 0;
+      
+      foreach (var review in Reviews)
+      {
+         result.Amount ++;
+         var point = review.Rating!.Point;
+         total += point;
+         switch (point)
+         {
+            case 5:
+               amountFive ++;
+               break;
+            case 4:
+               amountFour ++;
+               break;
+            case 3:
+               amountThree ++;
+               break;
+            case 2:
+               amountTwo ++;
+               break;
+            case 1:
+               amountOne ++;
+               break;
+         }
+      }
+      
+      result.Average = result.Amount > 0 ? total / result.Amount : 0;
+      result.PercentFive = result.Amount > 0 ? amountFive / result.Amount : 0;
+      result.PercentFour = result.Amount > 0 ? amountFour / result.Amount : 0;
+      result.PercentThree = result.Amount > 0 ? amountThree / result.Amount : 0;
+      result.PercentTwo = result.Amount > 0 ? amountTwo / result.Amount : 0;
+      result.PercentOne = result.Amount > 0 ? amountOne / result.Amount : 0;
+      
+      return result;
+   }
+   
 
    #endregion
 }
