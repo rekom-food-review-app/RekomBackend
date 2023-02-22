@@ -3,7 +3,7 @@ using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Transfer;
 
-namespace RekomBackend.App.Helpers.s3;
+namespace RekomBackend.App.Helpers;
 
 public class S3Helper : IS3Helper
 {

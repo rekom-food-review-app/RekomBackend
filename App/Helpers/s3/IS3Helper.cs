@@ -1,4 +1,4 @@
-﻿namespace RekomBackend.App.Helpers.s3;
+﻿namespace RekomBackend.App.Helpers;
 
 public interface IS3Helper
 {
