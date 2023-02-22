@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using RekomBackend.App.Exceptions;
-using RekomBackend.App.Models.Dto;
+using RekomBackend.App.Models.Dto.RekomerSideDtos;
 
 namespace RekomBackend.App.Models.Entities;
 
