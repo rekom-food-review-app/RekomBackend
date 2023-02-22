@@ -23,12 +23,14 @@ public class RekomerReviewController : ControllerBase
       [FromQuery, RegularExpression("^[1-9]\\d*$")] int? page,
       [FromQuery, RegularExpression("^[1-9]\\d*$")] int? limit)
    {
-      var reviews = await _reviewService.GetReviewCardsByRestaurantAsync(restaurantId);
+      var reviewList = await _reviewService.GetReviewCardsByRestaurantAsync(restaurantId);
+      
       return Ok(new
       {
-         reviews
+         code = "SUC",
+         message = "Successfully",
+         reviewList
       });
-      // throw new NotImplementedException();
    }
    
    [HttpPost]
