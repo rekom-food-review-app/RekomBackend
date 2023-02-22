@@ -33,15 +33,15 @@ public class RekomerReviewController : ControllerBase
       });
    }
    
-   [HttpPost]
-   public async Task<IActionResult> CreateReview([FromQuery, Required] string restaurantId)
-   {
-      throw new NotImplementedException();
-   }
-   
-   [HttpGet("{reviewId}")]
-   public async Task<IActionResult> GetReviewDetail(string reviewId)
-   {
-      throw new NotImplementedException();
-   }
+   // [HttpPost]
+   // public async Task<IActionResult> CreateReview([FromQuery, Required] string restaurantId)
+   // {
+   //    throw new NotImplementedException();
+   // }
+   //
+   // [HttpGet("{reviewId}")]
+   // public async Task<IActionResult> GetReviewDetail(string reviewId)
+   // {
+   //    throw new NotImplementedException();
+   // }
 }
