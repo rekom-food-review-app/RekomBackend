@@ -14,6 +14,9 @@ public class RekomContext : DbContext
    public DbSet<Follow> Follows { get; set; } = null!;
    public DbSet<Restaurant> Restaurants { get; set; } = null!;
    public DbSet<Food> Foods { get; set; } = null!;
+   public DbSet<Rating> Ratings { get; set; } = null!;
+   public DbSet<Review> Reviews { get; set; } = null!;
+   public DbSet<ReviewMedia> ReviewMedias { get; set; } = null!;
    
    public RekomContext(DbContextOptions<RekomContext> options, IConfiguration configuration) : base(options)
    {

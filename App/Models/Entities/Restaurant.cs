@@ -31,6 +31,8 @@ public class Restaurant : EntityBase
    public Account? Account { get; set; }
 
    public IEnumerable<Food>? Menu { get; set; }
+
+   public IEnumerable<Review>? Reviews { get; set; }
    
    #endregion
 

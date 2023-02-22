@@ -2,31 +2,24 @@
 
 namespace RekomBackend.App.Models.Entities;
 
-public class Food : EntityBase
+public class FoodImage : EntityBase
 {
    #region Columns
-   
-   [Column(TypeName = "varchar(200)")]
-   public string Name { get; set; } = null!;
-   
-   public float Price { get; set; }
-   
+
    [Column(TypeName = "varchar(200)")]
    public string ImageUrl { get; set; } = null!;
-   
+
    #endregion
-   
+
    #region ForeignKeys
 
-   public string RestaurantId { get; set; } = null!;
+   public string FoodId { get; set; } = null!;
 
    #endregion
 
    #region Relationships
 
-   public Restaurant? Restaurant { get; set; }
-   
-   public IEnumerable<FoodImage>? Images { get; set; }
+   public Food? Food { get; set; }
    
    #endregion
 

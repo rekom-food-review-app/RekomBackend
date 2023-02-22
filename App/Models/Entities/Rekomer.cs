@@ -34,6 +34,8 @@ public class Rekomer : EntityBase
    
    public virtual IEnumerable<Follow>? Followings { get; set; }
    
+   public IEnumerable<Review>? Reviews { get; set; }
+   
    #endregion
 
    #region Methods
