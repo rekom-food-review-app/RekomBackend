@@ -1,6 +1,8 @@
-﻿namespace RekomBackend.App.Services.RekomerSideServices;
+﻿using RekomBackend.App.Models.Dto;
+
+namespace RekomBackend.App.Services.RekomerSideServices;
 
 public interface IRekomerReviewService
 {
-   
+   public Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewCardsByRestaurantAsync(string restaurantId, int? page = null, int? limit = null);
 }
