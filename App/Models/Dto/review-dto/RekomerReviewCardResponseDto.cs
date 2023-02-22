@@ -20,6 +20,8 @@ public class RekomerReviewCardResponseDto
 
    public string ReviewContent { get; set; } = null!;
 
+   public string ReviewTime { get; set; } = null!;
+
    #endregion
 
    #region Reaction

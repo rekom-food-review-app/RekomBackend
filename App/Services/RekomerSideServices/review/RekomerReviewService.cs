@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using RekomBackend.App.Models.Dto;
 using RekomBackend.Database;
@@ -21,11 +20,12 @@ public class RekomerReviewService : IRekomerReviewService
    {
       var reviews = await _context.Reviews
          .AsNoTracking()
-         .Include(rev => rev.Medias)
+         .Include(rev => rev.Medias!.OrderBy(med => med.CreatedAt))
          .Include(rev => rev.Rekomer)
          .Include(rev => rev.Restaurant)
          .Include(rev => rev.Rating)
          .Where(rev => rev.RestaurantId == restaurantId)
+         .OrderBy(rev => rev.CreatedAt)
          // .ProjectTo<RekomerReviewCardResponseDto>(_mapper.Con)
          .ToListAsync();
 

@@ -17,10 +17,10 @@ public class ReviewProfile : Profile
             dest => dest.ReviewContent,
             opt => opt.MapFrom(src => src.Content)
          )
-         // .ForMember(
-         //    dest => dest.ReviewMedias,
-         //    opt => opt.MapFrom(src => src.Medias)
-         // )
+         .ForMember(
+            dest => dest.ReviewTime,
+            opt => opt.MapFrom(src => src.CreatedAt)
+         )
          .ForMember(
             dest => dest.RestaurantId,
             opt => opt.MapFrom(src => src.RestaurantId)
