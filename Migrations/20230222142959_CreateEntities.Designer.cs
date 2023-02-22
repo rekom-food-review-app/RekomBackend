@@ -11,8 +11,8 @@ using RekomBackend.Database;
 namespace RekomBackend.Migrations
 {
     [DbContext(typeof(RekomContext))]
-    [Migration("20230221071718_CreateRestaurantAndFood")]
-    partial class CreateRestaurantAndFood
+    [Migration("20230222142959_CreateEntities")]
+    partial class CreateEntities
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,9 +86,10 @@ namespace RekomBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FollowerId");
-
                     b.HasIndex("FollowingId");
+
+                    b.HasIndex("FollowerId", "FollowingId")
+                        .IsUnique();
 
                     b.ToTable("Follows");
                 });
@@ -126,6 +127,32 @@ namespace RekomBackend.Migrations
                     b.ToTable("Foods");
                 });
 
+            modelBuilder.Entity("RekomBackend.App.Models.Entities.FoodImage", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("FoodId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FoodId");
+
+                    b.ToTable("FoodImage");
+                });
+
             modelBuilder.Entity("RekomBackend.App.Models.Entities.Otp", b =>
                 {
                     b.Property<string>("Id")
@@ -154,6 +181,31 @@ namespace RekomBackend.Migrations
                         .IsUnique();
 
                     b.ToTable("Otps");
+                });
+
+            modelBuilder.Entity("RekomBackend.App.Models.Entities.Rating", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<uint>("Point")
+                        .HasColumnType("int unsigned");
+
+                    b.Property<string>("Tag")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Tag");
+
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("RekomBackend.App.Models.Entities.Rekomer", b =>
@@ -231,6 +283,74 @@ namespace RekomBackend.Migrations
                     b.ToTable("Restaurants");
                 });
 
+            modelBuilder.Entity("RekomBackend.App.Models.Entities.Review", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("RatingId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("RekomerId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("RestaurantId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RatingId");
+
+                    b.HasIndex("RekomerId");
+
+                    b.HasIndex("RestaurantId");
+
+                    b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("RekomBackend.App.Models.Entities.ReviewMedia", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("MediaUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ReviewId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("enum('image', 'video')");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReviewId");
+
+                    b.ToTable("ReviewMedias");
+                });
+
             modelBuilder.Entity("RekomBackend.App.Models.Entities.Follow", b =>
                 {
                     b.HasOne("RekomBackend.App.Models.Entities.Rekomer", "Follower")
@@ -259,6 +379,17 @@ namespace RekomBackend.Migrations
                         .IsRequired();
 
                     b.Navigation("Restaurant");
+                });
+
+            modelBuilder.Entity("RekomBackend.App.Models.Entities.FoodImage", b =>
+                {
+                    b.HasOne("RekomBackend.App.Models.Entities.Food", "Food")
+                        .WithMany("Images")
+                        .HasForeignKey("FoodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Food");
                 });
 
             modelBuilder.Entity("RekomBackend.App.Models.Entities.Otp", b =>
@@ -294,6 +425,44 @@ namespace RekomBackend.Migrations
                     b.Navigation("Account");
                 });
 
+            modelBuilder.Entity("RekomBackend.App.Models.Entities.Review", b =>
+                {
+                    b.HasOne("RekomBackend.App.Models.Entities.Rating", "Rating")
+                        .WithMany("Reviews")
+                        .HasForeignKey("RatingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RekomBackend.App.Models.Entities.Rekomer", "Rekomer")
+                        .WithMany("Reviews")
+                        .HasForeignKey("RekomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RekomBackend.App.Models.Entities.Restaurant", "Restaurant")
+                        .WithMany("Reviews")
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Rating");
+
+                    b.Navigation("Rekomer");
+
+                    b.Navigation("Restaurant");
+                });
+
+            modelBuilder.Entity("RekomBackend.App.Models.Entities.ReviewMedia", b =>
+                {
+                    b.HasOne("RekomBackend.App.Models.Entities.Review", "Review")
+                        .WithMany("Medias")
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Review");
+                });
+
             modelBuilder.Entity("RekomBackend.App.Models.Entities.Account", b =>
                 {
                     b.Navigation("Otp");
@@ -303,16 +472,35 @@ namespace RekomBackend.Migrations
                     b.Navigation("Restaurant");
                 });
 
+            modelBuilder.Entity("RekomBackend.App.Models.Entities.Food", b =>
+                {
+                    b.Navigation("Images");
+                });
+
+            modelBuilder.Entity("RekomBackend.App.Models.Entities.Rating", b =>
+                {
+                    b.Navigation("Reviews");
+                });
+
             modelBuilder.Entity("RekomBackend.App.Models.Entities.Rekomer", b =>
                 {
                     b.Navigation("Followers");
 
                     b.Navigation("Followings");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("RekomBackend.App.Models.Entities.Restaurant", b =>
                 {
                     b.Navigation("Menu");
+
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("RekomBackend.App.Models.Entities.Review", b =>
+                {
+                    b.Navigation("Medias");
                 });
 #pragma warning restore 612, 618
         }

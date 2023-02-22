@@ -83,9 +83,10 @@ namespace RekomBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FollowerId");
-
                     b.HasIndex("FollowingId");
+
+                    b.HasIndex("FollowerId", "FollowingId")
+                        .IsUnique();
 
                     b.ToTable("Follows");
                 });
