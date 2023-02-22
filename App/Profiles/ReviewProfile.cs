@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using RekomBackend.App.Models.Dto;
+using RekomBackend.App.Models.Dto.RekomerSideDtos;
 using RekomBackend.App.Models.Entities;
 
 namespace RekomBackend.App.Profiles;

@@ -1,4 +1,4 @@
-﻿using RekomBackend.App.Models.Dto;
+﻿using RekomBackend.App.Models.Dto.RekomerSideDtos;
 
 namespace RekomBackend.App.Services.RekomerSideServices;
 
