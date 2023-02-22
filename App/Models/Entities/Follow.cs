@@ -1,5 +1,8 @@
-﻿namespace RekomBackend.App.Models.Entities;
+﻿using Microsoft.EntityFrameworkCore;
 
+namespace RekomBackend.App.Models.Entities;
+
+[Index(nameof(FollowerId), nameof(FollowingId), IsUnique = true)]
 public class Follow : EntityBase
 {
    #region Columns
