@@ -1,5 +1,6 @@
 ﻿using RekomBackend.App.Helpers;
 using RekomBackend.App.Services;
+using RekomBackend.App.Services.CommonService;
 using RekomBackend.App.Services.RekomerSideServices;
 
 namespace RekomBackend.Configuration;

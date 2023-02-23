@@ -1,6 +1,6 @@
 ﻿using RekomBackend.App.Models.Entities;
 
-namespace RekomBackend.App.Services;
+namespace RekomBackend.App.Services.CommonService;
 
 public interface IOtpService
 {

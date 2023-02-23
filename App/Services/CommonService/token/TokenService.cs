@@ -5,7 +5,7 @@ using RekomBackend.App.Helpers;
 using RekomBackend.App.Models.Entities;
 using RekomBackend.Database;
 
-namespace RekomBackend.App.Services;
+namespace RekomBackend.App.Services.CommonService;
 
 public class TokenService : ITokenService
 {

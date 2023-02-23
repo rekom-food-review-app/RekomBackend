@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Models.Dto.RekomerSideDtos;
-using RekomBackend.App.Models.Entities;
 using RekomBackend.Database;
 
 namespace RekomBackend.App.Services.RekomerSideServices;
@@ -30,5 +29,20 @@ public class RekomerFoodService : IRekomerFoodService
       if (restaurant is null) { throw new NotFoundRestaurantException(); }
       
       return restaurant.Menu!.Select(fod => _mapper.Map<RekomerFoodInMenuResponseDto>(fod));
+   }
+
+   public async Task<RekomerFoodDetailResponseDto> GetFoodDetailByIdAsync(string foodId)
+   {
+      var food = await _context.Foods
+         .Include(fod => fod.Images)
+         .Include(fod => fod.Restaurant)
+         .SingleOrDefaultAsync(fod => fod.Id == foodId);
+
+      if (food is null) { throw new NotFoundFoodException(); }
+      
+      var foodResponse = _mapper.Map<RekomerFoodDetailResponseDto>(food);
+      foodResponse.FoodImageUrls = food.Images!.Select(img => img.ImageUrl);
+      
+      return foodResponse;
    }
 }

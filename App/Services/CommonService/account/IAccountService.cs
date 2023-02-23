@@ -1,6 +1,6 @@
 ﻿using RekomBackend.App.Models.Dto;
 
-namespace RekomBackend.App.Services;
+namespace RekomBackend.App.Services.CommonService;
 
 public interface IAccountService
 {

@@ -1,4 +1,4 @@
-﻿namespace RekomBackend.App.Services;
+﻿namespace RekomBackend.App.Services.CommonService;
 
 public class AuthToken
 {

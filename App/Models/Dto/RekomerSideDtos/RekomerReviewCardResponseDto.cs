@@ -28,13 +28,13 @@ public class RekomerReviewCardResponseDto
 
    #region Reaction
 
-   public int AmountDislike { get; set; }
-   
-   public int AmountLike { get; set; }
-   
-   public int AmountHelpful { get; set; }
+   public string AmountDislike { get; set; } = "0";
 
-   public int AmountComment { get; set; }
+   public string AmountLike { get; set; } = "0";
+
+   public string AmountHelpful { get; set; } = "0";
+
+   public string AmountComment { get; set; } = "0";
 
    public string? MyReaction { get; set; }
 

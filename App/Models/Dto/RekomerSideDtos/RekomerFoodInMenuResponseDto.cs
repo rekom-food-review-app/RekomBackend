@@ -2,6 +2,8 @@
 
 public class RekomerFoodInMenuResponseDto
 {
+   public string Id { get; set; } = null!;
+   
    public string Name { get; set; } = null!;
    
    public float Price { get; set; }

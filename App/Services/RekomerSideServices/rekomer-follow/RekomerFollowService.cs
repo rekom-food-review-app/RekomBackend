@@ -4,9 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Models.Dto;
 using RekomBackend.App.Models.Entities;
+using RekomBackend.App.Services.CommonService;
 using RekomBackend.Database;
 
-namespace RekomBackend.App.Services;
+namespace RekomBackend.App.Services.RekomerSideServices;
 
 public class RekomerFollowService : IRekomerFollowService
 {

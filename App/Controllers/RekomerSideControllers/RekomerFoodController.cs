@@ -34,4 +34,21 @@ public class RekomerFoodController : ControllerBase
          return NotFound();
       }
    }
+
+   [HttpGet("{foodId}")]
+   public async Task<IActionResult> GetFoodDetailById(string foodId)
+   {
+      try
+      {
+         var food = await _foodService.GetFoodDetailByIdAsync(foodId);
+         return Ok(new
+         {
+            food
+         });
+      }
+      catch (NotFoundFoodException e)
+      {
+         return NotFound();
+      }
+   }
 }

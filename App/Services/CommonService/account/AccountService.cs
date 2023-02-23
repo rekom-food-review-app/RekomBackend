@@ -4,7 +4,7 @@ using RekomBackend.App.Exceptions;
 using RekomBackend.App.Models.Dto;
 using RekomBackend.Database;
 
-namespace RekomBackend.App.Services;
+namespace RekomBackend.App.Services.CommonService;
 
 public class AccountService : IAccountService
 {
