@@ -10,21 +10,21 @@ namespace RekomBackend.App.Services.CommonService;
 public class TokenService : ITokenService
 {
    private readonly IJwtHelper _jwtHelper;
-   private readonly IConfiguration _configuration;
+   // private readonly IConfiguration _configuration;
    private readonly IHttpContextAccessor _httpContextAccessor;
    private readonly RekomContext _context;
    
-   private readonly int _accessTokenExpireHours;
-   private readonly int _refreshTokenExpireMonths;
+   // private readonly int _accessTokenExpireHours;
+   // private readonly int _refreshTokenExpireMonths;
 
-   public TokenService(IJwtHelper jwtHelper, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, RekomContext context)
+   public TokenService(IJwtHelper jwtHelper, IHttpContextAccessor httpContextAccessor, RekomContext context)
    {
       _jwtHelper = jwtHelper;
-      _configuration = configuration;
+      // _configuration = configuration;
       _httpContextAccessor = httpContextAccessor;
       _context = context;
-      _accessTokenExpireHours = _configuration.GetValue<int>("AccessTokenExpireHour");
-      _refreshTokenExpireMonths = _configuration.GetValue<int>("RefreshTokenExpireMonth");
+      // _accessTokenExpireHours = _configuration.GetValue<int>("AccessTokenExpireHour");
+      // _refreshTokenExpireMonths = _configuration.GetValue<int>("RefreshTokenExpireMonth");
    }
 
    public string? ReadClaimFromAccessToken(string name)
@@ -54,13 +54,13 @@ public class TokenService : ITokenService
          new (ClaimTypes.Sid, account.Id)
       };
 
-      var accessTokenExpireTime = DateTime.Now.AddHours(_accessTokenExpireHours); 
-      var refreshTokenExpireTime = DateTime.Now.AddMonths(_refreshTokenExpireMonths); 
+      // var accessTokenExpireTime = DateTime.Now.AddHours(_accessTokenExpireHours); 
+      // var refreshTokenExpireTime = DateTime.Now.AddMonths(_refreshTokenExpireMonths); 
       
       return new AuthToken
       {
-         AccessToken = _jwtHelper.CreateToken(claims, accessTokenExpireTime),
-         RefreshToken = _jwtHelper.CreateToken(claims, refreshTokenExpireTime),
+         AccessToken = _jwtHelper.CreateToken(claims, DateTime.MaxValue),
+         RefreshToken = _jwtHelper.CreateToken(claims, DateTime.MaxValue),
       };
    }
 }
