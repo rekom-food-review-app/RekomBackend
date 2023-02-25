@@ -29,7 +29,8 @@ public class RekomerRegisterService : IRekomerRegisterService
       var account = new Account
       {
          PasswordHash = registerRequest.Password,
-         Role = Role.Rekomer
+         Role = Role.Rekomer,
+         IsConfirmed = false
       };
       _mapper.Map(registerRequest, account);
       account.Rekomer = new Rekomer
