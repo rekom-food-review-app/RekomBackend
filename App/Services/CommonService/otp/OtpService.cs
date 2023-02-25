@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RekomBackend.App.Models.Entities;
+using RekomBackend.App.Entities;
 using RekomBackend.Database;
 
 namespace RekomBackend.App.Services.CommonService;

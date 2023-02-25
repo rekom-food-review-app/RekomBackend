@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using RekomBackend.App.Common.Enums;
+using RekomBackend.App.Entities;
 using RekomBackend.App.Models.Dto;
-using RekomBackend.App.Models.Entities;
 
 namespace RekomBackend.App.Profiles;
 

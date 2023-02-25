@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RekomBackend.App.Models.Entities;
+namespace RekomBackend.App.Entities;
 
 public class ReviewMedia : EntityBase
 {

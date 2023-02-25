@@ -25,27 +25,33 @@ public class S3Helper : IS3Helper
    //    throw new NotImplementedException();
    // }
 
-   public async Task<string> UploadOneFileAsync(IFormFile file)
+   public string UploadOneFile(IFormFile file)
    {
-      var credentials = new BasicAWSCredentials(_key, _secretKey);
-      var s3Config = new AmazonS3Config() { RegionEndpoint = _region };
+      var imgPath = $"{Guid.NewGuid()}.{Path.GetExtension(file.Name)}";
       
-      await using var memoryStr = new MemoryStream();
-      await file.CopyToAsync(memoryStr);
-      
-      var uploadRequest = new TransferUtilityUploadRequest()
+      Task.Run(async () =>
       {
-         InputStream = memoryStr,
-         Key = $"{Guid.NewGuid()}.{Path.GetExtension(file.Name)}",
-         BucketName = _bucketName,
-         CannedACL = S3CannedACL.NoACL
-      };
+         var credentials = new BasicAWSCredentials(_key, _secretKey);
+         var s3Config = new AmazonS3Config() { RegionEndpoint = _region };
       
-      using var s3Client = new AmazonS3Client(credentials, s3Config);
-      var transferUtility = new TransferUtility(s3Client);
-      await transferUtility.UploadAsync(uploadRequest);
+         await using var memoryStr = new MemoryStream();
+         await file.CopyToAsync(memoryStr);
+      
+         var uploadRequest = new TransferUtilityUploadRequest()
+         {
+            InputStream = memoryStr,
+            Key = imgPath,
+            BucketName = _bucketName,
+            CannedACL = S3CannedACL.NoACL
+         };
+      
+         using var s3Client = new AmazonS3Client(credentials, s3Config);
+         var transferUtility = new TransferUtility(s3Client);
 
-      return uploadRequest.Key;
+         await transferUtility.UploadAsync(uploadRequest);
+      });
+
+      return imgPath;
    }
 
    // public async Task<S3ResponseDto> UploadFileAsync(S3Object obj, AwsCredentials awsCredentials)

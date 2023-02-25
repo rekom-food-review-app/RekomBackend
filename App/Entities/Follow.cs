@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace RekomBackend.App.Models.Entities;
+namespace RekomBackend.App.Entities;
 
 [Index(nameof(FollowerId), nameof(FollowingId), IsUnique = true)]
 public class Follow : EntityBase

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RekomBackend.App.Models.Entities;
+namespace RekomBackend.App.Entities;
 
 public class Otp : EntityBase
 {

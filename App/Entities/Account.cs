@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using RekomBackend.App.Common.Enums;
 
-namespace RekomBackend.App.Models.Entities;
+namespace RekomBackend.App.Entities;
 
 [Index(nameof(Username), IsUnique = true)]
 [Index(nameof(Email), IsUnique = true)]

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RekomBackend.App.Common.Enums;
-using RekomBackend.App.Models.Entities;
+using RekomBackend.App.Entities;
 
 namespace RekomBackend.Database;
 

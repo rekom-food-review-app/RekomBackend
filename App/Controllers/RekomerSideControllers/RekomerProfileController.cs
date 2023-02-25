@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Models.Dto;
-using RekomBackend.App.Services;
+using RekomBackend.App.Services.RekomerSideServices;
 
-namespace RekomBackend.App.Controllers;
+namespace RekomBackend.App.Controllers.RekomerSideControllers;
 
 [ApiController]
-[Route("rekomers")]
+[Route("rekomer-side/rekomers")]
 [Authorize(Roles = "Rekomer")]
 public class RekomerProfileController : ControllerBase
 {
@@ -19,7 +19,7 @@ public class RekomerProfileController : ControllerBase
    }
    
    [HttpPut("me/profile")]
-   public async Task<IActionResult> CreateProfile([FromBody] PutRekomerProfileRequest putRequest)
+   public async Task<IActionResult> UpdateProfile([FromForm] PutRekomerProfileRequest putRequest)
    {
       try
       {

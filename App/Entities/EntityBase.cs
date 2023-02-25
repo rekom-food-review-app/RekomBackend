@@ -1,4 +1,4 @@
-﻿namespace RekomBackend.App.Models.Entities;
+﻿namespace RekomBackend.App.Entities;
 
 public abstract class EntityBase
 {

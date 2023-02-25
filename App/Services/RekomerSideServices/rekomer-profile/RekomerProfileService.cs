@@ -1,23 +1,24 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using RekomBackend.App.Entities;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Helpers;
 using RekomBackend.App.Models.Dto;
-using RekomBackend.App.Models.Entities;
+using RekomBackend.App.Models.Dto.RekomerSideDtos;
 using RekomBackend.App.Services.CommonService;
 using RekomBackend.Database;
 
-namespace RekomBackend.App.Services;
+namespace RekomBackend.App.Services.RekomerSideServices;
 
-public class RekomerProfileProfileService : IRekomerProfileService
+public class RekomerProfileService : IRekomerProfileService
 {
    private readonly RekomContext _context;
    private readonly ITokenService _tokenService;
    private readonly IS3Helper _s3Helper;
    private readonly IMapper _mapper;
    
-   public RekomerProfileProfileService(RekomContext context, ITokenService tokenService, IS3Helper s3Helper, IMapper mapper)
+   public RekomerProfileService(RekomContext context, ITokenService tokenService, IS3Helper s3Helper, IMapper mapper)
    {
       _context = context;
       _tokenService = tokenService;
@@ -30,7 +31,7 @@ public class RekomerProfileProfileService : IRekomerProfileService
       var account = await _tokenService.GetRekomerAccountByReadingAccessToken();
       // if (account.Rekomer is not null) { throw new RekomerProfileIsAlreadyCreatedException(); }
       
-      var avatarUrl = await _s3Helper.UploadOneFileAsync(putRequest.Avatar);
+      var avatarUrl = _s3Helper.UploadOneFile(putRequest.Avatar);
       
       account.Rekomer = new Rekomer
       {
@@ -68,9 +69,9 @@ public class RekomerProfileProfileService : IRekomerProfileService
       var rekomerResponse = _mapper.Map<RekomerProfileResponse>(rekomer);
       
       rekomerResponse.IsFollowed = rekomer.Followers!.FirstOrDefault(r => r.FollowerId == meId) is not null;
-      rekomerResponse.TotalFollowers = rekomer.Followers!.Count();
-      rekomerResponse.TotalFollowings = rekomer.Followings!.Count();
-      rekomerResponse.TotalReviews = 0;
+      rekomerResponse.TotalFollowers = rekomer.Followers!.Count().ToString();
+      rekomerResponse.TotalFollowings = rekomer.Followings!.Count().ToString();
+      rekomerResponse.TotalReviews = 0.ToString();
 
       return rekomerResponse;
    }

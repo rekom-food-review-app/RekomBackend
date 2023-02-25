@@ -1,4 +1,4 @@
-﻿using RekomBackend.App.Models.Entities;
+﻿using RekomBackend.App.Entities;
 
 namespace RekomBackend.App.Services.CommonService;
 

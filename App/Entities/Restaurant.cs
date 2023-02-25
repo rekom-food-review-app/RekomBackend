@@ -2,7 +2,7 @@
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Models.Dto.RekomerSideDtos;
 
-namespace RekomBackend.App.Models.Entities;
+namespace RekomBackend.App.Entities;
 
 public class Restaurant : EntityBase
 {

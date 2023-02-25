@@ -25,6 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="App\Controllers\CommonControllers" />
       <Folder Include="App\Services\CommonService" />
     </ItemGroup>
 

@@ -2,13 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RekomBackend.App.Exceptions;
-using RekomBackend.App.Services;
 using RekomBackend.App.Services.RekomerSideServices;
 
-namespace RekomBackend.App.Controllers;
+namespace RekomBackend.App.Controllers.RekomerSideControllers;
 
 [ApiController]
-[Route("rekomers")]
+[Route("rekomer-side/rekomers")]
 [Authorize(Roles = "Rekomer")]
 public class RekomerFollowController : ControllerBase
 {

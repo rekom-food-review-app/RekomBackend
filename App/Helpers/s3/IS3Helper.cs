@@ -2,5 +2,5 @@
 
 public interface IS3Helper
 {
-   public Task<string> UploadOneFileAsync(IFormFile file);
+   public string UploadOneFile(IFormFile file);
 }

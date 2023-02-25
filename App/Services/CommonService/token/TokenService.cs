@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using RekomBackend.App.Entities;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Helpers;
-using RekomBackend.App.Models.Entities;
 using RekomBackend.Database;
 
 namespace RekomBackend.App.Services.CommonService;
@@ -59,8 +59,8 @@ public class TokenService : ITokenService
       
       return new AuthToken
       {
-         AccessToken = _jwtHelper.CreateToken(claims, DateTime.MaxValue),
-         RefreshToken = _jwtHelper.CreateToken(claims, DateTime.MaxValue),
+         AccessToken = _jwtHelper.CreateToken(claims, DateTime.Now.AddMonths(1)),
+         RefreshToken = _jwtHelper.CreateToken(claims, DateTime.Now.AddMonths(1)),
       };
    }
 }

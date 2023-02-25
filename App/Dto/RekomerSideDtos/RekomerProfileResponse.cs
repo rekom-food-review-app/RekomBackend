@@ -1,4 +1,4 @@
-﻿namespace RekomBackend.App.Models.Dto;
+﻿namespace RekomBackend.App.Models.Dto.RekomerSideDtos;
 
 public class RekomerProfileResponse
 {
@@ -13,10 +13,10 @@ public class RekomerProfileResponse
    public string Description { get; set; } = null!;
 
    public bool? IsFollowed { get; set; }
-   
-   public int TotalFollowers { get; set; }
-   
-   public int TotalFollowings { get; set; }
-   
-   public int TotalReviews { get; set; }
+
+   public string TotalFollowers { get; set; } = "0";
+
+   public string TotalFollowings { get; set; } = "0";
+
+   public string TotalReviews { get; set; } = "0";
 }
