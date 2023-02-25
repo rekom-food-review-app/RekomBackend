@@ -1,12 +1,12 @@
 ﻿using RekomBackend.App.Helpers;
 
-namespace RekomBackend.App.Services.CommonService;
+namespace RekomBackend.App.Services.RekomerSideServices;
 
-public class MailService : IMailService
+public class RekomerMailService : IRekomerMailService
 {
    private readonly IMailHelper _mailHelper;
 
-   public MailService(IMailHelper mailHelper)
+   public RekomerMailService(IMailHelper mailHelper)
    {
       _mailHelper = mailHelper;
    }

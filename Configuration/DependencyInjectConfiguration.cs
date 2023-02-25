@@ -25,7 +25,6 @@ public static class DependencyInjectConfiguration
    {
       services.AddScoped<IRegisterService, RegisterService>();
       services.AddScoped<IOtpService, OtpService>();
-      services.AddScoped<IMailService, MailService>();
       services.AddScoped<ITokenService, TokenService>();
       services.AddScoped<IAuthService, AuthService>();
       services.AddScoped<IAccountService, AccountService>();
@@ -38,6 +37,8 @@ public static class DependencyInjectConfiguration
       services.AddScoped<IRekomerFoodService, RekomerFoodService>();
       services.AddScoped<IRekomerRegisterService, RekomerRegisterService>();
       services.AddScoped<IRekomerOtpService, RekomerOtpService>();
+      services.AddScoped<IRekomerMailService, RekomerMailService>();
+
       
       return services;
    }
