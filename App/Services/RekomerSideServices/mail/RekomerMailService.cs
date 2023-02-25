@@ -20,4 +20,14 @@ public class RekomerMailService : IRekomerMailService
       
       await _mailHelper.SendEmailAsync(mail);
    }
+
+   public async Task SendEmailWelcome(string emailAddress)
+   {
+      var mail = new MailDataBuilder();
+      mail.SendTo(emailAddress);
+      mail.SetBody($"hi, bitch");
+      mail.SetSubject("yeahhhh");
+      
+      await _mailHelper.SendEmailAsync(mail);
+   }
 }

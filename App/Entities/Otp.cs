@@ -27,11 +27,6 @@ public class Otp : EntityBase
    #endregion
 
    #region Methods
-
-   public bool IsStillValid()
-   {
-      return Expiration.CompareTo(DateTime.Now) >= 0;
-   }
-
+   
    #endregion
 }
