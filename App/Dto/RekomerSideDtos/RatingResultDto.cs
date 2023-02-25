@@ -4,7 +4,7 @@ public class RatingResultDto
 {
    public float Average { get; set; }
 
-   public int Amount { get; set; }
+   public string Amount { get; set; } = null!;
 
    public float PercentFive { get; set; }
    

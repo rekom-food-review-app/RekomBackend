@@ -8,6 +8,10 @@ public class RatingResultViewProfile : Profile
 {
    public RatingResultViewProfile()
    {
-      CreateMap<RatingResultView, RatingResultDto>();
+      CreateMap<RatingResultView, RatingResultDto>()
+         .ForMember(
+            dest => dest.Amount,
+            opt => opt.MapFrom(src => src.Amount.ToString())
+         );
    }
 }
