@@ -17,6 +17,8 @@ public class RekomContext : DbContext
    public DbSet<Rating> Ratings { get; set; } = null!;
    public DbSet<Review> Reviews { get; set; } = null!;
    public DbSet<ReviewMedia> ReviewMedias { get; set; } = null!;
+
+   public DbSet<RatingResultView> RatingResultViews { get; set; } = null!;
    
    public RekomContext(DbContextOptions<RekomContext> options, IConfiguration configuration) : base(options)
    {
@@ -60,6 +62,8 @@ public class RekomContext : DbContext
          .WithMany(u => u.Followers)
          .HasForeignKey(f => f.FollowingId)
          .OnDelete(DeleteBehavior.Cascade);
+      
+      modelBuilder.Entity<RatingResultView>().ToView("RatingResultViews");
    }
    
    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

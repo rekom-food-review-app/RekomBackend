@@ -26,8 +26,8 @@ public class RekomerRestaurantService : IRekomerRestaurantService
          .FirstOrDefaultAsync();
 
       if (restaurant is null) { return null; }
-      
-      var ratingResult = restaurant.CalculateRatingResult();
+
+      var ratingResult = await _context.RatingResultViews.FirstOrDefaultAsync(rrv => rrv.RestaurantId == restaurant.Id);
       
       var restaurantResponse = _mapper.Map<Restaurant, RekomerRestaurantDetailResponseDto>(restaurant);
       _mapper.Map(ratingResult, restaurantResponse);
