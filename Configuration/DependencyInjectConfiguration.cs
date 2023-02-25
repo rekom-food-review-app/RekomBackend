@@ -1,5 +1,4 @@
 ﻿using RekomBackend.App.Helpers;
-using RekomBackend.App.Services.CommonService;
 using RekomBackend.App.Services.RekomerSideServices;
 
 namespace RekomBackend.Configuration;
@@ -23,18 +22,6 @@ public static class DependencyInjectConfiguration
    
    private static IServiceCollection InjectServices(this IServiceCollection services)
    {
-      services.AddScoped<IRegisterService, RegisterService>();
-      services.AddScoped<IOtpService, OtpService>();
-      services.AddScoped<ITokenService, TokenService>();
-      services.AddScoped<IAuthService, AuthService>();
-      services.AddScoped<IAccountService, AccountService>();
-      
-      services.AddScoped<IRekomerProfileService, RekomerProfileService>();
-      services.AddScoped<IRekomerFollowService, RekomerFollowService>();
-      
-      services.AddScoped<IRekomerRestaurantService, RekomerRestaurantService>();
-      services.AddScoped<IRekomerReviewService, RekomerReviewService>();
-      services.AddScoped<IRekomerFoodService, RekomerFoodService>();
       services.AddScoped<IRekomerRegisterService, RekomerRegisterService>();
       services.AddScoped<IRekomerOtpService, RekomerOtpService>();
       services.AddScoped<IRekomerMailService, RekomerMailService>();
