@@ -2,6 +2,7 @@
 using RekomBackend.App.Common.Enums;
 using RekomBackend.App.Entities;
 using RekomBackend.App.Models.Dto;
+using RekomBackend.App.Services.RekomerSideServices;
 using RekomBackend.Database;
 
 namespace RekomBackend.App.Services.CommonService;
@@ -11,15 +12,15 @@ public class RegisterService : IRegisterService
    private readonly RekomContext _context;
    private readonly IMapper _mapper;
    private readonly IOtpService _otpService;
-   private readonly IMailService _mailService;
+   private readonly IRekomerMailService _rekomerMailService;
    private readonly ITokenService _tokenService;
    
-   public RegisterService(RekomContext context, IMapper mapper, IOtpService otpService, IMailService mailService, ITokenService tokenService)
+   public RegisterService(RekomContext context, IMapper mapper, IOtpService otpService, IRekomerMailService rekomerMailService, ITokenService tokenService)
    {
       _context = context;
       _mapper = mapper;
       _otpService = otpService;
-      _mailService = mailService;
+      _rekomerMailService = rekomerMailService;
       _tokenService = tokenService;
    }
 
@@ -46,7 +47,7 @@ public class RegisterService : IRegisterService
 
       var otp = await _otpService.CreateOtpAsync(account.Id);
 
-      _ = _mailService.SendEmailToConfirmAccountAsync(account.Email, otp.Code);
+      _ = _rekomerMailService.SendEmailToConfirmAccountAsync(account.Email, otp.Code);
 
       return _tokenService.CreateAuthToken(account);
    }
