@@ -19,10 +19,10 @@ public class Otp : EntityBase
    public string AccountId { get; init; } = null!;
 
    #endregion
-
-   public Account? Account { get; set; }
    
    #region Relationships
+   
+   public Account? Account { get; set; }
 
    #endregion
 
