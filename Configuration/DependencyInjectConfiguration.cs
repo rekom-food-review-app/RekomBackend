@@ -1,5 +1,6 @@
 ﻿using RekomBackend.App.Helpers;
 using RekomBackend.App.Services.RekomerSideServices;
+using RekomBackend.App.Services.RekomerSideServices.account;
 
 namespace RekomBackend.Configuration;
 
@@ -26,6 +27,7 @@ public static class DependencyInjectConfiguration
       services.AddScoped<IRekomerOtpService, RekomerOtpService>();
       services.AddScoped<IRekomerMailService, RekomerMailService>();
       services.AddScoped<IRekomerAuthService, RekomerAuthService>();
+      services.AddScoped<IRekomerAccountService, RekomerAccountService>();
       
       return services;
    }

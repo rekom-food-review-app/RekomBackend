@@ -18,13 +18,20 @@ public class RekomerRegisterController : ControllerBase
    [HttpPost("email")]
    public async Task<IActionResult> RegisterWithEmail([FromBody] RekomerRegisterEmailRequestDto registerRequest)
    {
-      var authToken = await _registerService.RegisterWithEmailAsync(registerRequest);
-
-      return Ok(new
+      try
       {
-         code = "CAS",
-         message = "Create new account successfully",
-         authToken
-      });
+         var authToken = await _registerService.RegisterWithEmailAsync(registerRequest);
+
+         return Ok(new
+         {
+            code = "CAS",
+            message = "Create new account successfully",
+            authToken
+         });
+      }
+      catch (Exception e)
+      {
+         return BadRequest();
+      }
    }
 }
