@@ -24,16 +24,16 @@ public class RekomerProfileController : ControllerBase
    [HttpPut("me/profile")]
    public async Task<IActionResult> UpdateMyProfile([FromForm] RekomerUpdateProfileRequestDto updateRequest)
    {
-      try
-      {
-         var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
-         await _profileService.UpdateProfileAsync(meId, updateRequest);
+      // try
+      // {
+      var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+      await _profileService.UpdateProfileAsync(meId, updateRequest);
 
-         return Ok();
-      }
-      catch (InvalidAccessTokenException)
-      {
-         return Unauthorized();
-      }
+      return Ok();
+      // }
+      // catch (InvalidAccessTokenException)
+      // {
+      //    return Unauthorized();
+      // }
    }
 }
