@@ -11,7 +11,7 @@ public class Rekomer : EntityBase
    public string? FullName { get; set; }
 
    [Column(TypeName = "varchar(200)")]
-   public string AvatarUrl { get; set; } = null!;
+   public string AvatarUrl { get; set; } = "https://images.unsplash.com/photo-1677213243600-08ecdd8547b8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=715&q=80";
 
    public DateTime? Dob { get; set; }
 
