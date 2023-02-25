@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RekomBackend.App.Dto.RekomerSideDtos;
+namespace RekomBackend.App.Dto.RekomerSideDtos.Request;
 
-public class RekomerAuthEmailRequestDto
+public class RekomerRegisterEmailRequestDto
 {
+   [MinLength(1, ErrorMessage = "required")]
+   public string Username { get; set; } = null!;
+
    [EmailAddress]
    public string Email { get; set; } = null!;
 
