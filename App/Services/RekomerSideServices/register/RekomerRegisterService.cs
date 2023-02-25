@@ -12,13 +12,15 @@ public class RekomerRegisterService : IRekomerRegisterService
    private readonly IMapper _mapper;
    private readonly IRekomerOtpService _otpService;
    private readonly IRekomerMailService _mailService;
+   private readonly IRekomerAuthService _authService;
 
-   public RekomerRegisterService(RekomContext context, IMapper mapper, IRekomerOtpService otpService, IRekomerMailService mailService)
+   public RekomerRegisterService(RekomContext context, IMapper mapper, IRekomerOtpService otpService, IRekomerMailService mailService, IRekomerAuthService authService)
    {
       _context = context;
       _mapper = mapper;
       _otpService = otpService;
       _mailService = mailService;
+      _authService = authService;
    }
 
    public async Task<AuthToken> RegisterWithEmailAsync(RekomerRegisterEmailRequestDto registerRequest)
@@ -41,6 +43,6 @@ public class RekomerRegisterService : IRekomerRegisterService
       var otp = await _otpService.CreateOtpAsync(account.Id);
       _ = _mailService.SendEmailToConfirmAccountAsync(account.Email, otp.Code);
 
-      return new AuthToken();
+      return _authService.CreateAuthToken(account.Rekomer);
    }
 }
