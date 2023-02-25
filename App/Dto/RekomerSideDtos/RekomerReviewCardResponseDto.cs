@@ -1,6 +1,4 @@
-﻿using RekomBackend.App.Models.Dto.RekomerSideDtos;
-
-namespace RekomBackend.App.Models.Dto.RekomerSideDtos;
+﻿namespace RekomBackend.App.Dto.RekomerSideDtos;
 
 public class RekomerReviewCardResponseDto
 {

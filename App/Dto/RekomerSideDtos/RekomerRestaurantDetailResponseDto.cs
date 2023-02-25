@@ -1,4 +1,4 @@
-﻿namespace RekomBackend.App.Models.Dto.RekomerSideDtos;
+﻿namespace RekomBackend.App.Dto.RekomerSideDtos;
 
 public class RekomerRestaurantDetailResponseDto : RatingResultDto
 {

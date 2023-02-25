@@ -1,5 +1,5 @@
-﻿using RekomBackend.App.Models.Dto;
-using RekomBackend.App.Models.Dto.RekomerSideDtos;
+﻿using RekomBackend.App.Dto.RekomerSideDtos;
+using RekomBackend.App.Models.Dto;
 
 namespace RekomBackend.App.Services.RekomerSideServices;
 

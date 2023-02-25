@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using RekomBackend.App.Models.Dto.RekomerSideDtos;
+using RekomBackend.App.Dto.RekomerSideDtos;
 using RekomBackend.Database;
 
 namespace RekomBackend.App.Services.RekomerSideServices;

@@ -1,11 +1,11 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using RekomBackend.App.Dto.RekomerSideDtos;
 using RekomBackend.App.Entities;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Helpers;
 using RekomBackend.App.Models.Dto;
-using RekomBackend.App.Models.Dto.RekomerSideDtos;
 using RekomBackend.App.Services.CommonService;
 using RekomBackend.Database;
 

@@ -29,12 +29,14 @@ public static class DependencyInjectConfiguration
       services.AddScoped<ITokenService, TokenService>();
       services.AddScoped<IAuthService, AuthService>();
       services.AddScoped<IAccountService, AccountService>();
+      
       services.AddScoped<IRekomerProfileService, RekomerProfileService>();
       services.AddScoped<IRekomerFollowService, RekomerFollowService>();
       
       services.AddScoped<IRekomerRestaurantService, RekomerRestaurantService>();
       services.AddScoped<IRekomerReviewService, RekomerReviewService>();
       services.AddScoped<IRekomerFoodService, RekomerFoodService>();
+      services.AddScoped<IRekomerRegisterService, RekomerRegisterService>();
       
       return services;
    }
