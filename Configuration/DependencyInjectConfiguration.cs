@@ -28,6 +28,7 @@ public static class DependencyInjectConfiguration
       services.AddScoped<IRekomerMailService, RekomerMailService>();
       services.AddScoped<IRekomerAuthService, RekomerAuthService>();
       services.AddScoped<IRekomerAccountService, RekomerAccountService>();
+      services.AddScoped<IRekomerProfileService, RekomerProfileService>();
       
       return services;
    }
