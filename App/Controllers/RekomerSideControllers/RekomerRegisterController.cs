@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RekomBackend.App.Dto.RekomerSideDtos;
 using RekomBackend.App.Dto.RekomerSideDtos.Request;
 using RekomBackend.App.Services.RekomerSideServices;
 
