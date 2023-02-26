@@ -27,4 +27,16 @@ public class RekomerFoodService : IRekomerFoodService
 
       return restaurant.Menu!.Select(fod => _mapper.Map<RekomerFoodInMenuResponseDto>(fod));
    }
+
+   public async Task<RekomerFoodDetailResponseDto> GetFoodDetail(string foodId)
+   {
+      var food = await _context.Foods
+         .Include(fod => fod.Restaurant)
+         .Include(fod => fod.Images)
+         .SingleOrDefaultAsync(fod => fod.Id == foodId);
+
+      if (food is null) throw new NotFoundFoodException();
+
+      throw new NotImplementedException();
+   }
 }

@@ -32,6 +32,7 @@ public static class DependencyInjectConfiguration
       services.AddScoped<IRekomerFollowService, RekomerFollowService>();
       services.AddScoped<IRekomerRestaurantService, RekomerRestaurantService>();
       services.AddScoped<IRekomerFoodService, RekomerFoodService>();
+      services.AddScoped<IRekomerReviewService, RekomerReviewService>();
       
       return services;
    }
