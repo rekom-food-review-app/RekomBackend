@@ -22,7 +22,7 @@ public class RekomerProfileController : ControllerBase
    }
 
    [HttpPut("me/profile")]
-   public async Task<IActionResult> UpdateMyProfile([FromForm] RekomerUpdateProfileRequestDto updateRequest)
+   public async Task<IActionResult> UpdateMyProfile([FromBody] RekomerUpdateProfileRequestDto updateRequest)
    {
       // try
       // {
