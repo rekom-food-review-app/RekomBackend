@@ -38,12 +38,44 @@ public class RekomerFollowController : ControllerBase
       {
          return NotFound();
       }
+      catch (RekomerFollowYourSelfException)
+      {
+         return NotFound();
+      }
       catch (RekomerAlreadyFollowException)
       {
-         return BadRequest(new
+         return NotFound(new
          {
             code = "AF",
             message = "You already follow this guy"
+         });
+      }
+   }
+   
+   [HttpDelete("{followingId}/unfollow")]
+   public async Task<IActionResult> UnFollow(string followingId)
+   {
+      try
+      {
+         var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+         await _followService.UnFollowAsync(meId, followingId);
+
+         return Ok(new
+         {
+            code = "UFS",
+            message = "Unfollow successfully"
+         });
+      }
+      catch (NotFoundRekomerProfileException)
+      {
+         return NotFound();
+      }
+      catch (RekomerNotAlreadyFollowException)
+      {
+         return BadRequest(new
+         {
+            code = "NAF",
+            message = "You not already follow this guy"
          });
       }
    }

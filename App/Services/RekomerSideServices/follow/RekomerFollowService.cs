@@ -16,10 +16,13 @@ public class RekomerFollowService : IRekomerFollowService
    
    /// <param name="meId"></param>
    /// <param name="strangerId"></param>
+   /// <exception cref="RekomerFollowYourSelfException"></exception>
    /// <exception cref="NotFoundRekomerProfileException"></exception>
    /// <exception cref="RekomerAlreadyFollowException"></exception>
    public async Task FollowAsync(string meId, string strangerId)
    {
+      if (meId == strangerId) { throw new RekomerFollowYourSelfException(); }
+      
       var stranger = await _context.Rekomers.AsNoTracking().SingleOrDefaultAsync(rek => rek.Id == strangerId);
       if (stranger is null) { throw new NotFoundRekomerProfileException(); }
 
@@ -36,9 +39,22 @@ public class RekomerFollowService : IRekomerFollowService
       });
       await _context.SaveChangesAsync();
    }
-
-   public Task UnFollowAsync(string meId, string followingId)
+   
+   /// <param name="meId"></param>
+   /// <param name="followingId"></param>
+   /// <exception cref="NotFoundRekomerProfileException"></exception>
+   /// <exception cref="RekomerNotAlreadyFollowException"></exception>
+   public async Task UnFollowAsync(string meId, string followingId)
    {
-      throw new NotImplementedException();
+      var following = await _context.Rekomers.AsNoTracking().SingleOrDefaultAsync(rek => rek.Id == followingId);
+      if (following is null) { throw new NotFoundRekomerProfileException(); }
+
+      var follow = await _context.Follows
+         .AsNoTracking()
+         .SingleOrDefaultAsync(fol => fol.FollowerId == meId && fol.FollowingId == followingId);
+      if (follow is null) { throw new RekomerNotAlreadyFollowException(); }
+
+      _context.Follows.Remove(follow);
+      await _context.SaveChangesAsync();
    }
 }
