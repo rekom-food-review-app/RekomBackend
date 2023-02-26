@@ -30,6 +30,8 @@ public class Review : EntityBase
    public Rating? Rating { get; set; }
 
    public IEnumerable<ReviewMedia>? Medias { get; set; }
+
+   public IEnumerable<ReviewReaction>? ReviewReactions { get; set; }
    
    #endregion
 

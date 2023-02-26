@@ -27,7 +27,7 @@ public class RekomerAuthService : IRekomerAuthService
       
       var claims = new List<Claim>
       {
-         new (ClaimTypes.Role, rekomer.Account.Role.ToString()),
+         new (ClaimTypes.Role, rekomer.Account.RoleEnum.ToString()),
          new (ClaimTypes.Sid, rekomer.Id)
       };
       
@@ -44,7 +44,7 @@ public class RekomerAuthService : IRekomerAuthService
          .Where(acc => 
             string.Equals(acc.Email, authRequest.Email.ToLower())
             && acc.PasswordHash == authRequest.Password
-            && acc.Role == Role.Rekomer)
+            && acc.RoleEnum == RoleEnum.Rekomer)
          .Include(acc => acc.Rekomer)
          .SingleOrDefaultAsync();
 

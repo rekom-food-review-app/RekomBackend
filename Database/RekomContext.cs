@@ -17,6 +17,8 @@ public class RekomContext : DbContext
    public DbSet<Rating> Ratings { get; set; } = null!;
    public DbSet<Review> Reviews { get; set; } = null!;
    public DbSet<ReviewMedia> ReviewMedias { get; set; } = null!;
+   public DbSet<Reaction> Reactions { get; set; } = null!;
+   public DbSet<ReviewReaction> ReviewReactions { get; set; } = null!;
 
    public DbSet<RatingResultView> RatingResultViews { get; set; } = null!;
    
@@ -42,10 +44,10 @@ public class RekomContext : DbContext
       //    .ValueGeneratedOnUpdate();
       
       modelBuilder.Entity<Account>()
-         .Property(a => a.Role)
+         .Property(a => a.RoleEnum)
          .HasConversion(
             v => v.ToString(),
-            v => (Role)Enum.Parse(typeof(Role), v)
+            v => (RoleEnum)Enum.Parse(typeof(RoleEnum), v)
          );
       
       modelBuilder.Entity<Follow>()
