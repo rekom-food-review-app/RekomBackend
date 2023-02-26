@@ -4,10 +4,10 @@ using RekomBackend.App.Entities;
 
 namespace RekomBackend.App.Profiles;
 
-public class RestaurantMapper : Profile
+public class FoodMapper : Profile
 {
-   public RestaurantMapper()
+   public FoodMapper()
    {
-      CreateMap<Restaurant, RekomerRestaurantDetailResponseDto>();
+      CreateMap<Food, RekomerFoodInMenuResponseDto>();
    }
 }

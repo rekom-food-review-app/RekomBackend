@@ -2,7 +2,7 @@
 
 namespace RekomBackend.App.Dto.RekomerSideDtos.Response;
 
-public class RekomerRestaurantDetailDto
+public class RekomerRestaurantDetailResponseDto
 {
    public string CoverImageUrl { get; set; } = null!;
 

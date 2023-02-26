@@ -4,5 +4,5 @@ namespace RekomBackend.App.Services.RekomerSideServices;
 
 public interface IRekomerRestaurantService
 {
-   public Task<RekomerRestaurantDetailDto?> GetRestaurantDetailAsync(string restaurantId);
+   public Task<RekomerRestaurantDetailResponseDto?> GetRestaurantDetailAsync(string restaurantId);
 }
