@@ -17,14 +17,14 @@ public class RekomerFollowService : IRekomerFollowService
    /// <param name="meId"></param>
    /// <param name="strangerId"></param>
    /// <exception cref="RekomerFollowYourSelfException"></exception>
-   /// <exception cref="NotFoundRekomerProfileException"></exception>
+   /// <exception cref="NotFoundRekomerException"></exception>
    /// <exception cref="RekomerAlreadyFollowException"></exception>
    public async Task FollowAsync(string meId, string strangerId)
    {
       if (meId == strangerId) { throw new RekomerFollowYourSelfException(); }
       
       var stranger = await _context.Rekomers.AsNoTracking().SingleOrDefaultAsync(rek => rek.Id == strangerId);
-      if (stranger is null) { throw new NotFoundRekomerProfileException(); }
+      if (stranger is null) { throw new NotFoundRekomerException(); }
 
       var isAlreadyFollow = (await _context.Follows
          .AsNoTracking()
@@ -42,12 +42,12 @@ public class RekomerFollowService : IRekomerFollowService
    
    /// <param name="meId"></param>
    /// <param name="followingId"></param>
-   /// <exception cref="NotFoundRekomerProfileException"></exception>
+   /// <exception cref="NotFoundRekomerException"></exception>
    /// <exception cref="RekomerNotAlreadyFollowException"></exception>
    public async Task UnFollowAsync(string meId, string followingId)
    {
       var following = await _context.Rekomers.AsNoTracking().SingleOrDefaultAsync(rek => rek.Id == followingId);
-      if (following is null) { throw new NotFoundRekomerProfileException(); }
+      if (following is null) { throw new NotFoundRekomerException(); }
 
       var follow = await _context.Follows
          .AsNoTracking()

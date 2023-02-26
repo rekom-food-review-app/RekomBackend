@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RekomBackend.App.Dto.RekomerSideDtos.Request;
+using RekomBackend.App.Exceptions;
 using RekomBackend.App.Services.RekomerSideServices;
 
 namespace RekomBackend.App.Controllers.RekomerSideControllers;
@@ -26,7 +27,7 @@ public class RekomerProfileController : ControllerBase
       // try
       // {
       var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
-      await _profileService.UpdateProfileAsync(meId, updateRequest);
+      await _profileService.UpdateMyProfileAsync(meId, updateRequest);
 
       return Ok();
       // }
@@ -34,5 +35,43 @@ public class RekomerProfileController : ControllerBase
       // {
       //    return Unauthorized();
       // }
+   }
+   
+   [HttpGet("me/profile")]
+   public async Task<IActionResult> GetMyProfileDetail()
+   {
+      // try
+      // {
+      var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+      var rekomer = await _profileService.GetMyProfileDetailAsync(meId);
+
+      return Ok(new
+      {
+         rekomer
+      });
+      // }
+      // catch (InvalidAccessTokenException)
+      // {
+      //    return Unauthorized();
+      // }
+   }
+   
+   [HttpGet("{rekomerId}/profile")]
+   public async Task<IActionResult> GetMyProfileDetail(string rekomerId)
+   {
+      try
+      {
+         var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+         var rekomer = await _profileService.GetOtherProfileDetailAsync(meId, rekomerId);
+
+         return Ok(new
+         {
+            rekomer
+         });
+      }
+      catch (NotFoundRekomerException)
+      {
+         return NotFound();
+      }
    }
 }

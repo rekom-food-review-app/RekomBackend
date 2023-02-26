@@ -34,7 +34,7 @@ public class RekomerFollowController : ControllerBase
             message = "Follow successfully"
          });
       }
-      catch (NotFoundRekomerProfileException)
+      catch (NotFoundRekomerException)
       {
          return NotFound();
       }
@@ -66,7 +66,7 @@ public class RekomerFollowController : ControllerBase
             message = "Unfollow successfully"
          });
       }
-      catch (NotFoundRekomerProfileException)
+      catch (NotFoundRekomerException)
       {
          return NotFound();
       }
