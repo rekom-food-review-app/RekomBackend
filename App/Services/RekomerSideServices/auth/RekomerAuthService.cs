@@ -33,7 +33,7 @@ public class RekomerAuthService : IRekomerAuthService
       
       return new AuthToken
       {
-         AccessToken = _jwtHelper.CreateToken(claims, DateTime.Now.AddMonths(1)),
+         AccessToken = _jwtHelper.CreateToken(claims, DateTime.Now.AddYears(1)),
          RefreshToken = _jwtHelper.CreateToken(claims, DateTime.Now.AddMonths(1)),
       };
    }

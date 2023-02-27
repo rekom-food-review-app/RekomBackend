@@ -10,6 +10,10 @@ public class ReviewMapper : Profile
    {
       CreateMap<Review, RekomerReviewCardResponseDto>()
          .ForMember(
+            dest => dest.Id,
+            opt => opt.MapFrom(src => src.Id)
+         )
+         .ForMember(
             dest => dest.Content,
             opt => opt.MapFrom(src => src.Content)
          )
@@ -18,8 +22,8 @@ public class ReviewMapper : Profile
             opt => opt.MapFrom(src => src.CreatedAt)
          )
          .ForMember(
-         dest => dest.RekomerId,
-         opt => opt.MapFrom(src => src.RekomerId)
+            dest => dest.RekomerId,
+            opt => opt.MapFrom(src => src.RekomerId)
          )
          .ForMember(
             dest => dest.RekomerFullName,
