@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RekomBackend.App.Exceptions;
 using RekomBackend.App.Services.RekomerSideServices;
 
 namespace RekomBackend.App.Controllers.RekomerSideControllers;
@@ -29,5 +30,24 @@ public class RekomerRestaurantController : ControllerBase
          messgage = "Found Restaurant",
          restaurant
       });
+   }
+   
+   [HttpGet("{restaurantId}/gallery")]
+   public async Task<IActionResult> GetRestaurantGallery(string restaurantId)
+   {
+      try
+      {
+         var gallery = await _restaurantService.GetRestaurantGalleryAsync(restaurantId);
+      
+         return Ok(new
+         {
+            code = "SUC",
+            gallery
+         });
+      }
+      catch (NotFoundRestaurantException)
+      {
+         return NotFound();
+      }
    }
 }
