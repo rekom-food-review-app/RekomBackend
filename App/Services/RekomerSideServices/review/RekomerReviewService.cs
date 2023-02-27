@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using RekomBackend.App.Dto.RekomerSideDtos.Response;
 using RekomBackend.App.Entities;
 using RekomBackend.App.Exceptions;
@@ -9,20 +10,34 @@ namespace RekomBackend.App.Services.RekomerSideServices;
 public class RekomerReviewService : IRekomerReviewService
 {
    private readonly RekomContext _context;
-
-   public RekomerReviewService(RekomContext context)
+   private readonly IMapper _mapper;
+   
+   public RekomerReviewService(RekomContext context, IMapper mapper)
    {
       _context = context;
+      _mapper = mapper;
    }
 
-   public async Task<IEnumerable<Review>> GetRestaurantReviewsAsync(string restaurantId)
+   public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetRestaurantReviewsAsync(string restaurantId)
    {
-      var restaurant = await _context.Restaurants
-         .Include(res => res.Reviews)
-         .SingleOrDefaultAsync(res => res.Id == restaurantId);
+      var restaurantQueryable = _context.Restaurants
+         .Include(res => res.Reviews!).ThenInclude(rev => rev.Medias)
+         .Include(res => res.Reviews!).ThenInclude(rev => rev.Rekomer)
+         .Include(res => res.Reviews!).ThenInclude(rev => rev.Rating)
+         .Where(res => res.Id == restaurantId)
+         .AsQueryable();
 
+      var restaurant = await restaurantQueryable.SingleOrDefaultAsync();
+      
       if (restaurant is null) throw new NotFoundRestaurantException();
 
-      return restaurant.Reviews!;
+      var reviewsResponseDto = restaurant.Reviews!.Select(rev =>
+      {
+         var revResponse = _mapper.Map<Review, RekomerReviewCardResponseDto>(rev);
+         revResponse.Images = rev.Medias!.Select(med => med.MediaUrl);
+         return revResponse;
+      });
+      
+      return reviewsResponseDto;
    }
 }

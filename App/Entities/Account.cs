@@ -21,7 +21,7 @@ public class Account : EntityBase
    public string PasswordHash { get; set; } = null!;
 
    [Column(TypeName = "enum('Rekomer', 'Restaurant', 'Admin')")]
-   public RoleEnum RoleEnum { get; init; }
+   public Role Role { get; init; }
 
    public bool IsConfirmed { get; set; } = false;
 

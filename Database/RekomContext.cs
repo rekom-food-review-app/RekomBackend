@@ -44,10 +44,10 @@ public class RekomContext : DbContext
       //    .ValueGeneratedOnUpdate();
       
       modelBuilder.Entity<Account>()
-         .Property(a => a.RoleEnum)
+         .Property(a => a.Role)
          .HasConversion(
             v => v.ToString(),
-            v => (RoleEnum)Enum.Parse(typeof(RoleEnum), v)
+            v => (Role)Enum.Parse(typeof(Role), v)
          );
       
       modelBuilder.Entity<Follow>()

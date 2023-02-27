@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Services.RekomerSideServices;
 
@@ -6,6 +7,7 @@ namespace RekomBackend.App.Controllers.RekomerSideControllers;
 
 [ApiController]
 [Route("rekomer-side")]
+[Authorize(Roles = "Rekomer")]
 public class RekomerReviewController : ControllerBase
 {
    private readonly IRekomerReviewService _reviewService;

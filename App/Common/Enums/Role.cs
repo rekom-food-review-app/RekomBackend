@@ -1,6 +1,6 @@
 ﻿namespace RekomBackend.App.Common.Enums;
 
-public enum RoleEnum
+public enum Role
 {
    Admin,
    Rekomer,

@@ -8,9 +8,9 @@ public static class AuthorizationConfiguration
    {
       services.AddAuthorization(options =>
       {
-         options.AddPolicy(RoleEnum.Rekomer.ToString(), policy => policy.RequireClaim(RoleEnum.Rekomer.ToString()));
-         options.AddPolicy(RoleEnum.Restaurant.ToString(), policy => policy.RequireClaim(RoleEnum.Restaurant.ToString()));
-         options.AddPolicy(RoleEnum.Admin.ToString(), policy => policy.RequireClaim(RoleEnum.Admin.ToString()));
+         options.AddPolicy(Role.Rekomer.ToString(), policy => policy.RequireClaim(Role.Rekomer.ToString()));
+         options.AddPolicy(Role.Restaurant.ToString(), policy => policy.RequireClaim(Role.Restaurant.ToString()));
+         options.AddPolicy(Role.Admin.ToString(), policy => policy.RequireClaim(Role.Admin.ToString()));
       });
       
       return services;

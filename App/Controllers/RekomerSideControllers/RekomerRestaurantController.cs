@@ -17,7 +17,6 @@ public class RekomerRestaurantController : ControllerBase
    }
 
    [HttpGet("{restaurantId}")]
-   [AllowAnonymous]
    public async Task<IActionResult> GetProductDetail(string restaurantId)
    {
       var restaurant = await _restaurantService.GetRestaurantDetailAsync(restaurantId);
