@@ -40,4 +40,9 @@ public class RekomerReviewService : IRekomerReviewService
       
       return reviewsResponseDto;
    }
+
+   public Task<RekomerReviewCardResponseDto> GetReviewDetail(string reviewId)
+   {
+      throw new NotImplementedException();
+   }
 }

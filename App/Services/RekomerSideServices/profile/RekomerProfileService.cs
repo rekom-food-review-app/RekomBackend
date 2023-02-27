@@ -13,12 +13,14 @@ public class RekomerProfileService : IRekomerProfileService
    private readonly RekomContext _context;
    private readonly IS3Helper _s3Helper;
    private readonly IMapper _mapper;
+   private readonly ILogger<RekomerProfileService> _logger;
 
-   public RekomerProfileService(RekomContext context, IS3Helper s3Helper, IMapper mapper)
+   public RekomerProfileService(RekomContext context, IS3Helper s3Helper, IMapper mapper, ILogger<RekomerProfileService> logger)
    {
       _context = context;
       _s3Helper = s3Helper;
       _mapper = mapper;
+      _logger = logger;
    }
 
    /// <param name="meId"></param>
@@ -45,6 +47,9 @@ public class RekomerProfileService : IRekomerProfileService
    {
       var meQueryable = _context.Rekomers
          .Include(rek => rek.Account)
+         .Include(rek => rek.Reviews)
+         .Include(rek => rek.Followers)
+         .Include(rek => rek.Followings)
          .Where(rek => rek.Id == meId)
          .AsQueryable();
 
@@ -53,9 +58,9 @@ public class RekomerProfileService : IRekomerProfileService
       
       var profileResponse = new RekomerProfileDetailResponseDto
       {
-         AmountReview = await meQueryable.Include(rek => rek.Reviews).CountAsync(),
-         AmountFollower = await meQueryable.Include(rek => rek.Followers).CountAsync(),
-         AmountFollowing = await meQueryable.Include(rek => rek.Followings).CountAsync(),
+         AmountReview = me.Reviews!.Count(),
+         AmountFollower = me.Followers!.Count(),
+         AmountFollowing = me.Followings!.Count(),
          Username = me.Account!.Username
       };
       _mapper.Map(me, profileResponse);
@@ -63,10 +68,17 @@ public class RekomerProfileService : IRekomerProfileService
       return profileResponse;
    }
    
+   /// <param name="meId"></param>
+   /// <param name="rekomerId"></param>
+   /// <returns></returns>
+   /// <exception cref="NotFoundRekomerException"></exception>
    public async Task<RekomerProfileDetailResponseDto> GetOtherProfileDetailAsync(string meId, string rekomerId)
    {
       var rekomerQueryable = _context.Rekomers
          .Include(rek => rek.Account)
+         .Include(rek => rek.Reviews)
+         .Include(rek => rek.Followers)
+         .Include(rek => rek.Followings)
          .Where(rek => rek.Id == rekomerId)
          .AsQueryable();
 
@@ -75,9 +87,9 @@ public class RekomerProfileService : IRekomerProfileService
 
       var profileResponse = new RekomerProfileDetailResponseDto
       {
-         AmountReview = await rekomerQueryable.Include(rek => rek.Reviews).CountAsync(),
-         AmountFollower = await rekomerQueryable.Include(rek => rek.Followers).CountAsync(),
-         AmountFollowing = await rekomerQueryable.Include(rek => rek.Followings).CountAsync(),
+         AmountReview = rekomer.Reviews!.Count(),
+         AmountFollower = rekomer.Followers!.Count(),
+         AmountFollowing = rekomer.Followings!.Count(),
          Username = rekomer.Account!.Username,
          IsFollow = await _context.Follows.SingleOrDefaultAsync(fol => fol.FollowerId == meId && fol.FollowingId == rekomerId) is not null
       };
