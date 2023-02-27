@@ -6,5 +6,5 @@ public interface IRekomerFoodService
 {
    public Task<IEnumerable<RekomerFoodInMenuResponseDto>> GetFoodsInMenuAsync(string restaurantId);
    
-   public Task<RekomerFoodDetailResponseDto> GetFoodDetail(string foodId);
+   public Task<RekomerFoodDetailResponseDto?> GetFoodDetailAsync(string foodId);
 }

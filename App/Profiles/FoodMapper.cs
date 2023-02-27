@@ -9,5 +9,6 @@ public class FoodMapper : Profile
    public FoodMapper()
    {
       CreateMap<Food, RekomerFoodInMenuResponseDto>();
+      CreateMap<Food, RekomerFoodDetailResponseDto>();
    }
 }

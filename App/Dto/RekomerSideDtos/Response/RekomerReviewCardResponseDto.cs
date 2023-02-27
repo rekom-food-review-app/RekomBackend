@@ -6,9 +6,9 @@ public class RekomerReviewCardResponseDto
    public string RekomerFullName{ get; set; } = null!;
    public string RekomerAvatarUrl{ get; set; } = null!;
 
-   public string ReviewContent { get; set; } = null!;
+   public string Content { get; set; } = null!;
    public IEnumerable<string> Images { get; set; } = null!;
-   public DateTime ReviewAt { get; set; }
+   public DateTime CreatedAt { get; set; }
 
    public string RestaurantId { get; set; } = null!;
    public string RestaurantName { get; set; } = null!;

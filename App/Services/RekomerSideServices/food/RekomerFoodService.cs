@@ -28,15 +28,18 @@ public class RekomerFoodService : IRekomerFoodService
       return restaurant.Menu!.Select(fod => _mapper.Map<RekomerFoodInMenuResponseDto>(fod));
    }
 
-   public async Task<RekomerFoodDetailResponseDto> GetFoodDetail(string foodId)
+   public async Task<RekomerFoodDetailResponseDto?> GetFoodDetailAsync(string foodId)
    {
       var food = await _context.Foods
          .Include(fod => fod.Restaurant)
          .Include(fod => fod.Images)
          .SingleOrDefaultAsync(fod => fod.Id == foodId);
 
-      if (food is null) throw new NotFoundFoodException();
+      if (food is null) return null;
 
-      throw new NotImplementedException();
+      var foodResponse = _mapper.Map<RekomerFoodDetailResponseDto>(food);
+      foodResponse.Images = food.Images!.Select(img => img.ImageUrl);
+
+      return foodResponse;
    }
 }
