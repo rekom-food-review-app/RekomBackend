@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RekomBackend.App.Dto.RekomerSideDtos.Request;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Services.RekomerSideServices;
 
@@ -26,7 +27,7 @@ public class RekomerReviewController : ControllerBase
       try
       {
          var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
-         var reviews = await _reviewService.GetRestaurantReviewsAsync(meId, restaurantId);
+         var reviews = await _reviewService.GetRestaurantReviewListAsync(meId, restaurantId);
 
          return Ok(new
          {
@@ -54,5 +55,43 @@ public class RekomerReviewController : ControllerBase
       {
          review
       });
+   }
+
+   [HttpPost("reviews/{reviewId}/comments")]
+   public async Task<IActionResult> Comment(string reviewId, [FromBody] RekomerCommentRequestDto commentRequest)
+   {
+      try
+      {
+         var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+         await _reviewService.CommentAsync(meId, reviewId, commentRequest);
+
+         return Ok();
+      }
+      catch (InvalidAccessTokenException)
+      {
+         return Unauthorized();
+      }
+      catch (NotFoundReviewException)
+      {
+         return NotFound();
+      }
+   }
+
+   [HttpGet("reviews/{reviewId}/comments")]
+   public async Task<IActionResult> GetCommentList(string reviewId, [FromQuery] int page, [FromQuery] int size)
+   {
+      try
+      {
+         var commentList = await _reviewService.GetCommentListAsync(reviewId, page, size);
+
+         return Ok(new
+         {
+            commentList
+         });
+      }
+      catch (NotFoundReviewException)
+      {
+         return NotFound();
+      }
    }
 }

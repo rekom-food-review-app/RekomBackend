@@ -12,7 +12,7 @@ namespace RekomBackend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "Comments",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false),
@@ -24,15 +24,15 @@ namespace RekomBackend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_Rekomers_RekomerId",
+                        name: "FK_Comments_Rekomers_RekomerId",
                         column: x => x.RekomerId,
                         principalTable: "Rekomers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Comment_Reviews_ReviewId",
+                        name: "FK_Comments_Reviews_ReviewId",
                         column: x => x.ReviewId,
                         principalTable: "Reviews",
                         principalColumn: "Id",
@@ -41,13 +41,13 @@ namespace RekomBackend.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_RekomerId",
-                table: "Comment",
+                name: "IX_Comments_RekomerId",
+                table: "Comments",
                 column: "RekomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_ReviewId",
-                table: "Comment",
+                name: "IX_Comments_ReviewId",
+                table: "Comments",
                 column: "ReviewId");
         }
 
@@ -55,7 +55,7 @@ namespace RekomBackend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "Comments");
         }
     }
 }

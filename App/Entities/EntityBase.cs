@@ -4,7 +4,7 @@ public abstract class EntityBase
 {
    #region Columns
 
-   public string Id { get; set; } = null!;
+   public string Id { get; set; } = Guid.NewGuid().ToString();
    
    public DateTime CreatedAt { get; set; }
    

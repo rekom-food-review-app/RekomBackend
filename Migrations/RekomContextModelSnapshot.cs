@@ -91,7 +91,7 @@ namespace RekomBackend.Migrations
 
                     b.HasIndex("ReviewId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("RekomBackend.App.Entities.Follow", b =>

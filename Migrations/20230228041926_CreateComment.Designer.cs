@@ -11,7 +11,7 @@ using RekomBackend.Database;
 namespace RekomBackend.Migrations
 {
     [DbContext(typeof(RekomContext))]
-    [Migration("20230228013824_CreateComment")]
+    [Migration("20230228041926_CreateComment")]
     partial class CreateComment
     {
         /// <inheritdoc />
@@ -94,7 +94,7 @@ namespace RekomBackend.Migrations
 
                     b.HasIndex("ReviewId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("RekomBackend.App.Entities.Follow", b =>

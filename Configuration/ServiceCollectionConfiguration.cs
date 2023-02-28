@@ -24,5 +24,6 @@ public static class ServiceCollectionConfiguration
       services.AddHttpContextAccessor();
 
       services.ConfigAuthorization();
+      services.AddSignalR();
    }
 }

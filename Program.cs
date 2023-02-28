@@ -1,3 +1,4 @@
+using RekomBackend.App.Hubs.RekomerSideHubs;
 using RekomBackend.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,5 +31,7 @@ app.UseAuthorization();
 // });
 
 app.MapControllers();
+
+app.MapHub<RekomerCommentHub>("/rekomer-side/ws/comment-hub");
 
 app.Run();
