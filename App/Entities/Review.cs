@@ -33,6 +33,8 @@ public class Review : EntityBase
 
    public IEnumerable<ReviewReaction>? ReviewReactions { get; set; }
    
+   public IEnumerable<Comment>? Comments { get; set; }
+
    #endregion
 
    #region Methods

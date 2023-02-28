@@ -37,6 +37,8 @@ public class Rekomer : EntityBase
    public IEnumerable<Review>? Reviews { get; set; }
    
    public IEnumerable<ReviewReaction>? ReviewReactions { get; set; }
+
+   public IEnumerable<Comment>? Comments { get; set; }
    
    #endregion
 
