@@ -18,7 +18,7 @@ public class RekomerRestaurantController : ControllerBase
    }
 
    [HttpGet("{restaurantId}")]
-   public async Task<IActionResult> GetProductDetail(string restaurantId)
+   public async Task<IActionResult> GetRestaurantDetail(string restaurantId)
    {
       var restaurant = await _restaurantService.GetRestaurantDetailAsync(restaurantId);
 
