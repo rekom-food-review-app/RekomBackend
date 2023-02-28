@@ -57,7 +57,7 @@ public class RekomerProfileController : ControllerBase
    }
    
    [HttpGet("{rekomerId}/profile")]
-   public async Task<IActionResult> GetMyProfileDetail(string rekomerId)
+   public async Task<IActionResult> GetOtherProfileDetail(string rekomerId)
    {
       try
       {
