@@ -110,8 +110,8 @@ public class RekomerReviewService : IRekomerReviewService
    public async Task<IEnumerable<RekomerCommentResponseDto>> GetCommentListAsync(string reviewId, int page, int size)
    {
       var review = await _context.Reviews
-         .Include(rev => rev.Rekomer)
          .Include(rev => rev.Comments!.Skip((page - 1) * size).Take(size))
+         .ThenInclude(cmt => cmt.Rekomer)
          .SingleOrDefaultAsync(rev => rev.Id == reviewId);
 
       if (review is null) throw new NotFoundReviewException();
