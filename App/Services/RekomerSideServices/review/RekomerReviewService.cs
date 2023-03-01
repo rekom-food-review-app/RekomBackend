@@ -5,6 +5,7 @@ using RekomBackend.App.Dto.RekomerSideDtos.Request;
 using RekomBackend.App.Dto.RekomerSideDtos.Response;
 using RekomBackend.App.Entities;
 using RekomBackend.App.Exceptions;
+using RekomBackend.App.Helpers;
 using RekomBackend.App.Hubs.RekomerSideHubs;
 using RekomBackend.Database;
 
@@ -15,22 +16,24 @@ public class RekomerReviewService : IRekomerReviewService
    private readonly RekomContext _context;
    private readonly IMapper _mapper;
    private readonly IHubContext<RekomerCommentHub> _commentHubContext;
+   private readonly IS3Helper _s3Helper;
 
-   public RekomerReviewService(RekomContext context, IMapper mapper, IHubContext<RekomerCommentHub> commentHubContext)
+   public RekomerReviewService(RekomContext context, IMapper mapper, IHubContext<RekomerCommentHub> commentHubContext, IS3Helper s3Helper)
    {
       _context = context;
       _mapper = mapper;
       _commentHubContext = commentHubContext;
+      _s3Helper = s3Helper;
    }
 
-   public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetRestaurantReviewListAsync(string meId, string restaurantId)
+   public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetRestaurantReviewListAsync(string meId, string restaurantId, int page, int size)
    {
       var restaurant = await _context.Restaurants
          .Include(res => res.Reviews!).ThenInclude(rev => rev.Medias)
          .Include(res => res.Reviews!).ThenInclude(rev => rev.Rekomer)
          .Include(res => res.Reviews!).ThenInclude(rev => rev.Rating)
          .Include(res => res.Reviews!).ThenInclude(rev => rev.ReviewReactions)
-         .Include(res => res.Reviews!).ThenInclude(rev => rev.Comments)
+         .Include(res => res.Reviews!.Skip((page - 1) * size).Take(size).OrderByDescending(rev => rev.CreatedAt)).ThenInclude(rev => rev.Comments)
          .AsNoTracking()
          .SingleOrDefaultAsync(res => res.Id == restaurantId);
 
@@ -124,5 +127,30 @@ public class RekomerReviewService : IRekomerReviewService
       if (review is null) throw new NotFoundReviewException();
 
       return review.Comments!.Select(cmt => _mapper.Map<RekomerCommentResponseDto>(cmt));
+   }
+
+   public async Task CreateReviewAsync(string meId, string restaurantId, RekomerCreateReviewRequestDto reviewRequest)
+   {
+      var me = await _context.Rekomers.SingleOrDefaultAsync(rek => rek.Id == meId);
+      if (me is null) throw new InvalidAccessTokenException();
+
+      var restaurant = await _context.Restaurants.SingleOrDefaultAsync(res => res.Id == restaurantId);
+      if (restaurant is null) throw new NotFoundRestaurantException();
+
+      var mediaUrlList = reviewRequest.Images.Select(image => _s3Helper.UploadOneFile(image));
+
+      _context.Reviews.Add(new Review
+      {
+         RekomerId = meId,
+         RatingId = reviewRequest.Rating,
+         RestaurantId = restaurantId,
+         Content = reviewRequest.Content,
+         Medias = mediaUrlList.Select(url => new ReviewMedia
+         {
+            MediaUrl = url,
+            Type = "image"
+         }).ToList()
+      });
+      await _context.SaveChangesAsync();
    }
 }

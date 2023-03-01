@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RekomBackend.App.Dto.RekomerSideDtos.Request;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Services.RekomerSideServices;
-
+ 
 namespace RekomBackend.App.Controllers.RekomerSideControllers;
 
 [ApiController]
@@ -33,6 +33,21 @@ public class RekomerReviewController : ControllerBase
          {
             reviews
          });
+      }
+      catch (NotFoundRestaurantException)
+      {
+         return NotFound();
+      }
+   }
+
+   [HttpPost("restaurants/{restaurantId}/reviews")]
+   public async Task<IActionResult> CreateReview(string restaurantId, [FromForm] RekomerCreateReviewRequestDto reviewRequest)
+   {
+      try
+      {
+         var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+         await _reviewService.CreateReviewAsync(meId, restaurantId, reviewRequest);
+         return Ok();
       }
       catch (NotFoundRestaurantException)
       {
