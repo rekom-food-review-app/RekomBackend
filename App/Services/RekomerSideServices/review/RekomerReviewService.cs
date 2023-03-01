@@ -30,6 +30,7 @@ public class RekomerReviewService : IRekomerReviewService
          .Include(res => res.Reviews!).ThenInclude(rev => rev.Rekomer)
          .Include(res => res.Reviews!).ThenInclude(rev => rev.Rating)
          .Include(res => res.Reviews!).ThenInclude(rev => rev.ReviewReactions)
+         .Include(res => res.Reviews!).ThenInclude(rev => rev.Comments)
          .AsNoTracking()
          .SingleOrDefaultAsync(res => res.Id == restaurantId);
 
@@ -39,7 +40,7 @@ public class RekomerReviewService : IRekomerReviewService
       {
          var revResponse = _mapper.Map<Review, RekomerReviewCardResponseDto>(rev);
          revResponse.Images = rev.Medias!.Select(med => med.MediaUrl);
-         revResponse.AmountReply = 10;
+         revResponse.AmountReply = rev.Comments!.Count();
          foreach (var reviewReaction in rev.ReviewReactions!)
          {
             if (reviewReaction.RekomerId == meId) revResponse.MyReaction = reviewReaction.ReactionId;
@@ -57,6 +58,7 @@ public class RekomerReviewService : IRekomerReviewService
    {
       var review = await _context.Reviews
          .Include(rev => rev.Restaurant)
+         .Include(rev => rev.Comments)
          .Include(rev => rev.Medias)
          .Include(rev => rev.Rekomer)
          .Include(rev => rev.Rating)
@@ -67,7 +69,7 @@ public class RekomerReviewService : IRekomerReviewService
 
       var reviewResponse = _mapper.Map<Review, RekomerReviewCardResponseDto>(review);
       reviewResponse.Images = review.Medias!.Select(med => med.MediaUrl);
-      reviewResponse.AmountReply = 10;
+      reviewResponse.AmountReply = review.Comments!.Count();
       foreach (var reviewReaction in review.ReviewReactions!)
       {
          if (reviewReaction.RekomerId == meId) reviewResponse.MyReaction = reviewReaction.ReactionId;
@@ -106,11 +108,16 @@ public class RekomerReviewService : IRekomerReviewService
       _context.Comments.Add(comment);
       _ = _context.SaveChangesAsync();
    }
-
+   
+   /// <param name="reviewId"></param>
+   /// <param name="page"></param>
+   /// <param name="size"></param>
+   /// <returns></returns>
+   /// <exception cref="NotFoundReviewException"></exception>
    public async Task<IEnumerable<RekomerCommentResponseDto>> GetCommentListAsync(string reviewId, int page, int size)
    {
       var review = await _context.Reviews
-         .Include(rev => rev.Comments!.Skip((page - 1) * size).Take(size))
+         .Include(rev => rev.Comments!.Skip((page - 1) * size).Take(size).OrderByDescending(cmt => cmt.CreatedAt))
          .ThenInclude(cmt => cmt.Rekomer)
          .SingleOrDefaultAsync(rev => rev.Id == reviewId);
 
