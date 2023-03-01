@@ -32,6 +32,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseCors("CorsPolicy");
+
 app.MapHub<RekomerCommentHub>("/rekomer-side/ws/comment-hub");
 
 app.Run();
