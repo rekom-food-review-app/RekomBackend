@@ -9,6 +9,10 @@ public class FoodMapper : Profile
    public FoodMapper()
    {
       CreateMap<Food, RekomerFoodInMenuResponseDto>();
-      CreateMap<Food, RekomerFoodDetailResponseDto>();
+      CreateMap<Food, RekomerFoodDetailResponseDto>()
+         .ForMember(
+            dest => dest.PrimaryImage,
+            opt => opt.MapFrom(src => src.ImageUrl)
+         );
    }
 }
