@@ -26,7 +26,8 @@ public class RekomerRestaurantService : IRekomerRestaurantService
       if (restaurant is null) return null;
 
       var ratingResult = await _context.RatingResultViews.Distinct().SingleAsync(rat => rat.RestaurantId == restaurantId);
-
+      ratingResult.Average = (float)Math.Round(ratingResult.Average, 1);
+      
       var restaurantDto = _mapper.Map<Restaurant, RekomerRestaurantDetailResponseDto>(restaurant);
       restaurantDto.RatingResult = ratingResult;
       
