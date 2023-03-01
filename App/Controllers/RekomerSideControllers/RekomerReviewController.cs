@@ -22,12 +22,12 @@ public class RekomerReviewController : ControllerBase
    }
 
    [HttpGet("restaurants/{restaurantId}/reviews")]
-   public async Task<IActionResult> GetRestaurantReviews(string restaurantId)
+   public async Task<IActionResult> GetRestaurantReviews(string restaurantId, [FromQuery] int page, [FromQuery] int size)
    {
       try
       {
          var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
-         var reviews = await _reviewService.GetRestaurantReviewListAsync(meId, restaurantId);
+         var reviews = await _reviewService.GetRestaurantReviewListAsync(meId, restaurantId, page, size);
 
          return Ok(new
          {
