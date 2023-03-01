@@ -6,5 +6,5 @@ public interface IRekomerRestaurantService
 {
    public Task<RekomerRestaurantDetailResponseDto?> GetRestaurantDetailAsync(string restaurantId);
    
-   public Task<IEnumerable<string>> GetRestaurantGalleryAsync(string restaurantId);
+   public Task<IEnumerable<string>> GetRestaurantGalleryAsync(string restaurantId, int page, int size);
 }

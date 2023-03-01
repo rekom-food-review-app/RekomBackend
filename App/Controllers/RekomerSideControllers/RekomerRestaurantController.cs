@@ -33,11 +33,11 @@ public class RekomerRestaurantController : ControllerBase
    }
    
    [HttpGet("{restaurantId}/gallery")]
-   public async Task<IActionResult> GetRestaurantGallery(string restaurantId)
+   public async Task<IActionResult> GetRestaurantGallery(string restaurantId, [FromQuery] int page, [FromQuery] int size)
    {
       try
       {
-         var gallery = await _restaurantService.GetRestaurantGalleryAsync(restaurantId);
+         var gallery = await _restaurantService.GetRestaurantGalleryAsync(restaurantId, page, size);
       
          return Ok(new
          {

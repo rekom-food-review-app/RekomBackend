@@ -34,10 +34,10 @@ public class RekomerRestaurantService : IRekomerRestaurantService
       return restaurantDto;
    }
 
-   public async Task<IEnumerable<string>> GetRestaurantGalleryAsync(string restaurantId)
+   public async Task<IEnumerable<string>> GetRestaurantGalleryAsync(string restaurantId, int page, int size)
    {
       var restaurant = await _context.Restaurants
-         .Include(res => res.Reviews!)
+         .Include(res => res.Reviews!.Skip((page - 1) * size).Take(size))
          .ThenInclude(rev => rev.Medias)
          .SingleOrDefaultAsync(res => res.Id == restaurantId);
 
