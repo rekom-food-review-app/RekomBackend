@@ -17,10 +17,10 @@ public class RekomerFoodService : IRekomerFoodService
       _mapper = mapper;
    }
 
-   public async Task<IEnumerable<RekomerFoodInMenuResponseDto>> GetFoodsInMenuAsync(string restaurantId)
+   public async Task<IEnumerable<RekomerFoodInMenuResponseDto>> GetFoodsInMenuAsync(string restaurantId, int page, int size)
    {
       var restaurant = await _context.Restaurants
-         .Include(res => res.Menu)
+         .Include(res => res.Menu!.Skip((page - 1) * size).Take(size))
          .SingleOrDefaultAsync(res => res.Id == restaurantId);
 
       if (restaurant is null) throw new NotFoundRestaurantException();
