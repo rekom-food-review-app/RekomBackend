@@ -84,11 +84,6 @@ public class RekomerReviewService : IRekomerReviewService
       return reviewResponse;
    }
    
-   /// <param name="meId"></param>
-   /// <param name="reviewId"></param>
-   /// <param name="commentRequest"></param>
-   /// <exception cref="InvalidAccessTokenException"></exception>
-   /// <exception cref="NotFoundReviewException"></exception>
    public async Task CommentAsync(string meId, string reviewId, RekomerCommentRequestDto commentRequest)
    {
       var me = await _context.Rekomers.SingleOrDefaultAsync(rek => rek.Id == meId);
@@ -112,21 +107,23 @@ public class RekomerReviewService : IRekomerReviewService
       _ = _context.SaveChangesAsync();
    }
    
-   /// <param name="reviewId"></param>
-   /// <param name="page"></param>
-   /// <param name="size"></param>
-   /// <returns></returns>
-   /// <exception cref="NotFoundReviewException"></exception>
-   public async Task<IEnumerable<RekomerCommentResponseDto>> GetCommentListAsync(string reviewId, int page, int size)
+   public async Task<IEnumerable<RekomerCommentResponseDto>> GetCommentListAsync(string reviewId, int page, int size, DateTime? lastTimestamp = null)
    {
-      var review = await _context.Reviews
-         .Include(rev => rev.Comments!.Skip((page - 1) * size).Take(size).OrderByDescending(cmt => cmt.CreatedAt))
-         .ThenInclude(cmt => cmt.Rekomer)
-         .SingleOrDefaultAsync(rev => rev.Id == reviewId);
-
+      var review = await _context.Reviews.SingleOrDefaultAsync(rev => rev.Id == reviewId);
       if (review is null) throw new NotFoundReviewException();
 
-      return review.Comments!.Select(cmt => _mapper.Map<RekomerCommentResponseDto>(cmt));
+      var commentListQuery = _context.Comments
+         .Where(cmt => cmt.ReviewId == reviewId)
+         .Include(cmt => cmt.Rekomer)
+         .OrderByDescending(cmt => cmt.CreatedAt)
+         .AsQueryable();
+      
+      if (lastTimestamp.HasValue) commentListQuery = commentListQuery.Where(cmt => cmt.CreatedAt < lastTimestamp);
+      
+      return commentListQuery        
+         .Skip((page - 1) * size)
+         .Take(size)
+         .Select(cmt => _mapper.Map<RekomerCommentResponseDto>(cmt));
    }
 
    public async Task CreateReviewAsync(string meId, string restaurantId, RekomerCreateReviewRequestDto reviewRequest)

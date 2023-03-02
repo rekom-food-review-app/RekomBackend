@@ -93,11 +93,11 @@ public class RekomerReviewController : ControllerBase
    }
 
    [HttpGet("reviews/{reviewId}/comments")]
-   public async Task<IActionResult> GetCommentList(string reviewId, [FromQuery] int page, [FromQuery] int size)
+   public async Task<IActionResult> GetCommentList(string reviewId, [FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
    {
       try
       {
-         var commentList = await _reviewService.GetCommentListAsync(reviewId, page, size);
+         var commentList = await _reviewService.GetCommentListAsync(reviewId, page, size, lastTimestamp);
 
          return Ok(new
          {
