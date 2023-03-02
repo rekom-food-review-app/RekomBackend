@@ -9,7 +9,7 @@ public static class CorsConfiguration
          options.AddPolicy("CorsPolicy", builder =>
          {
             builder
-               .WithOrigins("http://ec2-54-178-104-216.ap-northeast-1.compute.amazonaws.com")
+               .WithOrigins("http://ec2-54-178-104-216.ap-northeast-1.compute.amazonaws.com", "RekomProject", "https://github.com/facebook/react-native")
                .AllowAnyHeader()
                .SetIsOriginAllowed(host => true)
                .AllowAnyMethod()
