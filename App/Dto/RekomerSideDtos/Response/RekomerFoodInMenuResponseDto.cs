@@ -11,4 +11,6 @@ public class RekomerFoodInMenuResponseDto
    public string ImageUrl { get; set; } = null!;
 
    public string RestaurantId { get; set; } = null!;
+
+   public string Description { get; set; }
 }
