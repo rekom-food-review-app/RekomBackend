@@ -111,7 +111,6 @@ public class RekomerReviewController : ControllerBase
    }
 
    [HttpGet("reviews/{reviewId}/reactions/{reactionId}")]
-   [AllowAnonymous]
    public async Task<IActionResult> GetReactionList(string reviewId, string reactionId, [FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
    {
       try
@@ -122,6 +121,30 @@ public class RekomerReviewController : ControllerBase
          {
             reactionList
          });
+      }
+      catch (NotFoundReviewException)
+      {
+         return NotFound();
+      }
+   }
+
+   [HttpPost("reviews/{reviewId}/reactions/{reactionId}")]
+   public async Task<IActionResult> ReactToReview(string reviewId, string reactionId)
+   {
+      try
+      {
+         var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+         await _reviewService.ReactToReviewAsync(meId, reviewId, reactionId);
+
+         return Ok();
+      }
+      catch (InvalidAccessTokenException)
+      {
+         return Unauthorized();
+      }
+      catch (NotFoundReactionException)
+      {
+         return NotFound();
       }
       catch (NotFoundReviewException)
       {

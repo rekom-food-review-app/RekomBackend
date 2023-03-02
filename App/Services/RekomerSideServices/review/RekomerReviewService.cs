@@ -171,4 +171,25 @@ public class RekomerReviewService : IRekomerReviewService
 
       return reactionList.Select(rea => _mapper.Map<RekomerReactionResponseDto>(rea));
    }
+
+   public async Task ReactToReviewAsync(string meId, string reviewId, string reactionId)
+   {
+      var me = await _context.Rekomers.SingleOrDefaultAsync(rek => rek.Id == meId);
+      if (me is null) throw new InvalidAccessTokenException();
+      
+      var reaction = await _context.Reactions.FindAsync(reactionId);
+      if (reaction is null) throw new NotFoundReactionException();
+      
+      var review = await _context.Reviews.AsNoTracking().SingleOrDefaultAsync(rev => rev.Id == reviewId);
+      if (review is null) throw new NotFoundReviewException();
+
+      _context.ReviewReactions.Add(new ReviewReaction
+      {
+         ReactionId = reactionId,
+         ReviewId = reviewId,
+         RekomerId = meId
+      });
+
+      await _context.SaveChangesAsync();
+   }
 }
