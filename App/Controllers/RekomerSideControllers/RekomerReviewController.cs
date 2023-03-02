@@ -110,9 +110,22 @@ public class RekomerReviewController : ControllerBase
       }
    }
 
-   [HttpGet("reviews/{reviewId}/reactions")]
-   public async Task<IActionResult> GetRekomerReactionList()
+   [HttpGet("reviews/{reviewId}/reactions/{reactionId}")]
+   [AllowAnonymous]
+   public async Task<IActionResult> GetReactionList(string reviewId, string reactionId, [FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
    {
-      throw new NotImplementedException();
+      try
+      {
+         var reactionList = await _reviewService.GetReactionListAsync(reviewId, reactionId, page, size, lastTimestamp);
+
+         return Ok(new
+         {
+            reactionList
+         });
+      }
+      catch (NotFoundReviewException)
+      {
+         return NotFound();
+      }
    }
 }

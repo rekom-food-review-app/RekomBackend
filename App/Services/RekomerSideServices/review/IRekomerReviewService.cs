@@ -14,4 +14,6 @@ public interface IRekomerReviewService
    public Task<IEnumerable<RekomerCommentResponseDto>> GetCommentListAsync(string reviewId, int page, int size, DateTime? lastTimestamp);
 
    public Task CreateReviewAsync(string meId, string restaurantId, RekomerCreateReviewRequestDto reviewRequest);
+
+   public Task<IEnumerable<RekomerReactionResponseDto>> GetReactionListAsync(string reviewId, string reactionId,  int page, int size, DateTime? lastTimestamp = null);
 }

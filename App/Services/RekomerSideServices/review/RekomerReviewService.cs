@@ -150,4 +150,25 @@ public class RekomerReviewService : IRekomerReviewService
       });
       await _context.SaveChangesAsync();
    }
+
+   public async Task<IEnumerable<RekomerReactionResponseDto>> GetReactionListAsync(string reviewId, string reactionId, int page, int size, DateTime? lastTimestamp = null)
+   {
+      var review = await _context.Reviews.AsNoTracking().SingleOrDefaultAsync(rev => rev.Id == reviewId);
+      if (review is null) throw new NotFoundReviewException();
+   
+      var reactionListQuery = _context.ReviewReactions
+         .Where(rea => rea.ReviewId == reviewId && rea.ReactionId == reactionId)
+         .AsQueryable();
+      
+      if (lastTimestamp.HasValue) reactionListQuery = reactionListQuery.Where(rea => rea.CreatedAt < lastTimestamp);
+
+      var reactionList = await reactionListQuery
+         .OrderByDescending(cmt => cmt.CreatedAt)
+         .Skip((page - 1) * size)
+         .Take(size)
+         .Include(rea => rea.Rekomer)
+         .ToListAsync();
+
+      return reactionList.Select(rea => _mapper.Map<RekomerReactionResponseDto>(rea));
+   }
 }
