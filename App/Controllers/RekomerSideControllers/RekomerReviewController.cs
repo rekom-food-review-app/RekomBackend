@@ -109,4 +109,10 @@ public class RekomerReviewController : ControllerBase
          return NotFound();
       }
    }
+
+   [HttpGet("reviews/{reviewId}/reactions")]
+   public async Task<IActionResult> GetRekomerReactionList()
+   {
+      throw new NotImplementedException();
+   }
 }

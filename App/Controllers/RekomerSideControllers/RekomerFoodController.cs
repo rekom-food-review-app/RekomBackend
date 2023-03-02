@@ -22,7 +22,7 @@ public class RekomerFoodController : ControllerBase
    {
       try
       {
-         var foods = await _foodService.GetFoodsInMenuAsync(restaurantId, page, size);
+         var foods = await _foodService.GetFoodListInMenuAsync(restaurantId, page, size);
 
          return Ok(new
          {
