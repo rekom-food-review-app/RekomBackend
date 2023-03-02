@@ -8,7 +8,7 @@ public class RekomerReviewCardResponseDto
    public string RekomerFullName{ get; set; } = null!;
    public string RekomerAvatarUrl{ get; set; } = null!;
 
-   public string Id { get; set; }
+   public string Id { get; set; } = null!;
    public string Content { get; set; } = null!;
    public IEnumerable<string> Images { get; set; } = null!;
    public DateTime CreatedAt { get; set; }
