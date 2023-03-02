@@ -28,7 +28,6 @@ public class CommentMapper : Profile
          .ForMember(
             dest => dest.CreatedAt,
             opt => opt.MapFrom(src => src.CreatedAt)
-         )
-         ;
+         );
    }
 }
