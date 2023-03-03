@@ -26,35 +26,48 @@ public class RekomerReviewService : IRekomerReviewService
       _s3Helper = s3Helper;
    }
 
-   public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRestaurantAsync(string meId, string restaurantId, int page, int size)
+   public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRestaurantAsync(
+      string meId, 
+      string restaurantId, 
+      int page, 
+      int size, 
+      DateTime? lastTimestamp = null)
    {
-      var restaurant = await _context.Restaurants
-         .Include(res => res.Reviews!).ThenInclude(rev => rev.Medias)
-         .Include(res => res.Reviews!).ThenInclude(rev => rev.Rekomer)
-         .Include(res => res.Reviews!).ThenInclude(rev => rev.Rating)
-         .Include(res => res.Reviews!).ThenInclude(rev => rev.ReviewReactions)
-         .Include(res => res.Reviews!.Skip((page - 1) * size).Take(size).OrderByDescending(rev => rev.CreatedAt)).ThenInclude(rev => rev.Comments)
-         .AsNoTracking()
-         .SingleOrDefaultAsync(res => res.Id == restaurantId);
-
+      var restaurant = await _context.Restaurants.FindAsync(restaurantId);
       if (restaurant is null) throw new NotFoundRestaurantException();
+      
+      var reviewListQuery = _context.Reviews.AsQueryable();
+      
+      if (lastTimestamp.HasValue) reviewListQuery = reviewListQuery.Where(rev => rev.CreatedAt < lastTimestamp.Value);
 
-      var reviewsResponseDto = restaurant.Reviews!.Select(rev =>
+      var reviewList = await reviewListQuery
+         .OrderByDescending(rev => rev.CreatedAt)
+         .Skip((page - 1) * size)
+         .Take(size)
+         .Include(rev => rev.Restaurant)
+         .Include(rev => rev.Comments)
+         .Include(rev => rev.Medias)
+         .Include(rev => rev.Rekomer)
+         .Include(rev => rev.Rating)
+         .Include(rev => rev.ReviewReactions)
+         .ToListAsync();
+      
+      var reviewListDto = reviewList.Select(rev =>
       {
-         var revResponse = _mapper.Map<Review, RekomerReviewCardResponseDto>(rev);
-         revResponse.Images = rev.Medias!.Select(med => med.MediaUrl);
-         revResponse.AmountReply = rev.Comments!.Count();
+         var reviewResponse = _mapper.Map<Review, RekomerReviewCardResponseDto>(rev);
+         reviewResponse.Images = rev.Medias!.Select(med => med.MediaUrl);
+         reviewResponse.AmountReply = rev.Comments!.Count();
          foreach (var reviewReaction in rev.ReviewReactions!)
          {
-            if (reviewReaction.RekomerId == meId) revResponse.MyReaction = reviewReaction.ReactionId;
-            if (reviewReaction.ReactionId == "1") {revResponse.AmountAgree++; continue;}
-            if (reviewReaction.ReactionId == "2") {revResponse.AmountDisagree++; continue;}
-            if (reviewReaction.ReactionId == "3") revResponse.AmountUseful++;
+            if (reviewReaction.RekomerId == meId) reviewResponse.MyReaction = reviewReaction.ReactionId;
+            if (reviewReaction.ReactionId == "1") {reviewResponse.AmountAgree++; continue;}
+            if (reviewReaction.ReactionId == "2") {reviewResponse.AmountDisagree++; continue;}
+            if (reviewReaction.ReactionId == "3") reviewResponse.AmountUseful++;
          }
-         return revResponse;
+         return reviewResponse;
       });
-      
-      return reviewsResponseDto;
+
+      return reviewListDto;
    }
 
    public async Task<RekomerReviewCardResponseDto?> GetReviewDetailAsync(string meId, string reviewId)
@@ -118,7 +131,7 @@ public class RekomerReviewService : IRekomerReviewService
          .OrderByDescending(cmt => cmt.CreatedAt)
          .AsQueryable();
       
-      if (lastTimestamp.HasValue) commentListQuery = commentListQuery.Where(cmt => cmt.CreatedAt < lastTimestamp);
+      if (lastTimestamp.HasValue) commentListQuery = commentListQuery.Where(cmt => cmt.CreatedAt < lastTimestamp.Value);
       
       return commentListQuery        
          .Skip((page - 1) * size)
@@ -195,31 +208,6 @@ public class RekomerReviewService : IRekomerReviewService
 
    public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRekomerAsync(string meId, string rekomerId, int page, int size, DateTime? lastTimestamp = null)
    {
-      var rekomer = await _context.Rekomers
-         .Include(rek => rek.Reviews!).ThenInclude(rev => rev.Medias)
-         .Include(rek => rek.Reviews!).ThenInclude(rev => rev.Rating)
-         .Include(rek => rek.Reviews!).ThenInclude(rev => rev.ReviewReactions)
-         .Include(rek => rek.Reviews!.Skip((page - 1) * size).Take(size).OrderByDescending(rev => rev.CreatedAt)).ThenInclude(rev => rev.Comments)
-         .AsNoTracking()
-         .SingleOrDefaultAsync(rek => rek.Id == rekomerId);
-
-      if (rekomer is null) throw new NotFoundRekomerException();
-
-      var reviewList = rekomer.Reviews!.Select(rev =>
-      {
-         var reviewCard = _mapper.Map<Review, RekomerReviewCardResponseDto>(rev);
-         reviewCard.Images = rev.Medias!.Select(med => med.MediaUrl);
-         reviewCard.AmountReply = rev.Comments!.Count();
-         foreach (var reviewReaction in rev.ReviewReactions!)
-         {
-            if (reviewReaction.RekomerId == meId) reviewCard.MyReaction = reviewReaction.ReactionId;
-            if (reviewReaction.ReactionId == "1") {reviewCard.AmountAgree++; continue;}
-            if (reviewReaction.ReactionId == "2") {reviewCard.AmountDisagree++; continue;}
-            if (reviewReaction.ReactionId == "3") reviewCard.AmountUseful++;
-         }
-         return reviewCard;
-      });
-      
-      return reviewList;
+      throw new NotImplementedException();
    }
 }
