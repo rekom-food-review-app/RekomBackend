@@ -206,8 +206,47 @@ public class RekomerReviewService : IRekomerReviewService
       await _context.SaveChangesAsync();
    }
 
-   public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRekomerAsync(string meId, string rekomerId, int page, int size, DateTime? lastTimestamp = null)
+   public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRekomerAsync(
+      string meId,
+      string rekomerId,
+      int page,
+      int size,
+      DateTime? lastTimestamp = null)
    {
-      throw new NotImplementedException();
+      var rekomer = await _context.Rekomers.FindAsync(rekomerId);
+      if (rekomer is null) throw new NotFoundRekomerException();
+      
+      var reviewListQuery = _context.Reviews.AsQueryable();
+      
+      if (lastTimestamp.HasValue) reviewListQuery = reviewListQuery.Where(rev => rev.CreatedAt < lastTimestamp.Value);
+
+      var reviewList = await reviewListQuery
+         .OrderByDescending(rev => rev.CreatedAt)
+         .Skip((page - 1) * size)
+         .Take(size)
+         .Include(rev => rev.Restaurant)
+         .Include(rev => rev.Comments)
+         .Include(rev => rev.Medias)
+         .Include(rev => rev.Rekomer)
+         .Include(rev => rev.Rating)
+         .Include(rev => rev.ReviewReactions)
+         .ToListAsync();
+      
+      var reviewListDto = reviewList.Select(rev =>
+      {
+         var reviewResponse = _mapper.Map<Review, RekomerReviewCardResponseDto>(rev);
+         reviewResponse.Images = rev.Medias!.Select(med => med.MediaUrl);
+         reviewResponse.AmountReply = rev.Comments!.Count();
+         foreach (var reviewReaction in rev.ReviewReactions!)
+         {
+            if (reviewReaction.RekomerId == meId) reviewResponse.MyReaction = reviewReaction.ReactionId;
+            if (reviewReaction.ReactionId == "1") {reviewResponse.AmountAgree++; continue;}
+            if (reviewReaction.ReactionId == "2") {reviewResponse.AmountDisagree++; continue;}
+            if (reviewReaction.ReactionId == "3") reviewResponse.AmountUseful++;
+         }
+         return reviewResponse;
+      });
+
+      return reviewListDto;
    }
 }

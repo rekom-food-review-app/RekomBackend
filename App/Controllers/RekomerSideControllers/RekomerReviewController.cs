@@ -170,4 +170,23 @@ public class RekomerReviewController : ControllerBase
          return NotFound();
       }
    }
+
+   [HttpGet("rekomers/{rekomerId}/reviews")]
+   public async Task<IActionResult> GetRekomerReviewList(string rekomerId, [FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
+   {
+      try
+      {
+         var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+         var reviews = await _reviewService.GetReviewListByRekomerAsync(meId, rekomerId, page, size, lastTimestamp);
+
+         return Ok(new
+         {
+            reviews
+         });
+      }
+      catch (NotFoundRekomerException)
+      {
+         return NotFound();
+      }
+   }
 }
