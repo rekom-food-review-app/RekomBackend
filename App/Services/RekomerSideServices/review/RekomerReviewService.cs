@@ -26,7 +26,7 @@ public class RekomerReviewService : IRekomerReviewService
       _s3Helper = s3Helper;
    }
 
-   public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetRestaurantReviewListAsync(string meId, string restaurantId, int page, int size)
+   public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRestaurantAsync(string meId, string restaurantId, int page, int size)
    {
       var restaurant = await _context.Restaurants
          .Include(res => res.Reviews!).ThenInclude(rev => rev.Medias)
@@ -191,5 +191,35 @@ public class RekomerReviewService : IRekomerReviewService
       });
 
       await _context.SaveChangesAsync();
+   }
+
+   public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRekomerAsync(string meId, string rekomerId, int page, int size, DateTime? lastTimestamp = null)
+   {
+      var rekomer = await _context.Rekomers
+         .Include(rek => rek.Reviews!).ThenInclude(rev => rev.Medias)
+         .Include(rek => rek.Reviews!).ThenInclude(rev => rev.Rating)
+         .Include(rek => rek.Reviews!).ThenInclude(rev => rev.ReviewReactions)
+         .Include(rek => rek.Reviews!.Skip((page - 1) * size).Take(size).OrderByDescending(rev => rev.CreatedAt)).ThenInclude(rev => rev.Comments)
+         .AsNoTracking()
+         .SingleOrDefaultAsync(rek => rek.Id == rekomerId);
+
+      if (rekomer is null) throw new NotFoundRekomerException();
+
+      var reviewList = rekomer.Reviews!.Select(rev =>
+      {
+         var reviewCard = _mapper.Map<Review, RekomerReviewCardResponseDto>(rev);
+         reviewCard.Images = rev.Medias!.Select(med => med.MediaUrl);
+         reviewCard.AmountReply = rev.Comments!.Count();
+         foreach (var reviewReaction in rev.ReviewReactions!)
+         {
+            if (reviewReaction.RekomerId == meId) reviewCard.MyReaction = reviewReaction.ReactionId;
+            if (reviewReaction.ReactionId == "1") {reviewCard.AmountAgree++; continue;}
+            if (reviewReaction.ReactionId == "2") {reviewCard.AmountDisagree++; continue;}
+            if (reviewReaction.ReactionId == "3") reviewCard.AmountUseful++;
+         }
+         return reviewCard;
+      });
+      
+      return reviewList;
    }
 }

@@ -5,7 +5,7 @@ namespace RekomBackend.App.Services.RekomerSideServices;
 
 public interface IRekomerReviewService
 {
-   public Task<IEnumerable<RekomerReviewCardResponseDto>> GetRestaurantReviewListAsync(string meId, string restaurantId, int page, int size);
+   public Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRestaurantAsync(string meId, string restaurantId, int page, int size);
 
    public Task<RekomerReviewCardResponseDto?> GetReviewDetailAsync(string meId, string reviewId);
 
@@ -18,4 +18,6 @@ public interface IRekomerReviewService
    public Task<IEnumerable<RekomerReactionResponseDto>> GetReactionListAsync(string reviewId, string reactionId,  int page, int size, DateTime? lastTimestamp = null);
    
    public Task ReactToReviewAsync(string meId, string reviewId, string reactionId);
+   
+   public Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRekomerAsync(string meId, string rekomerId, int page, int size, DateTime? lastTimestamp);
 }
