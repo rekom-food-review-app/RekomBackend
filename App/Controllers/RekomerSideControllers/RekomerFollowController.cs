@@ -99,25 +99,25 @@ public class RekomerFollowController : ControllerBase
       }
    }
    
-   // [HttpGet("me/followings")]
-   // public async Task<IActionResult> GetMyFollowingList([FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
-   // {
-   //    try
-   //    {
-   //       var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
-   //       var followerList = await _followService.GetFollowingListByRekomerAsync(meId, page, size, lastTimestamp);
-   //       
-   //       return Ok(new
-   //       {
-   //          followerList
-   //       });
-   //    }
-   //    catch (NotFoundRekomerException)
-   //    {
-   //       return Unauthorized();
-   //    }
-   // }
-   //
+   [HttpGet("me/followings")]
+   public async Task<IActionResult> GetMyFollowingList([FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
+   {
+      try
+      {
+         var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+         var followerList = await _followService.GetFollowingListByRekomerAsync(meId, page, size, lastTimestamp);
+         
+         return Ok(new
+         {
+            followerList
+         });
+      }
+      catch (NotFoundRekomerException)
+      {
+         return Unauthorized();
+      }
+   }
+   
    [HttpGet("{rekomerId}/followers")]
    public async Task<IActionResult> GetOtherFollowerList(string rekomerId, [FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
    {
@@ -136,21 +136,21 @@ public class RekomerFollowController : ControllerBase
       }
    }
    
-   // [HttpGet("{rekomerId}/followings")]
-   // public async Task<IActionResult> GetOtherFollowingList(string rekomerId, [FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
-   // {
-   //    try
-   //    {
-   //       var followerList = await _followService.GetFollowingListByRekomerAsync(rekomerId, page, size, lastTimestamp);
-   //       
-   //       return Ok(new
-   //       {
-   //          followerList
-   //       });
-   //    }
-   //    catch (NotFoundRekomerException)
-   //    {
-   //       return NotFound();
-   //    }
-   // }
+   [HttpGet("{rekomerId}/followings")]
+   public async Task<IActionResult> GetOtherFollowingList(string rekomerId, [FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
+   {
+      try
+      {
+         var followerList = await _followService.GetFollowingListByRekomerAsync(rekomerId, page, size, lastTimestamp);
+         
+         return Ok(new
+         {
+            followerList
+         });
+      }
+      catch (NotFoundRekomerException)
+      {
+         return NotFound();
+      }
+   }
 }

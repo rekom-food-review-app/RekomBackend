@@ -29,5 +29,27 @@ public class FollowMapper : Profile
             dest => dest.CreatedAt,
             opt => opt.MapFrom(src => src.CreatedAt)
          );
+      
+      CreateMap<Follow, RekomerFollowingResponseDto>()
+         .ForMember(
+            dest => dest.RekomerId,
+            opt => opt.MapFrom(src => src.Following!.Id)
+         )
+         .ForMember(
+            dest => dest.RekomerAvatarUrl,
+            opt => opt.MapFrom(src => src.Following!.AvatarUrl)
+         )
+         .ForMember(
+            dest => dest.RekomerFullName,
+            opt => opt.MapFrom(src => src.Following!.FullName)
+         )
+         .ForMember(
+            dest => dest.RekomerDescription,
+            opt => opt.MapFrom(src => src.Following!.Description)
+         )
+         .ForMember(
+            dest => dest.CreatedAt,
+            opt => opt.MapFrom(src => src.CreatedAt)
+         );
    }
 }

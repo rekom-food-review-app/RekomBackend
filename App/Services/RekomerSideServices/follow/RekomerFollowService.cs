@@ -62,7 +62,6 @@ public class RekomerFollowService : IRekomerFollowService
       var followerListQuery = _context.Follows
          .Where(fol => fol.FollowingId == rekomerId)
          .OrderByDescending(fol => fol.CreatedAt)
-         .Include(fol => fol.Follower)
          .AsQueryable();
       
       if (lastTimestamp.HasValue) followerListQuery = followerListQuery.Where(fol => fol.CreatedAt < lastTimestamp.Value);
@@ -70,28 +69,29 @@ public class RekomerFollowService : IRekomerFollowService
       return followerListQuery
          .Skip((page - 1) * size)
          .Take(size)
+         .Include(fol => fol.Follower)
          .ToList()
          .Select(rek => _mapper.Map<RekomerFollowerResponseDto>(rek));
    }
    
-   // public async Task<IEnumerable<RekomerFollowResponseDto>> GetFollowingListByRekomerAsync(
-   //    string rekomerId, int page, int size, DateTime? lastTimestamp = null)
-   // {
-   //    var rekomer = await _context.Rekomers.FindAsync(rekomerId);
-   //    if (rekomer is null) throw new NotFoundRekomerException();
-   //
-   //    var followerListQuery = _context.Follows
-   //       .Where(fol => fol.FollowerId == rekomerId)
-   //       .OrderByDescending(fol => fol.CreatedAt)
-   //       .Include(fol => fol.Following!)
-   //       .AsQueryable();
-   //    
-   //    if (lastTimestamp.HasValue) followerListQuery = followerListQuery.Where(fol => fol.CreatedAt < lastTimestamp.Value);
-   //
-   //    return followerListQuery
-   //       .Skip((page - 1) * size)
-   //       .Take(size)
-   //       .ToList()
-   //       .Select(rek => _mapper.Map<RekomerFollowResponseDto>(rek));
-   // }
+   public async Task<IEnumerable<RekomerFollowingResponseDto>> GetFollowingListByRekomerAsync(
+      string rekomerId, int page, int size, DateTime? lastTimestamp = null)
+   {
+      var rekomer = await _context.Rekomers.FindAsync(rekomerId);
+      if (rekomer is null) throw new NotFoundRekomerException();
+   
+      var followerListQuery = _context.Follows
+         .Where(fol => fol.FollowerId == rekomerId)
+         .OrderByDescending(fol => fol.CreatedAt)
+         .AsQueryable();
+      
+      if (lastTimestamp.HasValue) followerListQuery = followerListQuery.Where(fol => fol.CreatedAt < lastTimestamp.Value);
+   
+      return followerListQuery
+         .Skip((page - 1) * size)
+         .Take(size)
+         .Include(fol => fol.Following!)
+         .ToList()
+         .Select(rek => _mapper.Map<RekomerFollowingResponseDto>(rek));
+   }
 }

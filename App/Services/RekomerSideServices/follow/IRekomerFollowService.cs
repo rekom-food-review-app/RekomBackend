@@ -10,5 +10,5 @@ public interface IRekomerFollowService
 
    public Task<IEnumerable<RekomerFollowerResponseDto>> GetFollowerListByRekomerAsync(string rekomerId, int page, int size, DateTime? lastTimestamp = null);
    
-   // public Task<IEnumerable<RekomerFollowResponseDto>> GetFollowingListByRekomerAsync(string rekomerId, int page, int size, DateTime? lastTimestamp = null);
+   public Task<IEnumerable<RekomerFollowingResponseDto>> GetFollowingListByRekomerAsync(string rekomerId, int page, int size, DateTime? lastTimestamp = null);
 }
