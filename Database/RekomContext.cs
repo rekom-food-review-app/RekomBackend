@@ -20,6 +20,7 @@ public class RekomContext : DbContext
    public DbSet<Reaction> Reactions { get; set; } = null!;
    public DbSet<ReviewReaction> ReviewReactions { get; set; } = null!;
    public DbSet<Comment> Comments { get; set; } = null!;
+   public DbSet<FavouriteRestaurant> FavouriteRestaurants { get; set; } = null!;
 
    public DbSet<RatingResultView> RatingResultViews { get; set; } = null!;
    
