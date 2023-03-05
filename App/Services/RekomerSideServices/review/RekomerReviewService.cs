@@ -27,11 +27,7 @@ public class RekomerReviewService : IRekomerReviewService
    }
 
    public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRestaurantAsync(
-      string meId, 
-      string restaurantId, 
-      int page, 
-      int size, 
-      DateTime? lastTimestamp = null)
+      string meId, string restaurantId, int page, int size, DateTime? lastTimestamp = null)
    {
       var restaurant = await _context.Restaurants.FindAsync(restaurantId);
       if (restaurant is null) throw new NotFoundRestaurantException();
@@ -117,7 +113,7 @@ public class RekomerReviewService : IRekomerReviewService
       _ = _commentHubContext.Clients.All.SendAsync("ReceiveComment", commentResponse);
       
       _context.Comments.Add(comment);
-      _ = _context.SaveChangesAsync();
+      await _context.SaveChangesAsync();
    }
    
    public async Task<IEnumerable<RekomerCommentResponseDto>> GetCommentListAsync(string reviewId, int page, int size, DateTime? lastTimestamp = null)
