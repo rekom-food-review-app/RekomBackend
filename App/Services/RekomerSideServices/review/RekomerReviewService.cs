@@ -207,11 +207,7 @@ public class RekomerReviewService : IRekomerReviewService
    }
 
    public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRekomerAsync(
-      string meId,
-      string rekomerId,
-      int page,
-      int size,
-      DateTime? lastTimestamp = null)
+      string meId, string rekomerId, int page, int size, DateTime? lastTimestamp = null)
    {
       var rekomer = await _context.Rekomers.FindAsync(rekomerId);
       if (rekomer is null) throw new NotFoundRekomerException();
