@@ -2,6 +2,8 @@
 
 public class RekomerFollowingResponseDto
 {
+   public string Id { get; set; } = null!;
+   
    public string RekomerId { get; set; } = null!;
 
    public string RekomerAvatarUrl { get; set; } = null!;
