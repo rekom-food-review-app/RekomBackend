@@ -6,7 +6,7 @@ namespace RekomBackend.App.Services.RekomerSideServices;
 
 public interface IRekomerAuthService
 {
-   public Task<AuthToken?> AuthWithEmailAsync(RekomerAuthEmailRequestDto authRequest);
+   public Task<RekomerAuthToken?> AuthWithEmailAsync(RekomerAuthEmailRequestDto authRequest);
 
-   public AuthToken CreateAuthToken(Rekomer rekomer);
+   public RekomerAuthToken CreateAuthToken(Rekomer rekomer);
 }

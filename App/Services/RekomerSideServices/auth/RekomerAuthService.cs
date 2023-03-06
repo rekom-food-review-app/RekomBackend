@@ -21,7 +21,7 @@ public class RekomerAuthService : IRekomerAuthService
       _jwtHelper = jwtHelper;
    }
 
-   public AuthToken CreateAuthToken(Rekomer rekomer)
+   public RekomerAuthToken CreateAuthToken(Rekomer rekomer)
    {
       if (rekomer.Account is null) { throw new NotIncludeAccountInRekomerException(); }
       
@@ -31,14 +31,14 @@ public class RekomerAuthService : IRekomerAuthService
          new (ClaimTypes.Sid, rekomer.Id)
       };
       
-      return new AuthToken
+      return new RekomerAuthToken
       {
          AccessToken = _jwtHelper.CreateToken(claims, DateTime.Now.AddYears(1)),
          RefreshToken = _jwtHelper.CreateToken(claims, DateTime.Now.AddMonths(1)),
       };
    }
    
-   public async Task<AuthToken?> AuthWithEmailAsync(RekomerAuthEmailRequestDto authRequest)
+   public async Task<RekomerAuthToken?> AuthWithEmailAsync(RekomerAuthEmailRequestDto authRequest)
    {
       var foundAccount = await _context.Accounts
          .Where(acc => 

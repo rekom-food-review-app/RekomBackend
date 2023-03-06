@@ -23,7 +23,7 @@ public class RekomerRegisterService : IRekomerRegisterService
       _authService = authService;
    }
 
-   public async Task<AuthToken> RegisterWithEmailAsync(RekomerRegisterEmailRequestDto registerRequest)
+   public async Task<RekomerAuthToken> RegisterWithEmailAsync(RekomerRegisterEmailRequestDto registerRequest)
    {
       var account = new Account
       {
