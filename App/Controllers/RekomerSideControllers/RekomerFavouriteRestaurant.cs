@@ -64,4 +64,23 @@ public class RekomerFavouriteRestaurant : ControllerBase
          return NotFound();
       }
    }
+
+   [HttpGet]
+   public async Task<IActionResult> GetFavList([FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
+   {
+      try
+      {
+         var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+         var favList = await _favouriteRestaurantService.GetMyFavouriteList(meId, page, size, lastTimestamp);
+
+         return Ok(new
+         {
+            favList
+         });
+      }
+      catch (InvalidAccessTokenException)
+      {
+         return Unauthorized();
+      }
+   }
 }
