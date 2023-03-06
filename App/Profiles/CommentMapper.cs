@@ -10,6 +10,10 @@ public class CommentMapper : Profile
    {
       CreateMap<Comment, RekomerCommentResponseDto>()
          .ForMember(
+            dest => dest.Id,
+            opt => opt.MapFrom(src => src.Id)
+         )
+         .ForMember(
             dest => dest.RekomerId,
             opt => opt.MapFrom(src => src.RekomerId)
          )

@@ -2,6 +2,8 @@
 
 public class RekomerCommentResponseDto
 {
+   public string Id { get; set; } = null!;
+   
    public string RekomerId { get; set; } = null!;
 
    public string RekomerName { get; set; } = null!;
