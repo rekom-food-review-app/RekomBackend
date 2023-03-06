@@ -56,9 +56,6 @@ public class RekomerReviewService : IRekomerReviewService
          foreach (var reviewReaction in rev.ReviewReactions!)
          {
             if (reviewReaction.RekomerId == meId) reviewResponse.MyReaction = reviewReaction.ReactionId;
-            if (reviewReaction.ReactionId == "1") {reviewResponse.AmountAgree++; continue;}
-            if (reviewReaction.ReactionId == "2") {reviewResponse.AmountDisagree++; continue;}
-            if (reviewReaction.ReactionId == "3") reviewResponse.AmountUseful++;
          }
          return reviewResponse;
       });
@@ -85,9 +82,6 @@ public class RekomerReviewService : IRekomerReviewService
       foreach (var reviewReaction in review.ReviewReactions!)
       {
          if (reviewReaction.RekomerId == meId) reviewResponse.MyReaction = reviewReaction.ReactionId;
-         if (reviewReaction.ReactionId == "1") {reviewResponse.AmountAgree++; continue;}
-         if (reviewReaction.ReactionId == "2") {reviewResponse.AmountDisagree++; continue;}
-         if (reviewReaction.ReactionId == "3") reviewResponse.AmountUseful++;
       }
       
       return reviewResponse;
@@ -100,7 +94,9 @@ public class RekomerReviewService : IRekomerReviewService
 
       var review = await _context.Reviews.SingleOrDefaultAsync(rev => rev.Id == reviewId);
       if (review is null) throw new NotFoundReviewException();
-
+      
+      review.AmountReply += 1;
+      
       var comment = new Comment
       {
          RekomerId = meId,
@@ -185,13 +181,18 @@ public class RekomerReviewService : IRekomerReviewService
    {
       var me = await _context.Rekomers.SingleOrDefaultAsync(rek => rek.Id == meId);
       if (me is null) throw new InvalidAccessTokenException();
-      
-      var reaction = await _context.Reactions.FindAsync(reactionId);
-      if (reaction is null) throw new NotFoundReactionException();
-      
-      var review = await _context.Reviews.AsNoTracking().SingleOrDefaultAsync(rev => rev.Id == reviewId);
-      if (review is null) throw new NotFoundReviewException();
 
+      var review = await _context.Reviews.SingleOrDefaultAsync(rev => rev.Id == reviewId);
+      if (review is null) throw new NotFoundReviewException();
+      
+      switch (reactionId)
+      {
+         case "1": review.AmountAgree += 1; break;
+         case "2": review.AmountDisagree += 1; break;
+         case "3": review.AmountUseful += 1; break;
+         default: throw new NotFoundReactionException();
+      }
+      
       _context.ReviewReactions.Add(new ReviewReaction
       {
          ReactionId = reactionId,
@@ -232,9 +233,6 @@ public class RekomerReviewService : IRekomerReviewService
          foreach (var reviewReaction in rev.ReviewReactions!)
          {
             if (reviewReaction.RekomerId == meId) reviewResponse.MyReaction = reviewReaction.ReactionId;
-            if (reviewReaction.ReactionId == "1") {reviewResponse.AmountAgree++; continue;}
-            if (reviewReaction.ReactionId == "2") {reviewResponse.AmountDisagree++; continue;}
-            if (reviewReaction.ReactionId == "3") reviewResponse.AmountUseful++;
          }
          return reviewResponse;
       });

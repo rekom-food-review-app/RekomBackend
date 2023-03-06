@@ -42,8 +42,20 @@ public class ReviewMapper : Profile
             opt => opt.MapFrom(src => src.Restaurant!.Name)
          )
          .ForMember(
-            dest => dest.Rating,
-            opt => opt.MapFrom(src => src.Rating!.Tag)
+            dest => dest.AmountAgree,
+            opt => opt.MapFrom(src => src.AmountAgree)
+         )
+         .ForMember(
+            dest => dest.AmountUseful,
+            opt => opt.MapFrom(src => src.AmountUseful)
+         )
+         .ForMember(
+            dest => dest.AmountDisagree,
+            opt => opt.MapFrom(src => src.AmountDisagree)
+         )
+         .ForMember(
+            dest => dest.AmountReply,
+            opt => opt.MapFrom(src => src.AmountReply)
          );
    }
 }

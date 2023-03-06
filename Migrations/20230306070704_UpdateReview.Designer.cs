@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RekomBackend.Database;
 
@@ -10,9 +11,11 @@ using RekomBackend.Database;
 namespace RekomBackend.Migrations
 {
     [DbContext(typeof(RekomContext))]
-    partial class RekomContextModelSnapshot : ModelSnapshot
+    [Migration("20230306070704_UpdateReview")]
+    partial class UpdateReview
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -407,9 +410,6 @@ namespace RekomBackend.Migrations
                         .HasColumnType("int unsigned");
 
                     b.Property<uint>("AmountDisagree")
-                        .HasColumnType("int unsigned");
-
-                    b.Property<uint>("AmountReply")
                         .HasColumnType("int unsigned");
 
                     b.Property<uint>("AmountUseful")

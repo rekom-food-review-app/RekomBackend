@@ -2,7 +2,7 @@
 
 namespace RekomBackend.App.Entities;
 
-[Index(nameof(RekomerId), nameof(RestaurantId), IsUnique = true)]
+// [Index(nameof(RekomerId), nameof(RestaurantId), IsUnique = true)]
 public class FavouriteRestaurant : EntityBase
 {
    #region Columns
