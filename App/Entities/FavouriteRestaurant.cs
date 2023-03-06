@@ -1,5 +1,8 @@
-﻿namespace RekomBackend.App.Entities;
+﻿using Microsoft.EntityFrameworkCore;
 
+namespace RekomBackend.App.Entities;
+
+[Index(nameof(RekomerId), nameof(RestaurantId), IsUnique = true)]
 public class FavouriteRestaurant : EntityBase
 {
    #region Columns
