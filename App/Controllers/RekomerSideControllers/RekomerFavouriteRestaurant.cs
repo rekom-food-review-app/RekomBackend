@@ -22,12 +22,12 @@ public class RekomerFavouriteRestaurant : ControllerBase
    }
 
    [HttpPost]
-   public async Task<IActionResult> AddToFavouriteList([FromBody] AddToFavouriteListRequestDto addRequest)
+   public async Task<IActionResult> AddToFavouriteList([FromBody] RekomerAddToFavouriteListRequestDto rekomerAddRequest)
    {
       try
       {
          var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
-         await _favouriteRestaurantService.AddAsync(meId, addRequest.RestaurantId);
+         await _favouriteRestaurantService.AddAsync(meId, rekomerAddRequest.RestaurantId);
 
          return StatusCode(201);
       }
@@ -42,6 +42,26 @@ public class RekomerFavouriteRestaurant : ControllerBase
       catch (RestaurantAlreadyInFavouriteListException)
       {
          return BadRequest();
+      }
+   }
+
+   [HttpDelete]
+   public async Task<IActionResult> DeleteFromFavouriteList([FromBody] RekomerDeleteFromFavouriteListRequestDto deleteRequest)
+   {
+      try
+      {
+         var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+         await _favouriteRestaurantService.DeleteAsync(meId, deleteRequest.RestaurantId);
+
+         return Ok();
+      }
+      catch (NotFoundRekomerException)
+      {
+         return Unauthorized();
+      }
+      catch (NotFoundRestaurantInFavouriteListException)
+      {
+         return NotFound();
       }
    }
 }

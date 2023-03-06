@@ -33,4 +33,17 @@ public class RekomerFavouriteRestaurantService : IRekomerFavouriteRestaurantServ
       });
       await _context.SaveChangesAsync();
    }
+
+   public async Task DeleteAsync(string meId, string restaurantId)
+   {
+      var me = await _context.Rekomers.FindAsync(meId);
+      if (me is null) throw new NotFoundRekomerException();
+      
+      var favouriteRestaurant = await _context.FavouriteRestaurants
+         .SingleOrDefaultAsync(fav => fav.RekomerId == meId && fav.RestaurantId == restaurantId);
+      if (favouriteRestaurant is null) throw new NotFoundRestaurantInFavouriteListException();
+
+      _context.FavouriteRestaurants.Remove(favouriteRestaurant);
+      await _context.SaveChangesAsync();
+   }
 }
