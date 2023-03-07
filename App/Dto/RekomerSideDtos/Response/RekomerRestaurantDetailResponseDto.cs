@@ -13,4 +13,6 @@ public class RekomerRestaurantDetailResponseDto
    public string Description { get; set; } = null!;
 
    public RatingResultView RatingResult { get; set; } = null!;
+
+   public bool IsMyFav { get; set; }
 }

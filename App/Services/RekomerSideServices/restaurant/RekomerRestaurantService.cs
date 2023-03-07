@@ -18,7 +18,7 @@ public class RekomerRestaurantService : IRekomerRestaurantService
       _mapper = mapper;
    }
 
-   public async Task<RekomerRestaurantDetailResponseDto?> GetRestaurantDetailAsync(string restaurantId)
+   public async Task<RekomerRestaurantDetailResponseDto?> GetRestaurantDetailAsync(string meId, string restaurantId)
    {
       var restaurant = await _context.Restaurants
          .SingleOrDefaultAsync(res => res.Id == restaurantId);
@@ -30,6 +30,9 @@ public class RekomerRestaurantService : IRekomerRestaurantService
       
       var restaurantDto = _mapper.Map<Restaurant, RekomerRestaurantDetailResponseDto>(restaurant);
       restaurantDto.RatingResult = ratingResult;
+      restaurantDto.IsMyFav = await _context.FavouriteRestaurants
+         .SingleOrDefaultAsync(fav => fav.RekomerId == meId && fav.RestaurantId == restaurantId) 
+         is not null;
       
       return restaurantDto;
    }

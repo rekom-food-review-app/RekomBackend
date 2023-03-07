@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Services.RekomerSideServices;
@@ -11,16 +12,19 @@ namespace RekomBackend.App.Controllers.RekomerSideControllers;
 public class RekomerRestaurantController : ControllerBase
 {
    private readonly IRekomerRestaurantService _restaurantService;
-
-   public RekomerRestaurantController(IRekomerRestaurantService restaurantService)
+   private readonly IHttpContextAccessor _httpContextAccessor;
+   
+   public RekomerRestaurantController(IRekomerRestaurantService restaurantService, IHttpContextAccessor httpContextAccessor)
    {
       _restaurantService = restaurantService;
+      _httpContextAccessor = httpContextAccessor;
    }
 
    [HttpGet("{restaurantId}")]
    public async Task<IActionResult> GetRestaurantDetail(string restaurantId)
    {
-      var restaurant = await _restaurantService.GetRestaurantDetailAsync(restaurantId);
+      var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+      var restaurant = await _restaurantService.GetRestaurantDetailAsync(meId, restaurantId);
 
       if (restaurant is null) return NotFound();
 
