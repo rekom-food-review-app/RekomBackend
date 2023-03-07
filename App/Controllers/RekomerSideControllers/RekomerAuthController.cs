@@ -23,7 +23,8 @@ public class RekomerAuthController : ControllerBase
    {
       try
       {
-         var ipAddress = _httpContextAccessor.HttpContext!.Connection.RemoteIpAddress!.ToString();
+         // var ipAddress = _httpContextAccessor.HttpContext!.Connection.RemoteIpAddress!.ToString();
+         var ipAddress = HttpContext.Request.Headers["X-Forwarded-For"].ToString();
          var authToken = await _authService.AuthWithEmailAsync(ipAddress, authRequest);
 
          if (authToken is null)
