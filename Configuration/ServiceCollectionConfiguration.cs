@@ -28,5 +28,7 @@ public static class ServiceCollectionConfiguration
       services.ConfigCors();
 
       services.AddSignalR();
+
+      services.ConfigRedis(configuration);
    }
 }
