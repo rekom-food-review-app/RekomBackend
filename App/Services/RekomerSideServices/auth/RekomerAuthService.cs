@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using RekomBackend.App.Common.Enums;
-using RekomBackend.App.Dto.RekomerSideDtos;
 using RekomBackend.App.Dto.RekomerSideDtos.Request;
 using RekomBackend.App.Entities;
 using RekomBackend.App.Exceptions;
@@ -14,11 +14,13 @@ public class RekomerAuthService : IRekomerAuthService
 {
    private readonly RekomContext _context;
    private readonly IJwtHelper _jwtHelper;
+   private readonly IRekomerAuthRateLimitService _rateLimitService;
 
-   public RekomerAuthService(RekomContext context, IJwtHelper jwtHelper)
+   public RekomerAuthService(RekomContext context, IJwtHelper jwtHelper, IRekomerAuthRateLimitService rateLimitService)
    {
       _context = context;
       _jwtHelper = jwtHelper;
+      _rateLimitService = rateLimitService;
    }
 
    public RekomerAuthToken CreateAuthToken(Rekomer rekomer)
@@ -38,8 +40,10 @@ public class RekomerAuthService : IRekomerAuthService
       };
    }
    
-   public async Task<RekomerAuthToken?> AuthWithEmailAsync(RekomerAuthEmailRequestDto authRequest)
+   public async Task<RekomerAuthToken?> AuthWithEmailAsync(string ipAddress, RekomerAuthEmailRequestDto authRequest)
    {
+      if (!(await _rateLimitService.IsAllowedAsync(ipAddress))) throw new TooManyRequestException();
+      
       var foundAccount = await _context.Accounts
          .Where(acc => 
             string.Equals(acc.Email, authRequest.Email.ToLower())

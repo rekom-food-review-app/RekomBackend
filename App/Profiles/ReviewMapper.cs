@@ -34,6 +34,10 @@ public class ReviewMapper : Profile
             opt => opt.MapFrom(src => src.Rekomer!.AvatarUrl)
          )
          .ForMember(
+            dest => dest.Rating,
+            opt => opt.MapFrom(src => src.Rating!.Tag)
+         )
+         .ForMember(
             dest => dest.RestaurantId,
             opt => opt.MapFrom(src => src.RestaurantId)
          )

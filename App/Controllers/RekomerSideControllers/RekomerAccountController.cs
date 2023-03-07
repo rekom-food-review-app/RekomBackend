@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RekomBackend.App.Dto.RekomerSideDtos.Request;
 using RekomBackend.App.Exceptions;
-using RekomBackend.App.Services.RekomerSideServices.account;
+using RekomBackend.App.Services.RekomerSideServices;
 
 namespace RekomBackend.App.Controllers.RekomerSideControllers;
 
