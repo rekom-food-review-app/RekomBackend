@@ -15,6 +15,7 @@ public class RekomerAccountController : ControllerBase
    private readonly IRekomerAccountService _accountService;
    private readonly IHttpContextAccessor _httpContextAccessor;
 
+   
    public RekomerAccountController(IRekomerAccountService accountService, IHttpContextAccessor httpContextAccessor)
    {
       _accountService = accountService;

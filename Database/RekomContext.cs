@@ -28,29 +28,23 @@ public class RekomContext : DbContext
    {
       _configuration = configuration;
    }
-   
-   // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-   // {
-   //    optionsBuilder.UseMySql(_configuration.GetValue<string>("MySQLConnectionString")!);
-   // }
-   //
+
    protected override void OnModelCreating(ModelBuilder modelBuilder)
    {
-      // modelBuilder.Entity<EntityBase>()
-      //    .Property(e => e.CreatedAt)
-      //    .HasDefaultValueSql("CURRENT_TIMESTAMP(6)");
-      //
-      // modelBuilder.Entity<EntityBase>()
-      //    .Property(e => e.UpdatedAt)
-      //    .HasDefaultValueSql("CURRENT_TIMESTAMP(6)")
-      //    .ValueGeneratedOnUpdate();
+      // modelBuilder.UsePostGIS();
+      modelBuilder.HasPostgresEnum<Role>();
+      modelBuilder.HasPostgresExtension("postgis");
       
-      modelBuilder.Entity<Account>()
-         .Property(a => a.Role)
-         .HasConversion(
-            v => v.ToString(),
-            v => (Role)Enum.Parse(typeof(Role), v)
-         );
+      modelBuilder.Entity<Restaurant>()
+         .Property(r => r.Location)
+         .HasColumnType("geography(Point,4326)");
+      
+      // modelBuilder.Entity<Account>()
+      //    .Property(a => a.Role)
+      //    .HasConversion(
+      //       v => v.ToString(),
+      //       v => (Role)Enum.Parse(typeof(Role), v)
+      //    );
       
       modelBuilder.Entity<Follow>()
          .HasKey(f => f.Id);

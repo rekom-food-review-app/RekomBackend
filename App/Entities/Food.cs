@@ -14,7 +14,7 @@ public class Food : EntityBase
    [Column(TypeName = "varchar(200)")]
    public string ImageUrl { get; set; } = null!;
 
-   [Column(TypeName = "tinytext")]
+   [Column(TypeName = "varchar(500)")]
    public string? Description { get; set; }
    
    #endregion

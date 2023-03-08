@@ -7,8 +7,7 @@ public class ReviewMedia : EntityBase
    #region Columns
 
    public string MediaUrl { get; set; } = null!;
-
-   [Column(TypeName = "enum('image', 'video')")]
+   
    public string Type { get; set; } = null!;
 
    #endregion
