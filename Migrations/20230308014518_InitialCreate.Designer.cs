@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NetTopologySuite.Geometries;
 using RekomBackend.Database;
 
 #nullable disable
@@ -11,8 +12,8 @@ using RekomBackend.Database;
 namespace RekomBackend.Migrations
 {
     [DbContext(typeof(RekomContext))]
-    [Migration("20230226064720_UpdateRatingResultView")]
-    partial class UpdateRatingResultView
+    [Migration("20230308014518_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,6 +66,67 @@ namespace RekomBackend.Migrations
                     b.ToTable("Accounts");
                 });
 
+            modelBuilder.Entity("RekomBackend.App.Entities.Comment", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("RekomerId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ReviewId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RekomerId");
+
+                    b.HasIndex("ReviewId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("RekomBackend.App.Entities.FavouriteRestaurant", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("RekomerId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("RestaurantId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RestaurantId");
+
+                    b.HasIndex("RekomerId", "RestaurantId")
+                        .IsUnique();
+
+                    b.ToTable("FavouriteRestaurants");
+                });
+
             modelBuilder.Entity("RekomBackend.App.Entities.Follow", b =>
                 {
                     b.Property<string>("Id")
@@ -101,6 +163,9 @@ namespace RekomBackend.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("tinytext");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
@@ -240,6 +305,29 @@ namespace RekomBackend.Migrations
                     b.ToView("RatingResultViews", (string)null);
                 });
 
+            modelBuilder.Entity("RekomBackend.App.Entities.Reaction", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<uint>("Point")
+                        .HasColumnType("int unsigned");
+
+                    b.Property<string>("Tag")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reactions");
+                });
+
             modelBuilder.Entity("RekomBackend.App.Entities.Rekomer", b =>
                 {
                     b.Property<string>("Id")
@@ -285,9 +373,9 @@ namespace RekomBackend.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Coordinates")
+                    b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("tinytext");
 
                     b.Property<string>("CoverImageUrl")
                         .IsRequired()
@@ -299,6 +387,10 @@ namespace RekomBackend.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("varchar(500)");
+
+                    b.Property<Point>("Location")
+                        .IsRequired()
+                        .HasColumnType("point");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -319,6 +411,18 @@ namespace RekomBackend.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
+
+                    b.Property<uint>("AmountAgree")
+                        .HasColumnType("int unsigned");
+
+                    b.Property<uint>("AmountDisagree")
+                        .HasColumnType("int unsigned");
+
+                    b.Property<uint>("AmountReply")
+                        .HasColumnType("int unsigned");
+
+                    b.Property<uint>("AmountUseful")
+                        .HasColumnType("int unsigned");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -381,6 +485,78 @@ namespace RekomBackend.Migrations
                     b.HasIndex("ReviewId");
 
                     b.ToTable("ReviewMedias");
+                });
+
+            modelBuilder.Entity("RekomBackend.App.Entities.ReviewReaction", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ReactionId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("RekomerId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ReviewId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReactionId");
+
+                    b.HasIndex("RekomerId");
+
+                    b.HasIndex("ReviewId");
+
+                    b.ToTable("ReviewReactions");
+                });
+
+            modelBuilder.Entity("RekomBackend.App.Entities.Comment", b =>
+                {
+                    b.HasOne("RekomBackend.App.Entities.Rekomer", "Rekomer")
+                        .WithMany("Comments")
+                        .HasForeignKey("RekomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RekomBackend.App.Entities.Review", "Review")
+                        .WithMany("Comments")
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Rekomer");
+
+                    b.Navigation("Review");
+                });
+
+            modelBuilder.Entity("RekomBackend.App.Entities.FavouriteRestaurant", b =>
+                {
+                    b.HasOne("RekomBackend.App.Entities.Rekomer", "Rekomer")
+                        .WithMany("FavouriteRestaurants")
+                        .HasForeignKey("RekomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RekomBackend.App.Entities.Restaurant", "Restaurant")
+                        .WithMany("FavouriteRestaurants")
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Rekomer");
+
+                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("RekomBackend.App.Entities.Follow", b =>
@@ -495,6 +671,33 @@ namespace RekomBackend.Migrations
                     b.Navigation("Review");
                 });
 
+            modelBuilder.Entity("RekomBackend.App.Entities.ReviewReaction", b =>
+                {
+                    b.HasOne("RekomBackend.App.Entities.Reaction", "Reaction")
+                        .WithMany("ReviewReactions")
+                        .HasForeignKey("ReactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RekomBackend.App.Entities.Rekomer", "Rekomer")
+                        .WithMany("ReviewReactions")
+                        .HasForeignKey("RekomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RekomBackend.App.Entities.Review", "Review")
+                        .WithMany("ReviewReactions")
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Reaction");
+
+                    b.Navigation("Rekomer");
+
+                    b.Navigation("Review");
+                });
+
             modelBuilder.Entity("RekomBackend.App.Entities.Account", b =>
                 {
                     b.Navigation("Otp");
@@ -514,17 +717,30 @@ namespace RekomBackend.Migrations
                     b.Navigation("Reviews");
                 });
 
+            modelBuilder.Entity("RekomBackend.App.Entities.Reaction", b =>
+                {
+                    b.Navigation("ReviewReactions");
+                });
+
             modelBuilder.Entity("RekomBackend.App.Entities.Rekomer", b =>
                 {
+                    b.Navigation("Comments");
+
+                    b.Navigation("FavouriteRestaurants");
+
                     b.Navigation("Followers");
 
                     b.Navigation("Followings");
+
+                    b.Navigation("ReviewReactions");
 
                     b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("RekomBackend.App.Entities.Restaurant", b =>
                 {
+                    b.Navigation("FavouriteRestaurants");
+
                     b.Navigation("Menu");
 
                     b.Navigation("Reviews");
@@ -532,7 +748,11 @@ namespace RekomBackend.Migrations
 
             modelBuilder.Entity("RekomBackend.App.Entities.Review", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Medias");
+
+                    b.Navigation("ReviewReactions");
                 });
 #pragma warning restore 612, 618
         }

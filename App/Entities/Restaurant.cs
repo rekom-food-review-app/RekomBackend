@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using NetTopologySuite.Geometries;
 
 namespace RekomBackend.App.Entities;
 
@@ -12,8 +13,13 @@ public class Restaurant : EntityBase
    [Column(TypeName = "varchar(200)")]
    public string CoverImageUrl { get; set; } = null!;
 
-   [Column(TypeName = "varchar(200)")] 
-   public string Coordinates { get; set; } = null!;
+   // [Column(TypeName = "varchar(200)")] 
+   // public string Coordinates { get; set; } = null!;
+
+   [Column(TypeName = "tinytext")]
+   public string Address { get; set; } = null!;
+
+   public Point Location { get; set; } = null!;
    
    [Column(TypeName = "varchar(500)")] 
    public string Description { get; set; } = null!;
@@ -35,7 +41,7 @@ public class Restaurant : EntityBase
    public IEnumerable<Review>? Reviews { get; set; }
 
    public IEnumerable<FavouriteRestaurant>? FavouriteRestaurants { get; set; }
-   
+
    #endregion
 
    #region Methods

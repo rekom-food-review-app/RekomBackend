@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NetTopologySuite.Geometries;
 using RekomBackend.Database;
 
 #nullable disable
@@ -11,8 +12,8 @@ using RekomBackend.Database;
 namespace RekomBackend.Migrations
 {
     [DbContext(typeof(RekomContext))]
-    [Migration("20230306070704_UpdateReview")]
-    partial class UpdateReview
+    [Migration("20230308014917_CreateRatingResultView")]
+    partial class CreateRatingResultView
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -118,9 +119,10 @@ namespace RekomBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RekomerId");
-
                     b.HasIndex("RestaurantId");
+
+                    b.HasIndex("RekomerId", "RestaurantId")
+                        .IsUnique();
 
                     b.ToTable("FavouriteRestaurants");
                 });
@@ -371,9 +373,9 @@ namespace RekomBackend.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Coordinates")
+                    b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("tinytext");
 
                     b.Property<string>("CoverImageUrl")
                         .IsRequired()
@@ -385,6 +387,10 @@ namespace RekomBackend.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("varchar(500)");
+
+                    b.Property<Point>("Location")
+                        .IsRequired()
+                        .HasColumnType("point");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -410,6 +416,9 @@ namespace RekomBackend.Migrations
                         .HasColumnType("int unsigned");
 
                     b.Property<uint>("AmountDisagree")
+                        .HasColumnType("int unsigned");
+
+                    b.Property<uint>("AmountReply")
                         .HasColumnType("int unsigned");
 
                     b.Property<uint>("AmountUseful")

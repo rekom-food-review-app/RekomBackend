@@ -29,11 +29,11 @@ public class RekomContext : DbContext
       _configuration = configuration;
    }
    
-   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-   {
-      optionsBuilder.UseMySQL(_configuration.GetValue<string>("MySQLConnectionString")!);
-   }
-   
+   // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+   // {
+   //    optionsBuilder.UseMySql(_configuration.GetValue<string>("MySQLConnectionString")!);
+   // }
+   //
    protected override void OnModelCreating(ModelBuilder modelBuilder)
    {
       // modelBuilder.Entity<EntityBase>()

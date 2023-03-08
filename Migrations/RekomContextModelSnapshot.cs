@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NetTopologySuite.Geometries;
 using RekomBackend.Database;
 
 #nullable disable
@@ -115,9 +116,10 @@ namespace RekomBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RekomerId");
-
                     b.HasIndex("RestaurantId");
+
+                    b.HasIndex("RekomerId", "RestaurantId")
+                        .IsUnique();
 
                     b.ToTable("FavouriteRestaurants");
                 });
@@ -368,9 +370,9 @@ namespace RekomBackend.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Coordinates")
+                    b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("tinytext");
 
                     b.Property<string>("CoverImageUrl")
                         .IsRequired()
@@ -382,6 +384,10 @@ namespace RekomBackend.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("varchar(500)");
+
+                    b.Property<Point>("Location")
+                        .IsRequired()
+                        .HasColumnType("point");
 
                     b.Property<string>("Name")
                         .IsRequired()
