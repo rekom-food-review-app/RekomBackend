@@ -30,5 +30,7 @@ public static class ServiceCollectionConfiguration
       services.AddSignalR();
 
       services.ConfigRedis(configuration);
+
+      services.AddHttpClient();
    }
 }
