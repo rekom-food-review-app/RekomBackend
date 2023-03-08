@@ -29,10 +29,10 @@ public class RekomerReviewService : IRekomerReviewService
    public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRestaurantAsync(
       string meId, string restaurantId, int page, int size, DateTime? lastTimestamp = null)
    {
-      var restaurant = await _context.Restaurants.FindAsync(restaurantId);
+      var restaurant = await _context.Restaurants.SingleOrDefaultAsync(res => res.Id == restaurantId);
       if (restaurant is null) throw new NotFoundRestaurantException();
       
-      var reviewListQuery = _context.Reviews.AsQueryable();
+      var reviewListQuery = _context.Reviews.Where(rev => rev.RestaurantId == restaurantId).AsQueryable();
       
       if (lastTimestamp.HasValue) reviewListQuery = reviewListQuery.Where(rev => rev.CreatedAt < lastTimestamp.Value);
 
@@ -206,10 +206,10 @@ public class RekomerReviewService : IRekomerReviewService
    public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRekomerAsync(
       string meId, string rekomerId, int page, int size, DateTime? lastTimestamp = null)
    {
-      var rekomer = await _context.Rekomers.FindAsync(rekomerId);
+      var rekomer = await _context.Rekomers.SingleOrDefaultAsync(rek => rek.Id == rekomerId);
       if (rekomer is null) throw new NotFoundRekomerException();
       
-      var reviewListQuery = _context.Reviews.AsQueryable();
+      var reviewListQuery = _context.Reviews.Where(rev => rev.RekomerId == rekomerId).AsQueryable();
       
       if (lastTimestamp.HasValue) reviewListQuery = reviewListQuery.Where(rev => rev.CreatedAt < lastTimestamp.Value);
 
