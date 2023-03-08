@@ -52,6 +52,8 @@ public class RekomerAuthService : IRekomerAuthService
          .Include(acc => acc.Rekomer)
          .SingleOrDefaultAsync();
 
-      return foundAccount is null ? null : CreateAuthToken(foundAccount.Rekomer!);
+      if (foundAccount is null) return null;
+      if (foundAccount.Rekomer is null) throw new NotFoundReactionException();
+      return CreateAuthToken(foundAccount.Rekomer);
    }
 }

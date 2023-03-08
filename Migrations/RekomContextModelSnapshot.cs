@@ -405,6 +405,8 @@ namespace RekomBackend.Migrations
                     b.HasIndex("AccountId")
                         .IsUnique();
 
+                    b.HasIndex("Location");
+
                     b.ToTable("Restaurants");
                 });
 

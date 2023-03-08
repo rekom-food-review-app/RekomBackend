@@ -7,7 +7,7 @@ using NetTopologySuite.Geometries;
 namespace RekomBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class GOD : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -433,6 +433,11 @@ namespace RekomBackend.Migrations
                 table: "Restaurants",
                 column: "AccountId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Restaurants_Location",
+                table: "Restaurants",
+                column: "Location");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReviewMedias_ReviewId",

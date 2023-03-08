@@ -6,8 +6,6 @@ namespace RekomBackend.Database;
 
 public class RekomContext : DbContext
 {
-   private readonly IConfiguration _configuration;
-
    public DbSet<Account> Accounts { get; set; } = null!;
    public DbSet<Otp> Otps { get; set; } = null!;
    public DbSet<Rekomer> Rekomers { get; set; } = null!;
@@ -24,37 +22,33 @@ public class RekomContext : DbContext
 
    public DbSet<RatingResultView> RatingResultViews { get; set; } = null!;
    
-   public RekomContext(DbContextOptions<RekomContext> options, IConfiguration configuration) : base(options)
+   public RekomContext(DbContextOptions<RekomContext> options) : base(options)
    {
-      _configuration = configuration;
    }
 
    protected override void OnModelCreating(ModelBuilder modelBuilder)
    {
-      // modelBuilder.UsePostGIS();
+      // modelBuilder.Entity<EntityBase>()
+      //    .Property(e => e.CreatedAt)
+      //    .HasDefaultValueSql("now()");
+      //
+      // modelBuilder.Entity<EntityBase>()
+      //    .Property(e => e.UpdatedAt)
+      //    .HasDefaultValueSql("now()");
+      
       modelBuilder.HasPostgresEnum<Role>();
       modelBuilder.HasPostgresExtension("postgis");
       
       modelBuilder.Entity<Restaurant>()
          .Property(r => r.Location)
          .HasColumnType("geography(Point,4326)");
-      
-      // modelBuilder.Entity<Account>()
-      //    .Property(a => a.Role)
-      //    .HasConversion(
-      //       v => v.ToString(),
-      //       v => (Role)Enum.Parse(typeof(Role), v)
-      //    );
-      
-      modelBuilder.Entity<Follow>()
-         .HasKey(f => f.Id);
 
       modelBuilder.Entity<Follow>()
          .HasOne(f => f.Follower)
          .WithMany(u => u.Followings)
          .HasForeignKey(f => f.FollowerId)
          .OnDelete(DeleteBehavior.Cascade);
-
+      
       modelBuilder.Entity<Follow>()
          .HasOne(f => f.Following)
          .WithMany(u => u.Followers)
@@ -62,28 +56,5 @@ public class RekomContext : DbContext
          .OnDelete(DeleteBehavior.Cascade);
       
       modelBuilder.Entity<RatingResultView>().ToView("RatingResultViews");
-   }
-   
-   public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
-   {
-      AddTimestamps();
-      return base.SaveChangesAsync(cancellationToken);
-   }
-
-   private void AddTimestamps()
-   {
-      var entities = ChangeTracker.Entries()
-         .Where(x => x is { Entity: EntityBase, State: EntityState.Added or EntityState.Modified });
-
-      foreach (var entity in entities)
-      {
-         var now = DateTime.UtcNow;
-
-         if (entity.State == EntityState.Added)
-         {
-            ((EntityBase)entity.Entity).CreatedAt = now;
-         }
-         ((EntityBase)entity.Entity).UpdatedAt = now;
-      }
    }
 }

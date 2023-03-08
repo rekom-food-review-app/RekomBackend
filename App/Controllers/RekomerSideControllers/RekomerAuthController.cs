@@ -39,6 +39,10 @@ public class RekomerAuthController : ControllerBase
             authToken
          });
       }
+      catch (NotFoundReactionException)
+      {
+         return BadRequest();
+      }
       catch (TooManyRequestException)
       {
          return StatusCode(429);

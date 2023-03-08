@@ -13,8 +13,8 @@ using RekomBackend.Database;
 namespace RekomBackend.Migrations
 {
     [DbContext(typeof(RekomContext))]
-    [Migration("20230308053050_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230308073450_GOD")]
+    partial class GOD
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -407,6 +407,8 @@ namespace RekomBackend.Migrations
 
                     b.HasIndex("AccountId")
                         .IsUnique();
+
+                    b.HasIndex("Location");
 
                     b.ToTable("Restaurants");
                 });

@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 
 namespace RekomBackend.App.Entities;
 
-// [Index(nameof(Location))]
+[Index(nameof(Location))]
 public class Restaurant : EntityBase
 {
    #region Columns

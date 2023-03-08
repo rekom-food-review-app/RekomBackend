@@ -19,9 +19,9 @@ public class Follow : EntityBase
 
    #region Relationships
 
-   public virtual Rekomer? Follower { get; set; }
+   public Rekomer? Follower { get; set; }
 
-   public virtual Rekomer? Following { get; set; }
+   public Rekomer? Following { get; set; }
    
    #endregion
 
