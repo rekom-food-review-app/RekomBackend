@@ -18,7 +18,7 @@ public class Restaurant : EntityBase
    [Column(TypeName = "varchar(500)")]
    public string Address { get; set; } = null!;
 
-   [Column(TypeName="geometry(point)")]
+   [Column(TypeName="geography(Point, 4326)")]
    public Point Location { get; set; } = null!;
 
    [Column(TypeName = "varchar(500)")] 

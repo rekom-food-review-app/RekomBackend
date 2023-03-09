@@ -30,10 +30,10 @@ public class RekomContext : DbContext
    {
       modelBuilder.HasPostgresEnum<Role>();
       modelBuilder.HasPostgresExtension("postgis");
-      
+
       modelBuilder.Entity<Restaurant>()
          .Property(r => r.Location)
-         .HasColumnType("geography(Point,4326)");
+         .HasColumnType("geography(Point)");
 
       modelBuilder.Entity<Follow>()
          .HasOne(f => f.Follower)
