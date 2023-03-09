@@ -79,8 +79,8 @@ public class RekomerFavouriteRestaurantService : IRekomerFavouriteRestaurantServ
          var ratingResult = await _context.RatingResultViews
             .Distinct()
             .SingleOrDefaultAsync(rat => rat.RestaurantId == fav.RestaurantId);
-         
-         fav.RestaurantRatingAverage = (float)Math.Round(ratingResult!.Average, 1);
+
+         if (ratingResult != null) fav.RestaurantRatingAverage = (float)Math.Round(ratingResult.Average, 1);
       }
 
       return favListResponse;

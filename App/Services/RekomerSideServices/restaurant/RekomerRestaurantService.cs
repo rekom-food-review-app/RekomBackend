@@ -25,13 +25,14 @@ public class RekomerRestaurantService : IRekomerRestaurantService
 
       if (restaurant is null) return null;
 
-      var ratingResult = await _context.RatingResultViews.Distinct().FirstAsync(rat => rat.RestaurantId == restaurantId);
-      ratingResult.Average = (float)Math.Round(ratingResult.Average, 1);
-      
+      var ratingResult = await _context.RatingResultViews.Distinct().FirstOrDefaultAsync(rat => rat.RestaurantId == restaurantId) 
+                         ??
+                         new RatingResultView();
+
       var restaurantDto = _mapper.Map<Restaurant, RekomerRestaurantDetailResponseDto>(restaurant);
       restaurantDto.RatingResult = ratingResult;
       restaurantDto.IsMyFav = await _context.FavouriteRestaurants
-         .SingleOrDefaultAsync(fav => fav.RekomerId == meId && fav.RestaurantId == restaurantId) 
+            .FirstOrDefaultAsync(fav => fav.RekomerId == meId && fav.RestaurantId == restaurantId) 
          is not null;
       
       return restaurantDto;

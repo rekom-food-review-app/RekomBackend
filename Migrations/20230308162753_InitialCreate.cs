@@ -7,7 +7,7 @@ using NetTopologySuite.Geometries;
 namespace RekomBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class GOD : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,8 +26,8 @@ namespace RekomBackend.Migrations
                     PasswordHash = table.Column<string>(type: "varchar(500)", nullable: false),
                     Role = table.Column<int>(type: "integer", nullable: false),
                     IsConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,8 +41,8 @@ namespace RekomBackend.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     Tag = table.Column<string>(type: "text", nullable: false),
                     Point = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,8 +56,8 @@ namespace RekomBackend.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     Tag = table.Column<string>(type: "text", nullable: false),
                     Point = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,10 +70,10 @@ namespace RekomBackend.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     Code = table.Column<string>(type: "varchar(4)", nullable: false),
-                    Expiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Expiration = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     AccountId = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -93,11 +93,11 @@ namespace RekomBackend.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     FullName = table.Column<string>(type: "varchar(200)", nullable: true),
                     AvatarUrl = table.Column<string>(type: "varchar(200)", nullable: false),
-                    Dob = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Dob = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Description = table.Column<string>(type: "varchar(100)", nullable: true),
                     AccountId = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -121,8 +121,8 @@ namespace RekomBackend.Migrations
                     Location = table.Column<Point>(type: "geography(Point,4326)", nullable: false),
                     Description = table.Column<string>(type: "varchar(500)", nullable: false),
                     AccountId = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -142,8 +142,8 @@ namespace RekomBackend.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     FollowerId = table.Column<string>(type: "text", nullable: false),
                     FollowingId = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -169,8 +169,8 @@ namespace RekomBackend.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     RekomerId = table.Column<string>(type: "text", nullable: false),
                     RestaurantId = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -199,8 +199,8 @@ namespace RekomBackend.Migrations
                     ImageUrl = table.Column<string>(type: "varchar(200)", nullable: false),
                     Description = table.Column<string>(type: "varchar(500)", nullable: true),
                     RestaurantId = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -226,8 +226,8 @@ namespace RekomBackend.Migrations
                     RestaurantId = table.Column<string>(type: "text", nullable: false),
                     RekomerId = table.Column<string>(type: "text", nullable: false),
                     RatingId = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -259,8 +259,8 @@ namespace RekomBackend.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     ImageUrl = table.Column<string>(type: "varchar(200)", nullable: false),
                     FoodId = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -281,8 +281,8 @@ namespace RekomBackend.Migrations
                     Content = table.Column<string>(type: "text", nullable: false),
                     ReviewId = table.Column<string>(type: "text", nullable: false),
                     RekomerId = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -309,8 +309,8 @@ namespace RekomBackend.Migrations
                     MediaUrl = table.Column<string>(type: "text", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false),
                     ReviewId = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -331,8 +331,8 @@ namespace RekomBackend.Migrations
                     ReviewId = table.Column<string>(type: "text", nullable: false),
                     RekomerId = table.Column<string>(type: "text", nullable: false),
                     ReactionId = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -473,6 +473,60 @@ namespace RekomBackend.Migrations
                 name: "IX_Reviews_RestaurantId",
                 table: "Reviews",
                 column: "RestaurantId");
+            
+                        
+            migrationBuilder.Sql(@"
+                CREATE VIEW ""RatingResultViews""
+                as
+                select
+                ""Rev"".""RestaurantId"" as ""RestaurantId"",
+                ROUND(avg(R2.""Point""), 1) as ""Average"",
+                count(*) as ""Amount"",
+                ROUND(COUNT(CASE WHEN R2.""Point"" = 5 THEN 1 END) * 100.0 / COUNT(*), 1) AS ""PercentFive"",
+                ROUND(COUNT(CASE WHEN R2.""Point"" = 4 THEN 1 END) * 100.0 / COUNT(*), 1) AS ""PercentFour"",
+                ROUND(COUNT(CASE WHEN R2.""Point"" = 3 THEN 1 END) * 100.0 / COUNT(*), 1) AS ""PercentThree"",
+                ROUND(COUNT(CASE WHEN R2.""Point"" = 2 THEN 1 END) * 100.0 / COUNT(*), 1) AS ""PercentTwo"",
+                ROUND(COUNT(CASE WHEN R2.""Point"" = 1 THEN 1 END) * 100.0 / COUNT(*), 1) AS ""PercentOne""
+                from ""Reviews"" ""Rev""
+                inner join ""Ratings"" R2 on R2.""Id"" = ""Rev"".""RatingId""
+                group by ""Rev"".""RestaurantId"";
+                ");
+
+            migrationBuilder.Sql(@"
+                INSERT INTO public.""Ratings"" (""Id"", ""Tag"", ""Point"", ""CreatedAt"", ""UpdatedAt"")
+                VALUES ('1'::text, 'kem'::text, 1::bigint, '2023-03-08 22:04:26.000000'::timestamp,
+                    '2023-03-08 22:04:27.000000'::timestamp);
+
+                INSERT INTO public.""Ratings"" (""Id"", ""Tag"", ""Point"", ""CreatedAt"", ""UpdatedAt"")
+                VALUES ('2'::text, 'yeu'::text, 2::bigint, '2023-03-08 22:04:30.000000'::timestamp,
+                '2023-03-08 22:04:31.000000'::timestamp);
+
+                INSERT INTO public.""Ratings"" (""Id"", ""Tag"", ""Point"", ""CreatedAt"", ""UpdatedAt"")
+                VALUES ('3'::text, 'trung-binh'::text, 3::bigint, '2023-03-08 22:04:32.000000'::timestamp,
+                '2023-03-08 22:04:33.000000'::timestamp);
+
+                INSERT INTO public.""Ratings"" (""Id"", ""Tag"", ""Point"", ""CreatedAt"", ""UpdatedAt"")
+                VALUES ('4'::text, 'kha'::text, 4::bigint, '2023-03-08 22:04:35.000000'::timestamp,
+                '2023-03-08 22:04:36.000000'::timestamp);
+
+                INSERT INTO public.""Ratings"" (""Id"", ""Tag"", ""Point"", ""CreatedAt"", ""UpdatedAt"")
+                VALUES ('5'::text, 'tot'::text, 5::bigint, '2023-03-08 22:04:37.000000'::timestamp,
+                '2023-03-08 22:04:37.000000'::timestamp);
+                ");
+
+            migrationBuilder.Sql(@"
+                INSERT INTO public.""Reactions"" (""Id"", ""Tag"", ""Point"", ""CreatedAt"", ""UpdatedAt"")
+                VALUES ('1'::text, 'agree'::text, 2::bigint, '2023-03-08 22:06:09.000000'::timestamp,
+                    '2023-03-08 22:06:12.000000'::timestamp);
+
+                INSERT INTO public.""Reactions"" (""Id"", ""Tag"", ""Point"", ""CreatedAt"", ""UpdatedAt"")
+                VALUES ('2'::text, 'disagree'::text, 0::bigint, '2023-03-08 22:06:15.000000'::timestamp,
+                '2023-03-08 22:06:16.000000'::timestamp);
+
+                INSERT INTO public.""Reactions"" (""Id"", ""Tag"", ""Point"", ""CreatedAt"", ""UpdatedAt"")
+                VALUES ('3'::text, 'useful'::text, 1::bigint, '2023-03-08 22:06:16.000000'::timestamp,
+                '2023-03-08 22:06:17.000000'::timestamp);
+                ");
         }
 
         /// <inheritdoc />

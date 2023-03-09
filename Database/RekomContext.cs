@@ -28,14 +28,6 @@ public class RekomContext : DbContext
 
    protected override void OnModelCreating(ModelBuilder modelBuilder)
    {
-      // modelBuilder.Entity<EntityBase>()
-      //    .Property(e => e.CreatedAt)
-      //    .HasDefaultValueSql("now()");
-      //
-      // modelBuilder.Entity<EntityBase>()
-      //    .Property(e => e.UpdatedAt)
-      //    .HasDefaultValueSql("now()");
-      
       modelBuilder.HasPostgresEnum<Role>();
       modelBuilder.HasPostgresExtension("postgis");
       
