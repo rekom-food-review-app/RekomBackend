@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using NpgsqlTypes;
 
 namespace RekomBackend.App.Entities;
 
@@ -16,6 +17,9 @@ public class Food : EntityBase
 
    [Column(TypeName = "varchar(500)")]
    public string? Description { get; set; }
+
+   [Column(TypeName = "tsvector")] 
+   public NpgsqlTsVector FullTextSearch { get; set; } = null!;
    
    #endregion
    

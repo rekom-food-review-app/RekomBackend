@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json;
+using NpgsqlTypes;
 using RekomBackend.App.Common.Enums;
 using RekomBackend.App.Entities;
 using RekomBackend.Database;
@@ -30,7 +31,7 @@ public class TestController : ControllerBase
       return result.urls.regular;
    }
    
-   [HttpPost("fake-data")]
+   [HttpPost("fake-restaurants")]
    // [Obsolete("Obsolete")]
    public async Task<IActionResult> Fake()
    {
@@ -53,21 +54,25 @@ public class TestController : ControllerBase
             CoverImageUrl = faker.Image.PicsumUrl(),
             Address = faker.Address.FullAddress(),
             Location = new Point(faker.Address.Latitude(), faker.Address.Longitude()),
-            Description = faker.Lorem.Letter(20)
+            Description = string.Join(" ", faker.Lorem.Words(30))
          };
 
+         account.Restaurant.FullTextSearch = NpgsqlTsVector.Parse($"{account.Restaurant.Description} {account.Restaurant.Address} {account.Restaurant.Name}");
+         
          var foodList = new List<Food>();
 
          for (var j = 0; j < 20; j++)
          {
-            var fod = new Food()
+            var fod = new Food
             {
                Name = faker.Lorem.Letter(4),
                Price = (float)faker.Random.Decimal(1, 100),
                ImageUrl = faker.Image.PicsumUrl(),
-               Description = faker.Lorem.Letter(20)
+               Description = string.Join(" ", faker.Lorem.Words(30))
             };
-
+            
+            fod.FullTextSearch = NpgsqlTsVector.Parse($"{fod.Name} {fod.Description} {account.Restaurant.Name} {account.Restaurant.Description}");
+            
             var imageList = new List<FoodImage>();
             for (var k = 0; k < 20; k++)
             {

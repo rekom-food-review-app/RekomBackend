@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
+using NpgsqlTypes;
 
 namespace RekomBackend.App.Entities;
 
@@ -23,6 +24,9 @@ public class Restaurant : EntityBase
 
    [Column(TypeName = "varchar(500)")] 
    public string Description { get; set; } = null!;
+
+   [Column(TypeName = "tsvector")] 
+   public NpgsqlTsVector FullTextSearch { get; set; } = null!;
    
    #endregion
 

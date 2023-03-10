@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using NpgsqlTypes;
 
 namespace RekomBackend.App.Entities;
 
@@ -17,6 +18,9 @@ public class Rekomer : EntityBase
 
    [Column(TypeName = "varchar(100)")]
    public string? Description { get; set; }
+   
+   [Column(TypeName = "tsvector")]
+   public NpgsqlTsVector FullTextSearch { get; set; } = null!;
 
    #endregion
 
