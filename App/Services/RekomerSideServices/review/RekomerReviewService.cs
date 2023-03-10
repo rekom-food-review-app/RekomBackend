@@ -94,8 +94,8 @@ public class RekomerReviewService : IRekomerReviewService
 
       var review = await _context.Reviews.SingleOrDefaultAsync(rev => rev.Id == reviewId);
       if (review is null) throw new NotFoundReviewException();
-      
-      review.AmountReply += 1;
+
+      review.AmountReply = 1 + (uint) await _context.Comments.Where(cmt => cmt.ReviewId == reviewId).CountAsync();
       
       var comment = new Comment
       {
@@ -185,20 +185,31 @@ public class RekomerReviewService : IRekomerReviewService
       var review = await _context.Reviews.SingleOrDefaultAsync(rev => rev.Id == reviewId);
       if (review is null) throw new NotFoundReviewException();
       
-      switch (reactionId)
-      {
-         case "1": review.AmountAgree += 1; break;
-         case "2": review.AmountDisagree += 1; break;
-         case "3": review.AmountUseful += 1; break;
-         default: throw new NotFoundReactionException();
-      }
-      
       _context.ReviewReactions.Add(new ReviewReaction
       {
          ReactionId = reactionId,
          ReviewId = reviewId,
          RekomerId = meId
       });
+      await _context.SaveChangesAsync();
+      await UpdateReviewReactionAsync(reviewId, reactionId);
+   }
+
+   private async Task<uint> GetReviewReactionAmount(string reviewId, string reactionId)
+   {
+      return (uint)await _context.ReviewReactions
+         .Where(rre => rre.ReviewId == reviewId && rre.ReactionId == reactionId)
+         .CountAsync();
+   }
+
+   private async Task UpdateReviewReactionAsync(string reviewId, string reactionId)
+   {
+      var review = await _context.Reviews.SingleOrDefaultAsync(rev => rev.Id == reviewId);
+      if (review is null) throw new NotFoundReviewException();
+      
+      review.AmountAgree = await GetReviewReactionAmount(review.Id, reactionId); 
+      review.AmountDisagree = await GetReviewReactionAmount(review.Id, reactionId);
+      review.AmountUseful = await GetReviewReactionAmount(review.Id, reactionId);
 
       await _context.SaveChangesAsync();
    }

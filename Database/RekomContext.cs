@@ -33,7 +33,7 @@ public class RekomContext : DbContext
 
       modelBuilder.Entity<Restaurant>()
          .Property(r => r.Location)
-         .HasColumnType("geography(Point)");
+         .HasColumnType("geography(Point, 4326)");
 
       modelBuilder.Entity<Follow>()
          .HasOne(f => f.Follower)
