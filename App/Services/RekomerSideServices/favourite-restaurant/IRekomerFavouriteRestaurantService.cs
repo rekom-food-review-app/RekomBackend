@@ -8,5 +8,5 @@ public interface IRekomerFavouriteRestaurantService
    
    public Task DeleteAsync(string meId, string restaurantId);
 
-   public Task<IEnumerable<RekomerRestaurantCardResponseDto>> GetMyFavouriteList(string meId, int page, int size, DateTime? lastTimestamp = null);
+   public Task<IEnumerable<RekomerFavRestaurantCardResponseDto>> GetMyFavouriteList(string meId, int page, int size, DateTime? lastTimestamp = null);
 }

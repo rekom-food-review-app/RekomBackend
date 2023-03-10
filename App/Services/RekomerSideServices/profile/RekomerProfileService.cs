@@ -37,7 +37,7 @@ public class RekomerProfileService : IRekomerProfileService
       me.AvatarUrl = avatarUrl;
       me.Description = updateRequest.Description;
       me.Dob = updateRequest.Dob;
-      me.FullTextSearch = NpgsqlTsVector.Parse($"{me.Description} {me.Account!.Username}  {me.FullName}");
+      // me.FullTextSearch = NpgsqlTsVector.Parse($"{me.Description} {me.Account!.Username} {me.FullName}");
 
       await _context.SaveChangesAsync();
    }

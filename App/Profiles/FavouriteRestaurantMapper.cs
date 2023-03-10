@@ -8,7 +8,7 @@ public class FavouriteRestaurantMapper : Profile
 {
    public FavouriteRestaurantMapper()
    {
-      CreateMap<FavouriteRestaurant, RekomerRestaurantCardResponseDto>()
+      CreateMap<FavouriteRestaurant, RekomerFavRestaurantCardResponseDto>()
          .ForMember(
             dest => dest.Id,
             opt => opt.MapFrom(src => src.Id)

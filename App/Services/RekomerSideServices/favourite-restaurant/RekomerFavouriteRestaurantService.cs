@@ -51,7 +51,7 @@ public class RekomerFavouriteRestaurantService : IRekomerFavouriteRestaurantServ
       await _context.SaveChangesAsync();
    }
 
-   public async Task<IEnumerable<RekomerRestaurantCardResponseDto>> GetMyFavouriteList(string meId, int page, int size, DateTime? lastTimestamp = null)
+   public async Task<IEnumerable<RekomerFavRestaurantCardResponseDto>> GetMyFavouriteList(string meId, int page, int size, DateTime? lastTimestamp = null)
    {
       var me = await _context.Rekomers.FindAsync(meId);
       if (me is null) throw new InvalidAccessTokenException();
@@ -71,7 +71,7 @@ public class RekomerFavouriteRestaurantService : IRekomerFavouriteRestaurantServ
 
       var favListResponse = favList
          .OrderByDescending(fav => fav.CreatedAt)
-         .Select(fav => _mapper.Map<RekomerRestaurantCardResponseDto>(fav))
+         .Select(fav => _mapper.Map<RekomerFavRestaurantCardResponseDto>(fav))
          .ToList();
       
       foreach (var fav in favListResponse)
