@@ -42,11 +42,19 @@ public class RekomContext : DbContext
          // .HasOperators("gin");
       
       modelBuilder.Entity<Food>()
+         .HasGeneratedTsVectorColumn(
+            fod => fod.FullTextSearch,
+            "english",
+            fod => new { fod.Name, fod.Description })
          .HasIndex(r => r.FullTextSearch)
          .HasMethod("GIN");
          // .HasOperators("gin");
       
          modelBuilder.Entity<Rekomer>()
+         .HasGeneratedTsVectorColumn(
+            fod => fod.FullTextSearch,
+            "english",
+            fod => new { fod.FullName, fod.Description })
          .HasIndex(r => r.FullTextSearch)
          .HasMethod("GIN");
          // .HasOperators("gin");
