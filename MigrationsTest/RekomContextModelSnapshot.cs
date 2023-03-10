@@ -193,6 +193,10 @@ namespace RekomBackend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FullTextSearch");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("FullTextSearch"), "GIN");
+
                     b.HasIndex("RestaurantId");
 
                     b.ToTable("Foods");
@@ -371,6 +375,10 @@ namespace RekomBackend.Migrations
                     b.HasIndex("AccountId")
                         .IsUnique();
 
+                    b.HasIndex("FullTextSearch");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("FullTextSearch"), "GIN");
+
                     b.ToTable("Rekomers");
                 });
 
@@ -417,6 +425,10 @@ namespace RekomBackend.Migrations
 
                     b.HasIndex("AccountId")
                         .IsUnique();
+
+                    b.HasIndex("FullTextSearch");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("FullTextSearch"), "GIN");
 
                     b.HasIndex("Location");
 

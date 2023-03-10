@@ -24,6 +24,7 @@ public class RekomContext : DbContext
    
    public RekomContext(DbContextOptions<RekomContext> options) : base(options)
    {
+      
    }
 
    protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,6 +32,21 @@ public class RekomContext : DbContext
       modelBuilder.HasPostgresEnum<Role>();
       modelBuilder.HasPostgresExtension("postgis");
 
+      modelBuilder.Entity<Restaurant>()
+         .HasIndex(r => r.FullTextSearch)
+         .HasMethod("GIN");
+         // .HasOperators("gin");
+
+      modelBuilder.Entity<Food>()
+         .HasIndex(r => r.FullTextSearch)
+         .HasMethod("GIN");
+         // .HasOperators("gin");
+
+         modelBuilder.Entity<Rekomer>()
+         .HasIndex(r => r.FullTextSearch)
+         .HasMethod("GIN");
+         // .HasOperators("gin");
+      
       modelBuilder.Entity<Restaurant>()
          .Property(r => r.Location)
          .HasColumnType("geography(Point, 4326)");

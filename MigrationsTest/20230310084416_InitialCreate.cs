@@ -411,6 +411,12 @@ namespace RekomBackend.Migrations
                 column: "FoodId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Foods_FullTextSearch",
+                table: "Foods",
+                column: "FullTextSearch")
+                .Annotation("Npgsql:IndexMethod", "GIN");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Foods_RestaurantId",
                 table: "Foods",
                 column: "RestaurantId");
@@ -433,10 +439,22 @@ namespace RekomBackend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Rekomers_FullTextSearch",
+                table: "Rekomers",
+                column: "FullTextSearch")
+                .Annotation("Npgsql:IndexMethod", "GIN");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Restaurants_AccountId",
                 table: "Restaurants",
                 column: "AccountId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Restaurants_FullTextSearch",
+                table: "Restaurants",
+                column: "FullTextSearch")
+                .Annotation("Npgsql:IndexMethod", "GIN");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Restaurants_Location",
@@ -477,8 +495,8 @@ namespace RekomBackend.Migrations
                 name: "IX_Reviews_RestaurantId",
                 table: "Reviews",
                 column: "RestaurantId");
-
-            migrationBuilder.Sql(@"
+            
+             migrationBuilder.Sql(@"
                 CREATE VIEW ""RatingResultViews""
                 as
                 select
