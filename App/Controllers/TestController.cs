@@ -57,7 +57,7 @@ public class TestController : ControllerBase
             Description = string.Join(" ", faker.Lorem.Words(30))
          };
 
-         account.Restaurant.FullTextSearch = NpgsqlTsVector.Parse($"{account.Restaurant.Description} {account.Restaurant.Address} {account.Restaurant.Name}");
+         // account.Restaurant.FullTextSearch = NpgsqlTsVector.Parse($"{account.Restaurant.Description} {account.Restaurant.Address} {account.Restaurant.Name}");
          
          var foodList = new List<Food>();
 
@@ -71,7 +71,7 @@ public class TestController : ControllerBase
                Description = string.Join(" ", faker.Lorem.Words(30))
             };
             
-            fod.FullTextSearch = NpgsqlTsVector.Parse($"{fod.Name} {fod.Description} {account.Restaurant.Name} {account.Restaurant.Description}");
+            // fod.FullTextSearch = NpgsqlTsVector.Parse($"{fod.Name} {fod.Description} {account.Restaurant.Name} {account.Restaurant.Description}");
             
             var imageList = new List<FoodImage>();
             for (var k = 0; k < 20; k++)
