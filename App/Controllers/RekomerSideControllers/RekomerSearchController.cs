@@ -4,7 +4,7 @@ namespace RekomBackend.App.Controllers.RekomerSideControllers;
 
 [ApiController]
 [Route("rekomer-side/search")]
-public class RekomerSearchService : ControllerBase
+public class RekomerSearchController : ControllerBase
 {
    
 }
