@@ -122,7 +122,9 @@ namespace RekomBackend.Migrations
                     Address = table.Column<string>(type: "varchar(500)", nullable: false),
                     Location = table.Column<Point>(type: "geography(Point, 4326)", nullable: false),
                     Description = table.Column<string>(type: "varchar(500)", nullable: false),
-                    FullTextSearch = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false),
+                    FullTextSearch = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
+                        .Annotation("Npgsql:TsVectorConfig", "english")
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "Name", "Description", "Address" }),
                     AccountId = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
@@ -496,6 +498,7 @@ namespace RekomBackend.Migrations
                 table: "Reviews",
                 column: "RestaurantId");
             
+                       
              migrationBuilder.Sql(@"
                 CREATE VIEW ""RatingResultViews""
                 as

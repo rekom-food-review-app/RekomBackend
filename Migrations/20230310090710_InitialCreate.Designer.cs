@@ -14,7 +14,7 @@ using RekomBackend.Database;
 namespace RekomBackend.Migrations
 {
     [DbContext(typeof(RekomContext))]
-    [Migration("20230310084416_InitialCreate")]
+    [Migration("20230310090710_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -411,7 +411,10 @@ namespace RekomBackend.Migrations
 
                     b.Property<NpgsqlTsVector>("FullTextSearch")
                         .IsRequired()
-                        .HasColumnType("tsvector");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "Description", "Address" });
 
                     b.Property<Point>("Location")
                         .IsRequired()

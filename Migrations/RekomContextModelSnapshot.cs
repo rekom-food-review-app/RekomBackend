@@ -408,7 +408,10 @@ namespace RekomBackend.Migrations
 
                     b.Property<NpgsqlTsVector>("FullTextSearch")
                         .IsRequired()
-                        .HasColumnType("tsvector");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "Description", "Address" });
 
                     b.Property<Point>("Location")
                         .IsRequired()

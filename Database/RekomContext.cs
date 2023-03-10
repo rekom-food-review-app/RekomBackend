@@ -33,15 +33,19 @@ public class RekomContext : DbContext
       modelBuilder.HasPostgresExtension("postgis");
 
       modelBuilder.Entity<Restaurant>()
+         .HasGeneratedTsVectorColumn(
+            r => r.FullTextSearch,
+            "english",
+            r => new { r.Name, r.Description, r.Address })
          .HasIndex(r => r.FullTextSearch)
          .HasMethod("GIN");
          // .HasOperators("gin");
-
+      
       modelBuilder.Entity<Food>()
          .HasIndex(r => r.FullTextSearch)
          .HasMethod("GIN");
          // .HasOperators("gin");
-
+      
          modelBuilder.Entity<Rekomer>()
          .HasIndex(r => r.FullTextSearch)
          .HasMethod("GIN");
