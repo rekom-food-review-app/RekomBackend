@@ -17,7 +17,7 @@ public class RekomerSearchService : IRekomerSearchService
       _mapper = mapper;
    }
 
-   public async Task<IEnumerable<RekomerRestaurantCardResponseDto>> SearchForRestaurant(RekomerSearchForRestaurantRequestDto searchRequest)
+   public async Task<IEnumerable<RekomerRestaurantCardResponseDto>> SearchForRestaurant(RekomerSearchRequestDto searchRequest)
    {
       // var searchTerms = searchRequest.Keyword.Split(' ');
       //

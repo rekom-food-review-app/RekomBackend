@@ -5,5 +5,7 @@ namespace RekomBackend.App.Services.RekomerSideServices;
 
 public interface IRekomerSearchService
 {
-   public Task<IEnumerable<RekomerRestaurantCardResponseDto>> SearchForRestaurant(RekomerSearchForRestaurantRequestDto searchRequest);
+   public Task<IEnumerable<RekomerRestaurantCardResponseDto>> SearchForRestaurant(RekomerSearchRequestDto searchRequest);
+   
+   // public Task<IEnumerable<RekomerRestaurantCardResponseDto>> SearchForFood(RekomerSearchRequestDto searchSearchRequest);
 }

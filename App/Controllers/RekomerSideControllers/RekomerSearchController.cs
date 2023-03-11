@@ -16,7 +16,7 @@ public class RekomerSearchController : ControllerBase
    }
 
    [HttpGet]
-   public async Task<IActionResult> SearchForRestaurants([FromQuery]RekomerSearchForRestaurantRequestDto searchRequest)
+   public async Task<IActionResult> SearchForRestaurants([FromQuery]RekomerSearchRequestDto searchRequest)
    {
       var restaurantList = await _searchService.SearchForRestaurant(searchRequest);
 

@@ -4,7 +4,7 @@ using RekomBackend.App.Helpers;
 
 namespace RekomBackend.App.Dto.RekomerSideDtos.Request;
 
-public class RekomerSearchForRestaurantRequestDto : PaginationRequestDto
+public class RekomerSearchRequestDto : PaginationRequestDto
 {
    [MinLength(2)]
    public string Keyword { get; set; } = null!;
