@@ -37,7 +37,7 @@ public class TestController : ControllerBase
    {
       var faker = new Faker("en");
       
-      for (var i = 0; i <= 20; i++)
+      for (var i = 0; i <= 1000; i++)
       {
          var account = new Account()
          {
@@ -61,7 +61,7 @@ public class TestController : ControllerBase
          
          var foodList = new List<Food>();
 
-         for (var j = 0; j < 20; j++)
+         for (var j = 0; j < 2; j++)
          {
             var fod = new Food
             {
@@ -74,7 +74,7 @@ public class TestController : ControllerBase
             // fod.FullTextSearch = NpgsqlTsVector.Parse($"{fod.Name} {fod.Description} {account.Restaurant.Name} {account.Restaurant.Description}");
             
             var imageList = new List<FoodImage>();
-            for (var k = 0; k < 20; k++)
+            for (var k = 0; k < 2; k++)
             {
                var img = new FoodImage { ImageUrl = faker.Image.PicsumUrl() };
                imageList.Add(img);

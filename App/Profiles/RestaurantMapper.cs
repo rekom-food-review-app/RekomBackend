@@ -18,5 +18,7 @@ public class RestaurantMapper : Profile
                Longitude = (float)src.Location.Y
             })
          );
+
+      CreateMap<Restaurant, RekomerRestaurantCardResponseDto>();
    }
 }

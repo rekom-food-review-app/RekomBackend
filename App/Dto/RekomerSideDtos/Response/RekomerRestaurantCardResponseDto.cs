@@ -4,13 +4,9 @@ public class RekomerRestaurantCardResponseDto
 {
    public string Id { get; set; } = null!;
 
-   public string RestaurantId { get; set; } = null!;
+   public string Name { get; set; } = null!;
 
-   public string RestaurantName { get; set; } = null!;
-   
-   public string RestaurantCoverImageUrl { get; set; } = null!;
-   
-   public float RestaurantRatingAverage { get; set; }
+   public string CoverImageUrl { get; set; } = null!;
 
-   public DateTime CreatedAt { get; set; }
+   public float RatingAverage { get; set; }
 }
