@@ -6,6 +6,8 @@ namespace RekomBackend.Database;
 
 public class RekomContext : DbContext
 {
+   private readonly IConfiguration _configuration;
+   
    public DbSet<Account> Accounts { get; set; } = null!;
    public DbSet<Otp> Otps { get; set; } = null!;
    public DbSet<Rekomer> Rekomers { get; set; } = null!;
@@ -22,11 +24,23 @@ public class RekomContext : DbContext
 
    public DbSet<RatingResultView> RatingResultViews { get; set; } = null!;
    
-   public RekomContext(DbContextOptions<RekomContext> options) : base(options)
+   public RekomContext(DbContextOptions<RekomContext> options, IConfiguration configuration) : base(options)
    {
-      
+      _configuration = configuration;
    }
 
+   public RekomContext(IConfiguration configuration)
+   {
+      _configuration = configuration;
+   }
+   
+   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+   {
+      optionsBuilder.UseNpgsql(
+         _configuration.GetValue<string>("PostgresConnectionString")!,
+         o => o.UseNetTopologySuite());
+   }
+   
    protected override void OnModelCreating(ModelBuilder modelBuilder)
    {
       modelBuilder.HasPostgresEnum<Role>();

@@ -9,5 +9,6 @@ public class RekomerMapper : Profile
    public RekomerMapper()
    {
       CreateMap<Rekomer, RekomerProfileDetailResponseDto>();
+      CreateMap<Rekomer, RekomerCardInfoResponseDto>();
    }
 }
