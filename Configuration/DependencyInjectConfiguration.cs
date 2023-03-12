@@ -44,6 +44,7 @@ public static class DependencyInjectConfiguration
       services.AddScoped<IMailHelper, MailHelper>();
       services.AddScoped<IJwtHelper, JwtHelper>();
       services.AddScoped<IS3Helper, S3Helper>();
+      services.AddScoped<IStringHelper, StringHelper>();
       return services;
    }
 }
