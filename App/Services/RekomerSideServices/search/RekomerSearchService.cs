@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using NpgsqlTypes;
 using RekomBackend.App.Dto.RekomerSideDtos.Request;
 using RekomBackend.App.Dto.RekomerSideDtos.Response;
 using RekomBackend.Database;
@@ -26,7 +27,7 @@ public class RekomerSearchService : IRekomerSearchService
       await using var dbContext = new RekomContext(_configuration);
       
       var restaurantList = await dbContext.Restaurants
-         .Where(res => res.FullTextSearch.Matches(searchRequest.Keyword))
+         .Where(res => res.FullTextSearch.Matches(EF.Functions.ToTsQuery("english", string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) + ":*" )))
          .Skip((searchRequest.Page - 1) * searchRequest.Size)
          .Take(searchRequest.Size)
          .ToListAsync();
@@ -50,7 +51,7 @@ public class RekomerSearchService : IRekomerSearchService
       await using var dbContext = new RekomContext(_configuration);
       
       var foodList = await dbContext.Foods
-         .Where(fod => fod.FullTextSearch.Matches(searchRequest.Keyword))
+         .Where(fod => fod.FullTextSearch.Matches(EF.Functions.ToTsQuery("english", string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) + ":*" )))
          .Skip((searchRequest.Page - 1) * searchRequest.Size)
          .Take(searchRequest.Size)
          .ToListAsync();
@@ -65,7 +66,7 @@ public class RekomerSearchService : IRekomerSearchService
       await using var dbContext = new RekomContext(_configuration); 
       
       var rekomerList = await dbContext.Rekomers
-         .Where(rek => rek.FullTextSearch.Matches(searchRequest.Keyword) && rek.Id != meId)
+         .Where(rek => rek.FullTextSearch.Matches(EF.Functions.ToTsQuery("english", string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) + ":*" )))
          .Skip((searchRequest.Page - 1) * searchRequest.Size)
          .Take(searchRequest.Size)
          .ToListAsync();

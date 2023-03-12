@@ -33,6 +33,7 @@ public class RekomerSearchController : ControllerBase
    }
    
    [HttpGet("restaurants")]
+   [AllowAnonymous]
    public async Task<IActionResult> SearchForRestaurants([FromQuery]RekomerSearchRequestDto searchRequest)
    {
       var restaurantList = await _searchService.SearchForRestaurantAsync(searchRequest);
