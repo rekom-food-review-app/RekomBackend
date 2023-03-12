@@ -36,8 +36,8 @@ public class TestController : ControllerBase
    public async Task<IActionResult> Fake()
    {
       var faker = new Faker("en");
-      
-      for (var i = 0; i <= 1000; i++)
+      var accountList = new List<Account>();
+      for (var i = 0; i <= 500; i++)
       {
          var account = new Account()
          {
@@ -61,7 +61,7 @@ public class TestController : ControllerBase
          
          var foodList = new List<Food>();
 
-         for (var j = 0; j < 2; j++)
+         for (var j = 0; j < 16; j++)
          {
             var fod = new Food
             {
@@ -74,7 +74,7 @@ public class TestController : ControllerBase
             // fod.FullTextSearch = NpgsqlTsVector.Parse($"{fod.Name} {fod.Description} {account.Restaurant.Name} {account.Restaurant.Description}");
             
             var imageList = new List<FoodImage>();
-            for (var k = 0; k < 2; k++)
+            for (var k = 0; k < 10; k++)
             {
                var img = new FoodImage { ImageUrl = faker.Image.PicsumUrl() };
                imageList.Add(img);
@@ -86,10 +86,10 @@ public class TestController : ControllerBase
 
          account.Restaurant.Menu = foodList;
          
-         _context.Accounts.Add(account);
-         await _context.SaveChangesAsync();
+         accountList.Add(account);
       }
-      
+      _context.Accounts.AddRange(accountList);
+      await _context.SaveChangesAsync();
       return Ok();
    }
 }
