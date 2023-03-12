@@ -5,6 +5,8 @@ namespace RekomBackend.App.Dto.RekomerSideDtos.Response;
 
 public class RekomerRestaurantDetailResponseDto
 {
+   public string Id { get; set; } = null!;
+   
    public string CoverImageUrl { get; set; } = null!;
 
    public string Name { get; set; } = null!;
