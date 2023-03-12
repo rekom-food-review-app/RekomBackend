@@ -66,7 +66,9 @@ public class RekomerSearchService : IRekomerSearchService
       await using var dbContext = new RekomContext(_configuration); 
       
       var rekomerList = await dbContext.Rekomers
-         .Where(rek => rek.FullTextSearch.Matches(EF.Functions.ToTsQuery("english", string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) + ":*" )))
+         .Where(rek => 
+            rek.FullTextSearch.Matches(EF.Functions.ToTsQuery("english", string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) + ":*" ))
+            && rek.Id != meId)
          .Skip((searchRequest.Page - 1) * searchRequest.Size)
          .Take(searchRequest.Size)
          .ToListAsync();
