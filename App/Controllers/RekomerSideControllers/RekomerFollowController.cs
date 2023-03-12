@@ -86,11 +86,11 @@ public class RekomerFollowController : ControllerBase
       try
       {
          var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
-         var followerList = await _followService.GetFollowerListByRekomerAsync(meId, page, size, lastTimestamp);
+         var followList = await _followService.GetFollowerListByRekomerAsync(meId, page, size, lastTimestamp);
          
          return Ok(new
          {
-            followerList
+            followList
          });
       }
       catch (NotFoundRekomerException)
@@ -105,11 +105,11 @@ public class RekomerFollowController : ControllerBase
       try
       {
          var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
-         var followingList = await _followService.GetFollowingListByRekomerAsync(meId, page, size, lastTimestamp);
+         var followList = await _followService.GetFollowingListByRekomerAsync(meId, page, size, lastTimestamp);
          
          return Ok(new
          {
-            followerList = followingList
+            followList
          });
       }
       catch (NotFoundRekomerException)
@@ -123,11 +123,11 @@ public class RekomerFollowController : ControllerBase
    {
       try
       {
-         var followerList = await _followService.GetFollowerListByRekomerAsync(rekomerId, page, size, lastTimestamp);
+         var followList = await _followService.GetFollowerListByRekomerAsync(rekomerId, page, size, lastTimestamp);
          
          return Ok(new
          {
-            followerList
+            followList
          });
       }
       catch (NotFoundRekomerException)
@@ -141,11 +141,11 @@ public class RekomerFollowController : ControllerBase
    {
       try
       {
-         var followingList = await _followService.GetFollowingListByRekomerAsync(rekomerId, page, size, lastTimestamp);
+         var followList = await _followService.GetFollowingListByRekomerAsync(rekomerId, page, size, lastTimestamp);
          
          return Ok(new
          {
-            followerList = followingList
+            followList
          });
       }
       catch (NotFoundRekomerException)
