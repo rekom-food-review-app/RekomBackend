@@ -105,11 +105,11 @@ public class RekomerFollowController : ControllerBase
       try
       {
          var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
-         var followerList = await _followService.GetFollowingListByRekomerAsync(meId, page, size, lastTimestamp);
+         var followingList = await _followService.GetFollowingListByRekomerAsync(meId, page, size, lastTimestamp);
          
          return Ok(new
          {
-            followerList
+            followerList = followingList
          });
       }
       catch (NotFoundRekomerException)
@@ -141,11 +141,11 @@ public class RekomerFollowController : ControllerBase
    {
       try
       {
-         var followerList = await _followService.GetFollowingListByRekomerAsync(rekomerId, page, size, lastTimestamp);
+         var followingList = await _followService.GetFollowingListByRekomerAsync(rekomerId, page, size, lastTimestamp);
          
          return Ok(new
          {
-            followerList
+            followerList = followingList
          });
       }
       catch (NotFoundRekomerException)
