@@ -96,7 +96,9 @@ namespace RekomBackend.Migrations
                     AvatarUrl = table.Column<string>(type: "varchar(200)", nullable: false),
                     Dob = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Description = table.Column<string>(type: "varchar(100)", nullable: true),
-                    FullTextSearch = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false),
+                    FullTextSearch = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
+                        .Annotation("Npgsql:TsVectorConfig", "english")
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "FullName", "Description" }),
                     AccountId = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
@@ -203,7 +205,9 @@ namespace RekomBackend.Migrations
                     Price = table.Column<float>(type: "real", nullable: false),
                     ImageUrl = table.Column<string>(type: "varchar(200)", nullable: false),
                     Description = table.Column<string>(type: "varchar(500)", nullable: true),
-                    FullTextSearch = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false),
+                    FullTextSearch = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
+                        .Annotation("Npgsql:TsVectorConfig", "english")
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "Name", "Description" }),
                     RestaurantId = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
@@ -498,8 +502,8 @@ namespace RekomBackend.Migrations
                 table: "Reviews",
                 column: "RestaurantId");
             
-                       
-             migrationBuilder.Sql(@"
+            
+                                     migrationBuilder.Sql(@"
                 CREATE VIEW ""RatingResultViews""
                 as
                 select

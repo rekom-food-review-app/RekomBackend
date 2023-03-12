@@ -39,7 +39,7 @@ public class RekomerRegisterService : IRekomerRegisterService
          AccountId = account.Id
       };
       
-      account.Rekomer.FullTextSearch = NpgsqlTsVector.Parse($"{account.Rekomer.Description} {account.Username}  {account.Rekomer.FullName}");
+      // account.Rekomer.FullTextSearch = NpgsqlTsVector.Parse($"{account.Rekomer.Description} {account.Username}  {account.Rekomer.FullName}");
       
       _context.Accounts.Add(account);
       await _context.SaveChangesAsync();

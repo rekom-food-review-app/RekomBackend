@@ -14,8 +14,8 @@ using RekomBackend.Database;
 namespace RekomBackend.Migrations
 {
     [DbContext(typeof(RekomContext))]
-    [Migration("20230310132544_UpdateFullTextSearch")]
-    partial class UpdateFullTextSearch
+    [Migration("20230312164006_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

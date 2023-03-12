@@ -11,6 +11,7 @@ public class S3Helper : IS3Helper
    private readonly string _key;
    private readonly string _secretKey;
    private readonly RegionEndpoint _region;
+   private readonly string _baseUrl;
 
    public S3Helper(IConfiguration configuration)
    {
@@ -18,6 +19,7 @@ public class S3Helper : IS3Helper
       _key = configuration.GetValue<string>("S3:Key")!;
       _secretKey = configuration.GetValue<string>("S3:SecretKey")!;
       _region = RegionEndpoint.APNortheast1;
+      _baseUrl = "https://rekom-bucket.s3.ap-northeast-1.amazonaws.com";
    }
 
    // public Task UploadOneFileAsync(IFormFile file, out string url)
@@ -27,7 +29,7 @@ public class S3Helper : IS3Helper
 
    public string UploadOneFile(IFormFile file)
    {
-      var imgPath = $"{Guid.NewGuid()}.{Path.GetExtension(file.Name)}";
+      var imgPath = $"{_baseUrl}/{Guid.NewGuid()}.{Path.GetExtension(file.Name)}";
       
       Task.Run(async () =>
       {
