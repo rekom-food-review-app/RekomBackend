@@ -1,8 +1,10 @@
 ﻿using System.Security.Claims;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using RekomBackend.App.Common.Enums;
 using RekomBackend.App.Dto.RekomerSideDtos.Request;
+using RekomBackend.App.Dto.RekomerSideDtos.Response;
 using RekomBackend.App.Entities;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Helpers;
@@ -15,12 +17,14 @@ public class RekomerAuthService : IRekomerAuthService
    private readonly RekomContext _context;
    private readonly IJwtHelper _jwtHelper;
    private readonly IRekomerAuthRateLimitService _rateLimitService;
+   private readonly IMapper _mapper;
 
-   public RekomerAuthService(RekomContext context, IJwtHelper jwtHelper, IRekomerAuthRateLimitService rateLimitService)
+   public RekomerAuthService(RekomContext context, IJwtHelper jwtHelper, IRekomerAuthRateLimitService rateLimitService, IMapper mapper)
    {
       _context = context;
       _jwtHelper = jwtHelper;
       _rateLimitService = rateLimitService;
+      _mapper = mapper;
    }
 
    public RekomerAuthToken CreateAuthToken(Rekomer rekomer)
@@ -40,7 +44,7 @@ public class RekomerAuthService : IRekomerAuthService
       };
    }
    
-   public async Task<RekomerAuthToken?> AuthWithEmailAsync(string ipAddress, RekomerAuthEmailRequestDto authRequest)
+   public async Task<RekomerAuthResponseDto?> AuthWithEmailAsync(string ipAddress, RekomerAuthEmailRequestDto authRequest)
    {
       if (!(await _rateLimitService.IsAllowedAsync(ipAddress))) throw new TooManyRequestException();
       
@@ -54,6 +58,11 @@ public class RekomerAuthService : IRekomerAuthService
 
       if (foundAccount is null) return null;
       if (foundAccount.Rekomer is null) throw new NotFoundReactionException();
-      return CreateAuthToken(foundAccount.Rekomer);
+      // return CreateAuthToken(foundAccount.Rekomer);
+      return new RekomerAuthResponseDto
+      {
+         AuthToken = CreateAuthToken(foundAccount.Rekomer),
+         Profile = _mapper.Map<RekomerBasicProfile>(foundAccount.Rekomer)
+      };
    }
 }

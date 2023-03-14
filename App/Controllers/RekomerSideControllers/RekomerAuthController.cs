@@ -23,11 +23,10 @@ public class RekomerAuthController : ControllerBase
    {
       try
       {
-         // var ipAddress = _httpContextAccessor.HttpContext!.Connection.RemoteIpAddress!.ToString();
          var ipAddress = HttpContext.Request.Headers["X-Forwarded-For"].ToString();
-         var authToken = await _authService.AuthWithEmailAsync(ipAddress, authRequest);
+         var authResponse = await _authService.AuthWithEmailAsync(ipAddress, authRequest);
 
-         if (authToken is null)
+         if (authResponse is null)
          {
             return Unauthorized();
          }
@@ -36,7 +35,8 @@ public class RekomerAuthController : ControllerBase
          {
             code = "ASUC",
             message = "Authenticate successfully.",
-            authToken
+            authResponse.AuthToken,
+            authResponse.Profile
          });
       }
       catch (NotFoundReactionException)
