@@ -5,7 +5,7 @@ namespace RekomBackend.App.Services.RekomerSideServices;
 
 public interface IRekomerProfileService
 {
-   public Task UpdateMyProfileAsync(string meId, RekomerUpdateProfileRequestDto updateRequest);
+   public Task<RekomerBasicProfile> UpdateMyProfileAsync(string meId, RekomerUpdateProfileRequestDto updateRequest);
    
    public Task<RekomerProfileDetailResponseDto> GetMyProfileDetailAsync(string meId);
 

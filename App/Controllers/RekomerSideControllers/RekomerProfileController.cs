@@ -27,9 +27,12 @@ public class RekomerProfileController : ControllerBase
       // try
       // {
       var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
-      await _profileService.UpdateMyProfileAsync(meId, updateRequest);
+      var profile = await _profileService.UpdateMyProfileAsync(meId, updateRequest);
 
-      return Ok();
+      return Ok(new
+      {
+         profile
+      });
       // }
       // catch (InvalidAccessTokenException)
       // {
