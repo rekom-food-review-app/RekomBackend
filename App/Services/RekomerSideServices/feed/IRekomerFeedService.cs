@@ -5,5 +5,5 @@ namespace RekomBackend.App.Services.RekomerSideServices;
 
 public interface IRekomerFeedService
 {
-   public Task<IEnumerable<RekomerFeedResponseDto>> GetFeedsAsync(RekomerGetFeedRequestDto getFeedRequest);
+   public Task<IEnumerable<RekomerFeedResponseDto>> GetFeedsAsync(string meId, RekomerGetFeedRequestDto getFeedRequest);
 }

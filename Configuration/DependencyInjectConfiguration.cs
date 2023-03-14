@@ -36,6 +36,7 @@ public static class DependencyInjectConfiguration
       services.AddScoped<IRekomerAuthRateLimitService, RekomerAuthRateLimitService>();
       services.AddScoped<IRekomerSearchService, RekomerSearchService>();
       services.AddScoped<IRekomerCreatReviewRateLimit, RekomerCreatReviewRateLimit>();
+      services.AddScoped<IRekomerFeedService, RekomerFeedService>();
       
       return services;
    }

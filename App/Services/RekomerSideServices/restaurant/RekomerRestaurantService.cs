@@ -59,4 +59,23 @@ public class RekomerRestaurantService : IRekomerRestaurantService
 
       return gallery;
    }
+
+   public async Task<RekomerRestaurantCardResponseDto> GetRestaurantCardAsync(string restaurantId)
+   {
+      var restaurant = await _context.Restaurants.SingleOrDefaultAsync(res => res.Id == restaurantId);
+
+      if (restaurant is null) throw new NotFoundRestaurantException();
+      
+      var ratingResult = await _context.RatingResultViews.Distinct()
+         .SingleOrDefaultAsync(rat => rat.RestaurantId == restaurantId);
+
+      var restaurantResponse = _mapper.Map<RekomerRestaurantCardResponseDto>(restaurant);
+
+      if (ratingResult is not null)
+      {
+         restaurantResponse.RatingAverage = ratingResult.Average;
+      }
+      
+      return restaurantResponse;
+   }
 }
