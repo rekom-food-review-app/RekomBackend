@@ -10,5 +10,5 @@ public class RekomerRestaurantCardResponseDto
 
    public float RatingAverage { get; set; }
 
-   public float Distance { get; set; }
+   public float? Distance { get; set; }
 }

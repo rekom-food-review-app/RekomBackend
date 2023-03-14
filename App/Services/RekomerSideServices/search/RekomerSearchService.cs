@@ -29,7 +29,7 @@ public class RekomerSearchService : IRekomerSearchService
             ":*")))
          .AsQueryable();
 
-      Point userCurrentLocation = new Point(-89.9631,  -2.3919);
+      Point? userCurrentLocation = null;
       if (searchRequest.Location is not null)
       {
          userCurrentLocation = new Point(searchRequest.Location.Longitude, searchRequest.Location.Latitude);
@@ -47,7 +47,10 @@ public class RekomerSearchService : IRekomerSearchService
       {
          var restaurantResponse = _mapper.Map<RekomerRestaurantCardResponseDto>(restaurant);
          restaurantResponse.RatingAverage = dbContext.RatingResultViews.Distinct().Select(rat => rat.Average).FirstOrDefault();
-         restaurantResponse.Distance = (float)restaurant.Location.Distance(userCurrentLocation);
+         if (userCurrentLocation is not null)
+         {
+            restaurantResponse.Distance = (float)restaurant.Location.Distance(userCurrentLocation);
+         }
          restaurantResponseList.Add(restaurantResponse);
       }
       
