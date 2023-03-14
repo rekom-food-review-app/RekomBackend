@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json;
 using NpgsqlTypes;
@@ -22,6 +23,17 @@ public class TestController : ControllerBase
       _httpClient = httpClient;
    }
 
+   [HttpGet("yeah")]
+   public async Task<IActionResult> Yeah([FromQuery]string id)
+   {
+      var restaurant = await _context.Restaurants.SingleOrDefaultAsync(res => res.Id == id);
+      return Ok(new
+      {
+         longitude = restaurant.Location.X,
+         latitude = restaurant.Location.Y
+      });
+   }
+   
    private async Task<string> GetRandomFoodPhotoUrlAsync(string key)
    {
       var response = await _httpClient.GetAsync($"https://api.unsplash.com/photos/random?query={key}&orientation=landscape&client_id=95aC00Gt2ddgOEb8GMLmZGYwetm9ZRwUyDJjWu0jurI");

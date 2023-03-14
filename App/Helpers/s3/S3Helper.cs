@@ -29,7 +29,7 @@ public class S3Helper : IS3Helper
 
    public string UploadOneFile(IFormFile file)
    {
-      var imgPath = $"{_baseUrl}/{Guid.NewGuid()}.{Path.GetExtension(file.Name)}";
+      var imgPath = $"{Guid.NewGuid()}.{Path.GetExtension(file.Name)}";
       
       Task.Run(async () =>
       {
@@ -53,7 +53,7 @@ public class S3Helper : IS3Helper
          await transferUtility.UploadAsync(uploadRequest);
       });
 
-      return imgPath;
+      return _baseUrl + "/" + imgPath;
    }
 
    // public async Task<S3ResponseDto> UploadFileAsync(S3Object obj, AwsCredentials awsCredentials)

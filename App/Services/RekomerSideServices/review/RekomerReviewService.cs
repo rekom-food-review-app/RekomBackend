@@ -55,7 +55,7 @@ public class RekomerReviewService : IRekomerReviewService
          reviewResponse.AmountReply = rev.Comments!.Count();
          foreach (var reviewReaction in rev.ReviewReactions!)
          {
-            if (reviewReaction.RekomerId == meId) reviewResponse.MyReaction = reviewReaction.ReactionId;
+            if (reviewReaction.RekomerId == meId) reviewResponse.MyReactionId = reviewReaction.ReactionId;
          }
          return reviewResponse;
       });
@@ -81,7 +81,7 @@ public class RekomerReviewService : IRekomerReviewService
       reviewResponse.AmountReply = review.Comments!.Count();
       foreach (var reviewReaction in review.ReviewReactions!)
       {
-         if (reviewReaction.RekomerId == meId) reviewResponse.MyReaction = reviewReaction.ReactionId;
+         if (reviewReaction.RekomerId == meId) reviewResponse.MyReactionId = reviewReaction.ReactionId;
       }
       
       return reviewResponse;
@@ -243,7 +243,7 @@ public class RekomerReviewService : IRekomerReviewService
          reviewResponse.AmountReply = rev.Comments!.Count();
          foreach (var reviewReaction in rev.ReviewReactions!)
          {
-            if (reviewReaction.RekomerId == meId) reviewResponse.MyReaction = reviewReaction.ReactionId;
+            if (reviewReaction.RekomerId == meId) reviewResponse.MyReactionId = reviewReaction.ReactionId;
          }
          return reviewResponse;
       });

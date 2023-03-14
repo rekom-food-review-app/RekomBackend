@@ -16,9 +16,9 @@ public class RekomerReviewCardResponseDto
    public string RestaurantId { get; set; } = null!;
    public string RestaurantName { get; set; } = null!;
 
-   public string Rating { get; set; } = null!;
+   public string RatingId { get; set; } = null!;
    
-   public string? MyReaction { get; set; }
+   public string? MyReactionId { get; set; }
    public int AmountAgree { get; set; }
    public int AmountDisagree { get; set; }
    public int AmountUseful { get; set; }

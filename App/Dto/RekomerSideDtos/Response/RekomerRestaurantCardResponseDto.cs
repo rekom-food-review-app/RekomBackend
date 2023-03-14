@@ -9,4 +9,6 @@ public class RekomerRestaurantCardResponseDto
    public string CoverImageUrl { get; set; } = null!;
 
    public float RatingAverage { get; set; }
+
+   public float Distance { get; set; }
 }

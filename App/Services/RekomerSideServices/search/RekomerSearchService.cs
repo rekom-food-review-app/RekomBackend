@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using NetTopologySuite.Geometries;
 using NpgsqlTypes;
 using RekomBackend.App.Dto.RekomerSideDtos.Request;
 using RekomBackend.App.Dto.RekomerSideDtos.Response;
@@ -20,14 +21,22 @@ public class RekomerSearchService : IRekomerSearchService
 
    public async Task<IEnumerable<RekomerRestaurantCardResponseDto>> SearchForRestaurantAsync(RekomerSearchRequestDto searchRequest)
    {
-      // var searchTerms = searchRequest.Keyword.Split(' ');
-      //
-      // var searchQuery = string.Join(" & ", searchTerms.Select(t => $"to_tsquery('{t}:*')"));
-      // var searchVector = $"to_tsvector({searchQuery})";
       await using var dbContext = new RekomContext(_configuration);
+
+      var restaurantListQuery = dbContext.Restaurants
+         .Where(res => res.FullTextSearch.Matches(EF.Functions.ToTsQuery("english",
+            string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) +
+            ":*")))
+         .AsQueryable();
+
+      Point userCurrentLocation = new Point(-89.9631,  -2.3919);
+      if (searchRequest.Location is not null)
+      {
+         userCurrentLocation = new Point(searchRequest.Location.Longitude, searchRequest.Location.Latitude);
+         restaurantListQuery = restaurantListQuery.OrderBy(res => res.Location.Distance(userCurrentLocation));
+      }
       
-      var restaurantList = await dbContext.Restaurants
-         .Where(res => res.FullTextSearch.Matches(EF.Functions.ToTsQuery("english", string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) + ":*" )))
+      var restaurantList = await restaurantListQuery
          .Skip((searchRequest.Page - 1) * searchRequest.Size)
          .Take(searchRequest.Size)
          .ToListAsync();
@@ -38,6 +47,7 @@ public class RekomerSearchService : IRekomerSearchService
       {
          var restaurantResponse = _mapper.Map<RekomerRestaurantCardResponseDto>(restaurant);
          restaurantResponse.RatingAverage = dbContext.RatingResultViews.Distinct().Select(rat => rat.Average).FirstOrDefault();
+         restaurantResponse.Distance = (float)restaurant.Location.Distance(userCurrentLocation);
          restaurantResponseList.Add(restaurantResponse);
       }
       
