@@ -20,4 +20,6 @@ public class RekomerRestaurantDetailResponseDto
    public RatingResultView RatingResult { get; set; } = null!;
 
    public bool IsMyFav { get; set; }
+
+   public bool CanReview { get; set; }
 }

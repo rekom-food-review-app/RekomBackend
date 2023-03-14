@@ -53,6 +53,10 @@ public class RekomerReviewController : ControllerBase
       {
          return NotFound();
       }
+      catch (TooManyRequestException)
+      {
+         return StatusCode(429);
+      }
    }
 
    [HttpGet("reviews/{reviewId}")]

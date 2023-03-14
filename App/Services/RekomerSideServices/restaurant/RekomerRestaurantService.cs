@@ -11,11 +11,13 @@ public class RekomerRestaurantService : IRekomerRestaurantService
 {
    private readonly RekomContext _context;
    private readonly IMapper _mapper;
+   private readonly IRekomerCreatReviewRateLimit _creatReviewRateLimit;
 
-   public RekomerRestaurantService(RekomContext context, IMapper mapper)
+   public RekomerRestaurantService(RekomContext context, IMapper mapper, IRekomerCreatReviewRateLimit creatReviewRateLimit)
    {
       _context = context;
       _mapper = mapper;
+      _creatReviewRateLimit = creatReviewRateLimit;
    }
 
    public async Task<RekomerRestaurantDetailResponseDto?> GetRestaurantDetailAsync(string meId, string restaurantId)
@@ -34,6 +36,7 @@ public class RekomerRestaurantService : IRekomerRestaurantService
       restaurantDto.IsMyFav = await _context.FavouriteRestaurants
             .FirstOrDefaultAsync(fav => fav.RekomerId == meId && fav.RestaurantId == restaurantId) 
          is not null;
+      restaurantDto.CanReview = await _creatReviewRateLimit.IsAllowedAsync(meId);
       
       return restaurantDto;
    }

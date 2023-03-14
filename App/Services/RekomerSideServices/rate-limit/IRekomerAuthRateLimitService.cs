@@ -1,6 +1,6 @@
 ﻿namespace RekomBackend.App.Services.RekomerSideServices;
 
-public interface IRekomerAuthRateLimitService : IRekomerRateLimitService
+public interface IRekomerAuthRateLimitService
 {
    public Task<bool> IsAllowedAsync(string ipAddress);
 }

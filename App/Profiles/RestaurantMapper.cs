@@ -14,8 +14,8 @@ public class RestaurantMapper : Profile
             dest => dest.Coordinates,
             opt => opt.MapFrom(src => new Coordinates()
             {
-               Latitude = (float)src.Location.X,
-               Longitude = (float)src.Location.Y
+               Latitude = (float)src.Location.Y,
+               Longitude = (float)src.Location.X
             })
          );
 

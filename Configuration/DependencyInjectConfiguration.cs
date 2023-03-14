@@ -35,6 +35,7 @@ public static class DependencyInjectConfiguration
       services.AddScoped<IRekomerFavouriteRestaurantService, RekomerFavouriteRestaurantService>();
       services.AddScoped<IRekomerAuthRateLimitService, RekomerAuthRateLimitService>();
       services.AddScoped<IRekomerSearchService, RekomerSearchService>();
+      services.AddScoped<IRekomerCreatReviewRateLimit, RekomerCreatReviewRateLimit>();
       
       return services;
    }

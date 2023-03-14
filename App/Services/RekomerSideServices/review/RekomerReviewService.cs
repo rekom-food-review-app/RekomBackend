@@ -17,13 +17,15 @@ public class RekomerReviewService : IRekomerReviewService
    private readonly IMapper _mapper;
    private readonly IHubContext<RekomerCommentHub> _commentHubContext;
    private readonly IS3Helper _s3Helper;
+   private readonly IRekomerCreatReviewRateLimit _creatReviewRateLimit;
 
-   public RekomerReviewService(RekomContext context, IMapper mapper, IHubContext<RekomerCommentHub> commentHubContext, IS3Helper s3Helper)
+   public RekomerReviewService(RekomContext context, IMapper mapper, IHubContext<RekomerCommentHub> commentHubContext, IS3Helper s3Helper, IRekomerCreatReviewRateLimit creatReviewRateLimit)
    {
       _context = context;
       _mapper = mapper;
       _commentHubContext = commentHubContext;
       _s3Helper = s3Helper;
+      _creatReviewRateLimit = creatReviewRateLimit;
    }
 
    public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRestaurantAsync(
@@ -139,6 +141,9 @@ public class RekomerReviewService : IRekomerReviewService
       var restaurant = await _context.Restaurants.SingleOrDefaultAsync(res => res.Id == restaurantId);
       if (restaurant is null) throw new NotFoundRestaurantException();
 
+      var canReview = await _creatReviewRateLimit.IsAllowedAsync(meId);
+      if (!canReview) throw new TooManyRequestException();
+      
       var mediaUrlList = reviewRequest.Images.Select(image => _s3Helper.UploadOneFile(image));
 
       _context.Reviews.Add(new Review
@@ -153,6 +158,7 @@ public class RekomerReviewService : IRekomerReviewService
             Type = "image"
          }).ToList()
       });
+      await _creatReviewRateLimit.IncreaseRequestTimeByOne(meId);
       await _context.SaveChangesAsync();
    }
 
