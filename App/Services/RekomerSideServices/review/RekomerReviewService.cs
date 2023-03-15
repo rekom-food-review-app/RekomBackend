@@ -133,7 +133,7 @@ public class RekomerReviewService : IRekomerReviewService
          .Select(cmt => _mapper.Map<RekomerCommentResponseDto>(cmt));
    }
 
-   public async Task CreateReviewAsync(string meId, string restaurantId, RekomerCreateReviewRequestDto reviewRequest)
+   public async Task<RekomerReviewCardResponseDto> CreateReviewAsync(string meId, string restaurantId, RekomerCreateReviewRequestDto reviewRequest)
    {
       var me = await _context.Rekomers.SingleOrDefaultAsync(rek => rek.Id == meId);
       if (me is null) throw new InvalidAccessTokenException();
@@ -146,9 +146,11 @@ public class RekomerReviewService : IRekomerReviewService
       
       var mediaUrlList = reviewRequest.Images.Select(image => _s3Helper.UploadOneFile(image));
 
-      _context.Reviews.Add(new Review
+      var newReview = new Review
       {
          RekomerId = meId,
+         Rekomer = me,
+         Restaurant = restaurant,
          RatingId = reviewRequest.Rating,
          RestaurantId = restaurantId,
          Content = reviewRequest.Content,
@@ -157,9 +159,12 @@ public class RekomerReviewService : IRekomerReviewService
             MediaUrl = url,
             Type = "image"
          }).ToList()
-      });
+      };
+      _context.Reviews.Add(newReview);
       await _creatReviewRateLimit.IncreaseRequestTimeByOne(meId);
       await _context.SaveChangesAsync();
+
+      return _mapper.Map<RekomerReviewCardResponseDto>(newReview);
    }
 
    public async Task<IEnumerable<RekomerReactionResponseDto>> GetReactionListAsync(string reviewId, string reactionId, int page, int size, DateTime? lastTimestamp = null)

@@ -46,8 +46,11 @@ public class RekomerReviewController : ControllerBase
       try
       {
          var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
-         await _reviewService.CreateReviewAsync(meId, restaurantId, reviewRequest);
-         return Ok();
+         var review = await _reviewService.CreateReviewAsync(meId, restaurantId, reviewRequest);
+         return Ok(new
+         {
+            review
+         });
       }
       catch (NotFoundRestaurantException)
       {
