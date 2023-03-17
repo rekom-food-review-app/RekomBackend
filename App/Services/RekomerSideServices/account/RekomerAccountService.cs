@@ -3,7 +3,7 @@ using RekomBackend.App.Dto.RekomerSideDtos.Request;
 using RekomBackend.App.Exceptions;
 using RekomBackend.Database;
 
-namespace RekomBackend.App.Services.RekomerSideServices.account;
+namespace RekomBackend.App.Services.RekomerSideServices;
 
 public class RekomerAccountService : IRekomerAccountService
 {

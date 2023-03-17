@@ -79,4 +79,78 @@ public class RekomerFollowController : ControllerBase
          });
       }
    }
+
+   [HttpGet("me/followers")]
+   public async Task<IActionResult> GetMyFollowerList([FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
+   {
+      try
+      {
+         var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+         var followList = await _followService.GetFollowerListByRekomerAsync(meId, page, size, lastTimestamp);
+         
+         return Ok(new
+         {
+            followList
+         });
+      }
+      catch (NotFoundRekomerException)
+      {
+         return Unauthorized();
+      }
+   }
+   
+   [HttpGet("me/followings")]
+   public async Task<IActionResult> GetMyFollowingList([FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
+   {
+      try
+      {
+         var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
+         var followList = await _followService.GetFollowingListByRekomerAsync(meId, page, size, lastTimestamp);
+         
+         return Ok(new
+         {
+            followList
+         });
+      }
+      catch (NotFoundRekomerException)
+      {
+         return Unauthorized();
+      }
+   }
+   
+   [HttpGet("{rekomerId}/followers")]
+   public async Task<IActionResult> GetOtherFollowerList(string rekomerId, [FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
+   {
+      try
+      {
+         var followList = await _followService.GetFollowerListByRekomerAsync(rekomerId, page, size, lastTimestamp);
+         
+         return Ok(new
+         {
+            followList
+         });
+      }
+      catch (NotFoundRekomerException)
+      {
+         return NotFound();
+      }
+   }
+   
+   [HttpGet("{rekomerId}/followings")]
+   public async Task<IActionResult> GetOtherFollowingList(string rekomerId, [FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? lastTimestamp)
+   {
+      try
+      {
+         var followList = await _followService.GetFollowingListByRekomerAsync(rekomerId, page, size, lastTimestamp);
+         
+         return Ok(new
+         {
+            followList
+         });
+      }
+      catch (NotFoundRekomerException)
+      {
+         return NotFound();
+      }
+   }
 }

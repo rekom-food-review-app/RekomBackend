@@ -5,5 +5,5 @@ namespace RekomBackend.App.Services.RekomerSideServices;
 
 public interface IRekomerRegisterService
 {
-   public Task<AuthToken> RegisterWithEmailAsync(RekomerRegisterEmailRequestDto registerRequest);
+   public Task<RekomerAuthToken> RegisterWithEmailAsync(RekomerRegisterEmailRequestDto registerRequest);
 }

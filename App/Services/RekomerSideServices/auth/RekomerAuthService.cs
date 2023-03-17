@@ -1,8 +1,10 @@
 ﻿using System.Security.Claims;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using RekomBackend.App.Common.Enums;
-using RekomBackend.App.Dto.RekomerSideDtos;
 using RekomBackend.App.Dto.RekomerSideDtos.Request;
+using RekomBackend.App.Dto.RekomerSideDtos.Response;
 using RekomBackend.App.Entities;
 using RekomBackend.App.Exceptions;
 using RekomBackend.App.Helpers;
@@ -14,14 +16,18 @@ public class RekomerAuthService : IRekomerAuthService
 {
    private readonly RekomContext _context;
    private readonly IJwtHelper _jwtHelper;
+   private readonly IRekomerAuthRateLimitService _rateLimitService;
+   private readonly IMapper _mapper;
 
-   public RekomerAuthService(RekomContext context, IJwtHelper jwtHelper)
+   public RekomerAuthService(RekomContext context, IJwtHelper jwtHelper, IRekomerAuthRateLimitService rateLimitService, IMapper mapper)
    {
       _context = context;
       _jwtHelper = jwtHelper;
+      _rateLimitService = rateLimitService;
+      _mapper = mapper;
    }
 
-   public AuthToken CreateAuthToken(Rekomer rekomer)
+   public RekomerAuthToken CreateAuthToken(Rekomer rekomer)
    {
       if (rekomer.Account is null) { throw new NotIncludeAccountInRekomerException(); }
       
@@ -31,15 +37,17 @@ public class RekomerAuthService : IRekomerAuthService
          new (ClaimTypes.Sid, rekomer.Id)
       };
       
-      return new AuthToken
+      return new RekomerAuthToken
       {
-         AccessToken = _jwtHelper.CreateToken(claims, DateTime.Now.AddMonths(1)),
+         AccessToken = _jwtHelper.CreateToken(claims, DateTime.Now.AddYears(1)),
          RefreshToken = _jwtHelper.CreateToken(claims, DateTime.Now.AddMonths(1)),
       };
    }
    
-   public async Task<AuthToken?> AuthWithEmailAsync(RekomerAuthEmailRequestDto authRequest)
+   public async Task<RekomerAuthResponseDto?> AuthWithEmailAsync(string ipAddress, RekomerAuthEmailRequestDto authRequest)
    {
+      if (!(await _rateLimitService.IsAllowedAsync(ipAddress))) throw new TooManyRequestException();
+      
       var foundAccount = await _context.Accounts
          .Where(acc => 
             string.Equals(acc.Email, authRequest.Email.ToLower())
@@ -48,6 +56,13 @@ public class RekomerAuthService : IRekomerAuthService
          .Include(acc => acc.Rekomer)
          .SingleOrDefaultAsync();
 
-      return foundAccount is null ? null : CreateAuthToken(foundAccount.Rekomer!);
+      if (foundAccount is null) return null;
+      if (foundAccount.Rekomer is null) throw new NotFoundReactionException();
+      // return CreateAuthToken(foundAccount.Rekomer);
+      return new RekomerAuthResponseDto
+      {
+         AuthToken = CreateAuthToken(foundAccount.Rekomer),
+         Profile = _mapper.Map<RekomerBasicProfile>(foundAccount.Rekomer)
+      };
    }
 }

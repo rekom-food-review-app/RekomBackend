@@ -10,6 +10,10 @@ public class ReviewMapper : Profile
    {
       CreateMap<Review, RekomerReviewCardResponseDto>()
          .ForMember(
+            dest => dest.Id,
+            opt => opt.MapFrom(src => src.Id)
+         )
+         .ForMember(
             dest => dest.Content,
             opt => opt.MapFrom(src => src.Content)
          )
@@ -18,8 +22,8 @@ public class ReviewMapper : Profile
             opt => opt.MapFrom(src => src.CreatedAt)
          )
          .ForMember(
-         dest => dest.RekomerId,
-         opt => opt.MapFrom(src => src.RekomerId)
+            dest => dest.RekomerId,
+            opt => opt.MapFrom(src => src.RekomerId)
          )
          .ForMember(
             dest => dest.RekomerFullName,
@@ -30,6 +34,10 @@ public class ReviewMapper : Profile
             opt => opt.MapFrom(src => src.Rekomer!.AvatarUrl)
          )
          .ForMember(
+            dest => dest.RatingId,
+            opt => opt.MapFrom(src => src.RatingId)
+         )
+         .ForMember(
             dest => dest.RestaurantId,
             opt => opt.MapFrom(src => src.RestaurantId)
          )
@@ -38,8 +46,20 @@ public class ReviewMapper : Profile
             opt => opt.MapFrom(src => src.Restaurant!.Name)
          )
          .ForMember(
-            dest => dest.Rating,
-            opt => opt.MapFrom(src => src.Rating!.Tag)
+            dest => dest.AmountAgree,
+            opt => opt.MapFrom(src => src.AmountAgree)
+         )
+         .ForMember(
+            dest => dest.AmountUseful,
+            opt => opt.MapFrom(src => src.AmountUseful)
+         )
+         .ForMember(
+            dest => dest.AmountDisagree,
+            opt => opt.MapFrom(src => src.AmountDisagree)
+         )
+         .ForMember(
+            dest => dest.AmountReply,
+            opt => opt.MapFrom(src => src.AmountReply)
          );
    }
 }

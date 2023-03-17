@@ -8,7 +8,9 @@ public static class RekomContextConfiguration
    public static IServiceCollection ConfigRekomContext(this IServiceCollection services, IConfiguration configuration)
    {
       return services.AddDbContext<RekomContext>(
-         options => options.UseMySQL(configuration.GetValue<string>("MySQLConnectionString")!)
+         options => options.UseNpgsql(
+            configuration.GetValue<string>("PostgresConnectionString")!,
+            o => o.UseNetTopologySuite())
       );
    }
 }

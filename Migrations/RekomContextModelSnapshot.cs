@@ -3,6 +3,9 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NetTopologySuite.Geometries;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using NpgsqlTypes;
 using RekomBackend.Database;
 
 #nullable disable
@@ -16,16 +19,20 @@ namespace RekomBackend.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.3")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("ProductVersion", "8.0.0-preview.1.23111.4")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "role", new[] { "admin", "rekomer", "restaurant" });
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "postgis");
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("RekomBackend.App.Entities.Account", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -33,18 +40,17 @@ namespace RekomBackend.Migrations
                         .HasColumnType("varchar(200)");
 
                     b.Property<bool>("IsConfirmed")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("varchar(500)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("enum('Rekomer', 'Restaurant', 'Admin')");
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -62,24 +68,85 @@ namespace RekomBackend.Migrations
                     b.ToTable("Accounts");
                 });
 
+            modelBuilder.Entity("RekomBackend.App.Entities.Comment", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("RekomerId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReviewId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RekomerId");
+
+                    b.HasIndex("ReviewId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("RekomBackend.App.Entities.FavouriteRestaurant", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("RekomerId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RestaurantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RestaurantId");
+
+                    b.HasIndex("RekomerId", "RestaurantId")
+                        .IsUnique();
+
+                    b.ToTable("FavouriteRestaurants");
+                });
+
             modelBuilder.Entity("RekomBackend.App.Entities.Follow", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("FollowerId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("FollowingId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -94,10 +161,20 @@ namespace RekomBackend.Migrations
             modelBuilder.Entity("RekomBackend.App.Entities.Food", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<NpgsqlTsVector>("FullTextSearch")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "Description" });
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
@@ -108,16 +185,20 @@ namespace RekomBackend.Migrations
                         .HasColumnType("varchar(200)");
 
                     b.Property<float>("Price")
-                        .HasColumnType("float");
+                        .HasColumnType("real");
 
                     b.Property<string>("RestaurantId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FullTextSearch");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("FullTextSearch"), "GIN");
 
                     b.HasIndex("RestaurantId");
 
@@ -127,21 +208,21 @@ namespace RekomBackend.Migrations
             modelBuilder.Entity("RekomBackend.App.Entities.FoodImage", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("FoodId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -153,24 +234,24 @@ namespace RekomBackend.Migrations
             modelBuilder.Entity("RekomBackend.App.Entities.Otp", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("AccountId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("varchar(4)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("Expiration")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -183,20 +264,20 @@ namespace RekomBackend.Migrations
             modelBuilder.Entity("RekomBackend.App.Entities.Rating", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<uint>("Point")
-                        .HasColumnType("int unsigned");
+                    b.Property<long>("Point")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Tag")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -208,29 +289,29 @@ namespace RekomBackend.Migrations
             modelBuilder.Entity("RekomBackend.App.Entities.RatingResultView", b =>
                 {
                     b.Property<int>("Amount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<float>("Average")
-                        .HasColumnType("float");
+                        .HasColumnType("real");
 
                     b.Property<float>("PercentFive")
-                        .HasColumnType("float");
+                        .HasColumnType("real");
 
                     b.Property<float>("PercentFour")
-                        .HasColumnType("float");
+                        .HasColumnType("real");
 
                     b.Property<float>("PercentOne")
-                        .HasColumnType("float");
+                        .HasColumnType("real");
 
                     b.Property<float>("PercentThree")
-                        .HasColumnType("float");
+                        .HasColumnType("real");
 
                     b.Property<float>("PercentTwo")
-                        .HasColumnType("float");
+                        .HasColumnType("real");
 
                     b.Property<string>("RestaurantId")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.ToTable((string)null);
 
@@ -240,20 +321,20 @@ namespace RekomBackend.Migrations
             modelBuilder.Entity("RekomBackend.App.Entities.Reaction", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<uint>("Point")
-                        .HasColumnType("int unsigned");
+                    b.Property<long>("Point")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Tag")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -263,35 +344,46 @@ namespace RekomBackend.Migrations
             modelBuilder.Entity("RekomBackend.App.Entities.Rekomer", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("AccountId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("AvatarUrl")
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("varchar(100)");
 
                     b.Property<DateTime?>("Dob")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("FullName")
                         .HasColumnType("varchar(200)");
 
+                    b.Property<NpgsqlTsVector>("FullTextSearch")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "FullName", "Description" });
+
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId")
                         .IsUnique();
+
+                    b.HasIndex("FullTextSearch");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("FullTextSearch"), "GIN");
 
                     b.ToTable("Rekomers");
                 });
@@ -299,38 +391,55 @@ namespace RekomBackend.Migrations
             modelBuilder.Entity("RekomBackend.App.Entities.Restaurant", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("AccountId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
-                    b.Property<string>("Coordinates")
+                    b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("CoverImageUrl")
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("varchar(500)");
+
+                    b.Property<NpgsqlTsVector>("FullTextSearch")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "Description", "Address" });
+
+                    b.Property<Point>("Location")
+                        .IsRequired()
+                        .HasColumnType("geography(Point, 4326)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId")
                         .IsUnique();
+
+                    b.HasIndex("FullTextSearch");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("FullTextSearch"), "GIN");
+
+                    b.HasIndex("Location");
 
                     b.ToTable("Restaurants");
                 });
@@ -338,29 +447,41 @@ namespace RekomBackend.Migrations
             modelBuilder.Entity("RekomBackend.App.Entities.Review", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
+
+                    b.Property<long>("AmountAgree")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("AmountDisagree")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("AmountReply")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("AmountUseful")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("varchar(500)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("RatingId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("RekomerId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("RestaurantId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -376,25 +497,25 @@ namespace RekomBackend.Migrations
             modelBuilder.Entity("RekomBackend.App.Entities.ReviewMedia", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("MediaUrl")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ReviewId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("enum('image', 'video')");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -406,25 +527,25 @@ namespace RekomBackend.Migrations
             modelBuilder.Entity("RekomBackend.App.Entities.ReviewReaction", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("ReactionId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("RekomerId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ReviewId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -435,6 +556,44 @@ namespace RekomBackend.Migrations
                     b.HasIndex("ReviewId");
 
                     b.ToTable("ReviewReactions");
+                });
+
+            modelBuilder.Entity("RekomBackend.App.Entities.Comment", b =>
+                {
+                    b.HasOne("RekomBackend.App.Entities.Rekomer", "Rekomer")
+                        .WithMany("Comments")
+                        .HasForeignKey("RekomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RekomBackend.App.Entities.Review", "Review")
+                        .WithMany("Comments")
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Rekomer");
+
+                    b.Navigation("Review");
+                });
+
+            modelBuilder.Entity("RekomBackend.App.Entities.FavouriteRestaurant", b =>
+                {
+                    b.HasOne("RekomBackend.App.Entities.Rekomer", "Rekomer")
+                        .WithMany("FavouriteRestaurants")
+                        .HasForeignKey("RekomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RekomBackend.App.Entities.Restaurant", "Restaurant")
+                        .WithMany("FavouriteRestaurants")
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Rekomer");
+
+                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("RekomBackend.App.Entities.Follow", b =>
@@ -602,6 +761,10 @@ namespace RekomBackend.Migrations
 
             modelBuilder.Entity("RekomBackend.App.Entities.Rekomer", b =>
                 {
+                    b.Navigation("Comments");
+
+                    b.Navigation("FavouriteRestaurants");
+
                     b.Navigation("Followers");
 
                     b.Navigation("Followings");
@@ -613,6 +776,8 @@ namespace RekomBackend.Migrations
 
             modelBuilder.Entity("RekomBackend.App.Entities.Restaurant", b =>
                 {
+                    b.Navigation("FavouriteRestaurants");
+
                     b.Navigation("Menu");
 
                     b.Navigation("Reviews");
@@ -620,6 +785,8 @@ namespace RekomBackend.Migrations
 
             modelBuilder.Entity("RekomBackend.App.Entities.Review", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Medias");
 
                     b.Navigation("ReviewReactions");

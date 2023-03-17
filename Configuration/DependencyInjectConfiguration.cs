@@ -1,6 +1,5 @@
 ﻿using RekomBackend.App.Helpers;
 using RekomBackend.App.Services.RekomerSideServices;
-using RekomBackend.App.Services.RekomerSideServices.account;
 
 namespace RekomBackend.Configuration;
 
@@ -33,6 +32,11 @@ public static class DependencyInjectConfiguration
       services.AddScoped<IRekomerRestaurantService, RekomerRestaurantService>();
       services.AddScoped<IRekomerFoodService, RekomerFoodService>();
       services.AddScoped<IRekomerReviewService, RekomerReviewService>();
+      services.AddScoped<IRekomerFavouriteRestaurantService, RekomerFavouriteRestaurantService>();
+      services.AddScoped<IRekomerAuthRateLimitService, RekomerAuthRateLimitService>();
+      services.AddScoped<IRekomerSearchService, RekomerSearchService>();
+      services.AddScoped<IRekomerCreatReviewRateLimit, RekomerCreatReviewRateLimit>();
+      services.AddScoped<IRekomerFeedService, RekomerFeedService>();
       
       return services;
    }
@@ -42,6 +46,7 @@ public static class DependencyInjectConfiguration
       services.AddScoped<IMailHelper, MailHelper>();
       services.AddScoped<IJwtHelper, JwtHelper>();
       services.AddScoped<IS3Helper, S3Helper>();
+      services.AddScoped<IStringHelper, StringHelper>();
       return services;
    }
 }

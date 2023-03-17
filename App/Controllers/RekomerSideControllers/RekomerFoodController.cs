@@ -18,11 +18,11 @@ public class RekomerFoodController : ControllerBase
    }
 
    [HttpGet("restaurants/{restaurantId}/foods")]
-   public async Task<IActionResult> GetFoodsInMenu(string restaurantId)
+   public async Task<IActionResult> GetFoodsInMenu(string restaurantId, [FromQuery] int page, [FromQuery] int size)
    {
       try
       {
-         var foods = await _foodService.GetFoodsInMenuAsync(restaurantId);
+         var foods = await _foodService.GetFoodListInMenuAsync(restaurantId, page, size);
 
          return Ok(new
          {

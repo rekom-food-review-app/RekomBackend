@@ -1,6 +1,6 @@
 ﻿using RekomBackend.App.Dto.RekomerSideDtos.Request;
 
-namespace RekomBackend.App.Services.RekomerSideServices.account;
+namespace RekomBackend.App.Services.RekomerSideServices;
 
 public interface IRekomerAccountService
 {

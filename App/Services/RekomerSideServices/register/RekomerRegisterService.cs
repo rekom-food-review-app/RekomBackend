@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using NpgsqlTypes;
 using RekomBackend.App.Common.Enums;
 using RekomBackend.App.Dto.RekomerSideDtos.Request;
 using RekomBackend.App.Entities;
@@ -23,7 +24,7 @@ public class RekomerRegisterService : IRekomerRegisterService
       _authService = authService;
    }
 
-   public async Task<AuthToken> RegisterWithEmailAsync(RekomerRegisterEmailRequestDto registerRequest)
+   public async Task<RekomerAuthToken> RegisterWithEmailAsync(RekomerRegisterEmailRequestDto registerRequest)
    {
       var account = new Account
       {
@@ -37,6 +38,8 @@ public class RekomerRegisterService : IRekomerRegisterService
          Id = account.Id,
          AccountId = account.Id
       };
+      
+      // account.Rekomer.FullTextSearch = NpgsqlTsVector.Parse($"{account.Rekomer.Description} {account.Username}  {account.Rekomer.FullName}");
       
       _context.Accounts.Add(account);
       await _context.SaveChangesAsync();

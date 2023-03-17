@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using NpgsqlTypes;
 using RekomBackend.App.Dto.RekomerSideDtos.Request;
 using RekomBackend.App.Dto.RekomerSideDtos.Response;
 using RekomBackend.App.Exceptions;
@@ -26,9 +27,9 @@ public class RekomerProfileService : IRekomerProfileService
    /// <param name="meId"></param>
    /// <param name="updateRequest"></param>
    /// <exception cref="InvalidAccessTokenException"></exception>
-   public async Task UpdateMyProfileAsync(string meId, RekomerUpdateProfileRequestDto updateRequest)
+   public async Task<RekomerBasicProfile> UpdateMyProfileAsync(string meId, RekomerUpdateProfileRequestDto updateRequest)
    {
-      var me = await _context.Rekomers.SingleOrDefaultAsync(rek => rek.Id == meId);
+      var me = await _context.Rekomers.Include(rek => rek.Account).SingleOrDefaultAsync(rek => rek.Id == meId);
       if (me is null) throw new InvalidAccessTokenException();
 
       var avatarUrl = _s3Helper.UploadOneFile(updateRequest.Avatar);
@@ -38,6 +39,8 @@ public class RekomerProfileService : IRekomerProfileService
       me.Dob = updateRequest.Dob;
 
       await _context.SaveChangesAsync();
+
+      return _mapper.Map<RekomerBasicProfile>(me);
    }
 
    /// <param name="meId"></param>

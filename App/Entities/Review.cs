@@ -8,6 +8,11 @@ public class Review : EntityBase
 
    [Column(TypeName = "varchar(500)")]
    public string Content { get; set; } = null!;
+
+   public uint AmountAgree { get; set; }
+   public uint AmountDisagree { get; set; }
+   public uint AmountUseful { get; set; }
+   public uint AmountReply { get; set; }
    
    #endregion
 
@@ -33,6 +38,8 @@ public class Review : EntityBase
 
    public IEnumerable<ReviewReaction>? ReviewReactions { get; set; }
    
+   public IEnumerable<Comment>? Comments { get; set; }
+
    #endregion
 
    #region Methods

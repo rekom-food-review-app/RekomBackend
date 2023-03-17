@@ -22,14 +22,17 @@ public class RekomerProfileController : ControllerBase
    }
 
    [HttpPut("me/profile")]
-   public async Task<IActionResult> UpdateMyProfile([FromBody] RekomerUpdateProfileRequestDto updateRequest)
+   public async Task<IActionResult> UpdateMyProfile([FromForm] RekomerUpdateProfileRequestDto updateRequest)
    {
       // try
       // {
       var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
-      await _profileService.UpdateMyProfileAsync(meId, updateRequest);
+      var profile = await _profileService.UpdateMyProfileAsync(meId, updateRequest);
 
-      return Ok();
+      return Ok(new
+      {
+         profile
+      });
       // }
       // catch (InvalidAccessTokenException)
       // {
@@ -57,7 +60,7 @@ public class RekomerProfileController : ControllerBase
    }
    
    [HttpGet("{rekomerId}/profile")]
-   public async Task<IActionResult> GetMyProfileDetail(string rekomerId)
+   public async Task<IActionResult> GetOtherProfileDetail(string rekomerId)
    {
       try
       {

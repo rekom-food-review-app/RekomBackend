@@ -1,13 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
+using NpgsqlTypes;
 using RekomBackend.App.Common.Enums;
 using RekomBackend.App.Entities;
+using RekomBackend.App.Helpers;
 
 namespace RekomBackend.Database;
 
 public class RekomContext : DbContext
 {
    private readonly IConfiguration _configuration;
-
+   
    public DbSet<Account> Accounts { get; set; } = null!;
    public DbSet<Otp> Otps { get; set; } = null!;
    public DbSet<Rekomer> Rekomers { get; set; } = null!;
@@ -19,6 +24,8 @@ public class RekomContext : DbContext
    public DbSet<ReviewMedia> ReviewMedias { get; set; } = null!;
    public DbSet<Reaction> Reactions { get; set; } = null!;
    public DbSet<ReviewReaction> ReviewReactions { get; set; } = null!;
+   public DbSet<Comment> Comments { get; set; } = null!;
+   public DbSet<FavouriteRestaurant> FavouriteRestaurants { get; set; } = null!;
 
    public DbSet<RatingResultView> RatingResultViews { get; set; } = null!;
    
@@ -26,39 +33,138 @@ public class RekomContext : DbContext
    {
       _configuration = configuration;
    }
-   
+
+   public RekomContext(IConfiguration configuration)
+   {
+      _configuration = configuration;
+   }
+
+   // public override int SaveChanges()
+   // {
+   //    foreach (var entry in ChangeTracker.Entries())
+   //    {
+   //       if (entry.Entity is Rekomer rekomer)
+   //       {
+   //          if (entry.State is EntityState.Added or EntityState.Modified)
+   //          {
+   //             // rekomer.FullTextSearch = NpgsqlTsVector.Parse($"{StringHelper.ToEnglish(rekomer.FullName)} {rekomer.FullName} {StringHelper.ToEnglish(rekomer.Description)} {rekomer.Description}");
+   //             rekomer.FullTextSearch = Rekomers.Select(rek => EF.Functions.ToTsVector(($"{StringHelper.ToEnglish(rekomer.FullName)} {rekomer.FullName} {StringHelper.ToEnglish(rekomer.Description)} {rekomer.Description}"))).Single();
+   //          }
+   //       }
+   //    }
+   //    return base.SaveChanges();
+   // }
+   //
+   // public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+   // {
+   //    foreach (var entry in ChangeTracker.Entries())
+   //    {
+   //       if (entry.Entity is Rekomer rekomer)
+   //       {
+   //          if (entry.State is EntityState.Added or EntityState.Modified)
+   //          {
+   //             rekomer.FullTextSearch = Rekomers.Select(rek => EF.Functions.ToTsVector(($"{StringHelper.ToEnglish(rekomer.FullName)} {rekomer.FullName} {StringHelper.ToEnglish(rekomer.Description)} {rekomer.Description}"))).Single();
+   //          }
+   //       }
+   //    }
+   //    return base.SaveChangesAsync(cancellationToken);
+   // }
+
    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
    {
-      optionsBuilder.UseMySQL(_configuration.GetValue<string>("MySQLConnectionString")!);
+      optionsBuilder.UseNpgsql(
+         _configuration.GetValue<string>("PostgresConnectionString")!,
+         o => o.UseNetTopologySuite());
+   }
+
+   private string ToEnglish(string input)
+   {
+      // return new string(input.Normalize(NormalizationForm.FormD)
+      //    .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+      //    .ToArray());
+      
+      // input = input.Normalize(NormalizationForm.FormKD);
+      //
+      // // Replace non-letter characters with empty string
+      // return Regex.Replace(input, @"[^a-zA-Z]+", "", RegexOptions.Compiled);
+
+      return input;
    }
    
    protected override void OnModelCreating(ModelBuilder modelBuilder)
    {
-      // modelBuilder.Entity<EntityBase>()
-      //    .Property(e => e.CreatedAt)
-      //    .HasDefaultValueSql("CURRENT_TIMESTAMP(6)");
-      //
-      // modelBuilder.Entity<EntityBase>()
-      //    .Property(e => e.UpdatedAt)
-      //    .HasDefaultValueSql("CURRENT_TIMESTAMP(6)")
-      //    .ValueGeneratedOnUpdate();
+      // var regex = new Regex(@"[\p{IsLatin}]+", RegexOptions.Compiled);
       
-      modelBuilder.Entity<Account>()
-         .Property(a => a.Role)
-         .HasConversion(
-            v => v.ToString(),
-            v => (Role)Enum.Parse(typeof(Role), v)
-         );
+      modelBuilder.HasPostgresEnum<Role>();
+      modelBuilder.HasPostgresExtension("postgis");
+
+      modelBuilder.Entity<Restaurant>()
+         .HasGeneratedTsVectorColumn(
+            r => r.FullTextSearch,
+            "english",
+            r => new
+            {
+               r.Name, 
+               r.Description, 
+               r.Address
+               // EName = ToEnglish(r.Name),
+               // EDescription = ToEnglish(r.Description),
+               // EAddress = ToEnglish(r.Address)
+            })
+         .HasIndex(r => r.FullTextSearch)
+         .HasMethod("GIN");
+         // .HasOperators("gin");
       
-      modelBuilder.Entity<Follow>()
-         .HasKey(f => f.Id);
+      modelBuilder.Entity<Food>()
+         .HasGeneratedTsVectorColumn(
+            fod => fod.FullTextSearch,
+            "english",
+            fod => new
+            {
+               fod.Name, 
+               fod.Description,
+               // EName = ToEnglish(fod.Name),
+               // EDescription = ToEnglish(fod.Description ?? string.Empty),
+            })
+         .HasIndex(r => r.FullTextSearch)
+         .HasMethod("GIN");
+         // .HasOperators("gin");
+
+         // modelBuilder.Entity<Food>(entity =>
+         // {
+         //    entity.Property(e => e.FullTextSearch)
+         //       .HasComputedColumnSql(
+         //          "to_tsvector('english', " +
+         //          "coalesce(PgSqlUnaccent(Name), '') || ' ' || " +
+         //          "coalesce(PgSqlUnaccent(Description), ''))")
+         //       .IsRequired();
+         // });
+
+         modelBuilder.Entity<Rekomer>()
+         .HasGeneratedTsVectorColumn(
+            rek => rek.FullTextSearch,
+            "english",
+            rek => new
+            {
+               rek.FullName, 
+               rek.Description,
+               // EFullName = ToEnglish(rek.FullName ?? string.Empty),
+               // EDescription = ToEnglish(rek.Description ?? string.Empty),
+            })
+         .HasIndex(r => r.FullTextSearch)
+         .HasMethod("GIN");
+         // .HasOperators("gin");
+      
+      modelBuilder.Entity<Restaurant>()
+         .Property(r => r.Location)
+         .HasColumnType("geography(Point, 4326)");
 
       modelBuilder.Entity<Follow>()
          .HasOne(f => f.Follower)
          .WithMany(u => u.Followings)
          .HasForeignKey(f => f.FollowerId)
          .OnDelete(DeleteBehavior.Cascade);
-
+      
       modelBuilder.Entity<Follow>()
          .HasOne(f => f.Following)
          .WithMany(u => u.Followers)
@@ -66,28 +172,5 @@ public class RekomContext : DbContext
          .OnDelete(DeleteBehavior.Cascade);
       
       modelBuilder.Entity<RatingResultView>().ToView("RatingResultViews");
-   }
-   
-   public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
-   {
-      AddTimestamps();
-      return base.SaveChangesAsync(cancellationToken);
-   }
-
-   private void AddTimestamps()
-   {
-      var entities = ChangeTracker.Entries()
-         .Where(x => x is { Entity: EntityBase, State: EntityState.Added or EntityState.Modified });
-
-      foreach (var entity in entities)
-      {
-         var now = DateTime.UtcNow;
-
-         if (entity.State == EntityState.Added)
-         {
-            ((EntityBase)entity.Entity).CreatedAt = now;
-         }
-         ((EntityBase)entity.Entity).UpdatedAt = now;
-      }
    }
 }

@@ -4,11 +4,11 @@ public abstract class EntityBase
 {
    #region Columns
 
-   public string Id { get; set; } = null!;
-   
-   public DateTime CreatedAt { get; set; }
-   
-   public DateTime UpdatedAt { get; set; }
+   public string Id { get; set; } = Guid.NewGuid().ToString();
+
+   public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+   public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
    #endregion
 

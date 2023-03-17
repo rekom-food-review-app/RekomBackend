@@ -1,8 +1,12 @@
+using Microsoft.AspNetCore.HttpOverrides;
+using RekomBackend.App.Hubs.RekomerSideHubs;
 using RekomBackend.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigServiceCollection(builder.Configuration);
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var app = builder.Build();
 
@@ -30,5 +34,14 @@ app.UseAuthorization();
 // });
 
 app.MapControllers();
+
+app.UseCors("CorsPolicy");
+
+app.MapHub<RekomerCommentHub>("/rekomer-side/ws/comment-hub");
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+   ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.Run();
