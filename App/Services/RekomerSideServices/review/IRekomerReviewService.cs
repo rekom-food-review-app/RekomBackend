@@ -19,5 +19,7 @@ public interface IRekomerReviewService
    
    public Task ReactToReviewAsync(string meId, string reviewId, string reactionId);
    
+   public Task UnReactToReviewAsync(string meId, string reviewId, string reactionId);
+   
    public Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRekomerAsync(string meId, string rekomerId, int page, int size, DateTime? lastTimestamp);
 }

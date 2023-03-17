@@ -195,6 +195,9 @@ public class RekomerReviewService : IRekomerReviewService
 
       var review = await _context.Reviews.SingleOrDefaultAsync(rev => rev.Id == reviewId);
       if (review is null) throw new NotFoundReviewException();
+
+      var oldReaction = await _context.ReviewReactions.SingleOrDefaultAsync(rre => rre.ReviewId == reviewId && rre.RekomerId == meId);
+      if (oldReaction != null) _context.ReviewReactions.Remove(oldReaction);
       
       _context.ReviewReactions.Add(new ReviewReaction
       {
@@ -203,7 +206,7 @@ public class RekomerReviewService : IRekomerReviewService
          RekomerId = meId
       });
       await _context.SaveChangesAsync();
-      await UpdateReviewReactionAsync(reviewId, reactionId);
+      await UpdateReviewReactionAsync(reviewId);
    }
 
    private async Task<uint> GetReviewReactionAmount(string reviewId, string reactionId)
@@ -213,16 +216,34 @@ public class RekomerReviewService : IRekomerReviewService
          .CountAsync();
    }
 
-   private async Task UpdateReviewReactionAsync(string reviewId, string reactionId)
+   private async Task UpdateReviewReactionAsync(string reviewId)
    {
       var review = await _context.Reviews.SingleOrDefaultAsync(rev => rev.Id == reviewId);
       if (review is null) throw new NotFoundReviewException();
       
-      review.AmountAgree = await GetReviewReactionAmount(review.Id, reactionId); 
-      review.AmountDisagree = await GetReviewReactionAmount(review.Id, reactionId);
-      review.AmountUseful = await GetReviewReactionAmount(review.Id, reactionId);
+      review.AmountAgree = await GetReviewReactionAmount(review.Id, "1"); 
+      review.AmountDisagree = await GetReviewReactionAmount(review.Id, "2");
+      review.AmountUseful = await GetReviewReactionAmount(review.Id, "3");
 
       await _context.SaveChangesAsync();
+   }
+
+   public async Task UnReactToReviewAsync(string meId, string reviewId, string reactionId)
+   {
+      var me = await _context.Rekomers.SingleOrDefaultAsync(rek => rek.Id == meId);
+      if (me is null) throw new InvalidAccessTokenException();
+
+      var review = await _context.Reviews.SingleOrDefaultAsync(rev => rev.Id == reviewId);
+      if (review is null) throw new NotFoundReviewException();
+
+      var oldReaction = await _context.ReviewReactions.SingleOrDefaultAsync(rre => rre.ReviewId == reviewId && rre.RekomerId == meId);
+
+      if (oldReaction is null) throw new Exception();
+      
+      _context.ReviewReactions.Remove(oldReaction);
+      
+      await _context.SaveChangesAsync();
+      await UpdateReviewReactionAsync(reviewId);
    }
 
    public async Task<IEnumerable<RekomerReviewCardResponseDto>> GetReviewListByRekomerAsync(
