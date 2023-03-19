@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
-using NpgsqlTypes;
 using RekomBackend.App.Dto.RekomerSideDtos.Request;
 using RekomBackend.App.Dto.RekomerSideDtos.Response;
 using RekomBackend.Database;
@@ -46,7 +45,11 @@ public class RekomerSearchService : IRekomerSearchService
       foreach (var restaurant in restaurantList)
       {
          var restaurantResponse = _mapper.Map<RekomerRestaurantCardResponseDto>(restaurant);
-         restaurantResponse.RatingAverage = dbContext.RatingResultViews.Distinct().Select(rat => rat.Average).FirstOrDefault();
+         restaurantResponse.RatingAverage = dbContext.RatingResultViews
+            .Distinct()
+            .Where(rat => rat.RestaurantId == restaurant.Id)
+            .Select(rat => rat.Average)
+            .SingleOrDefault();
          if (userCurrentLocation is not null)
          {
             restaurantResponse.Distance = (float)restaurant.Location.Distance(userCurrentLocation);

@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using RekomBackend.App.Common.Enums;
 using RekomBackend.App.Dto.RekomerSideDtos.Request;
 using RekomBackend.App.Dto.RekomerSideDtos.Response;
@@ -46,8 +45,6 @@ public class RekomerAuthService : IRekomerAuthService
    
    public async Task<RekomerAuthResponseDto?> AuthWithEmailAsync(string ipAddress, RekomerAuthEmailRequestDto authRequest)
    {
-      if (!(await _rateLimitService.IsAllowedAsync(ipAddress))) throw new TooManyRequestException();
-      
       var foundAccount = await _context.Accounts
          .Where(acc => 
             string.Equals(acc.Email, authRequest.Email.ToLower())
@@ -55,8 +52,11 @@ public class RekomerAuthService : IRekomerAuthService
             && acc.Role == Role.Rekomer)
          .Include(acc => acc.Rekomer)
          .SingleOrDefaultAsync();
-
+      
       if (foundAccount is null) return null;
+      
+      if (!(await _rateLimitService.IsAllowedAsync(ipAddress))) throw new TooManyRequestException();
+
       if (foundAccount.Rekomer is null) throw new NotFoundReactionException();
       // return CreateAuthToken(foundAccount.Rekomer);
       return new RekomerAuthResponseDto

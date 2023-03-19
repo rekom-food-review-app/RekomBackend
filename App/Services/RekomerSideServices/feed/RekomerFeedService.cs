@@ -28,7 +28,7 @@ public class RekomerFeedService : IRekomerFeedService
       var userCurrentLocation = new Point(getFeedRequest.Location.Longitude, getFeedRequest.Location.Latitude);
       
       var restaurantIdList = await dbContext.Restaurants
-         .OrderBy(res => res.Location.Distance(userCurrentLocation))
+         // .OrderBy(res => res.Location.Distance(userCurrentLocation))
          .Skip((getFeedRequest.Page - 1) * getFeedRequest.Size)
          .Take(getFeedRequest.Size)
          .Select(res => res.Id)

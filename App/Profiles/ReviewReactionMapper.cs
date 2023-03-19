@@ -14,6 +14,10 @@ public class ReviewReactionMapper : Profile
             opt => opt.MapFrom(src => src.Rekomer!.FullName)
          )
          .ForMember(
+            dest => dest.RekomerId,
+            opt => opt.MapFrom(src => src.RekomerId)
+         )
+         .ForMember(
             dest => dest.RekomerAvatarUrl,
             opt => opt.MapFrom(src => src.Rekomer!.AvatarUrl)
          );

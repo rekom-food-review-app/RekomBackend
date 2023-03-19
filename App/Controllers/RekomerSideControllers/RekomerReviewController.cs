@@ -14,11 +14,13 @@ public class RekomerReviewController : ControllerBase
 {
    private readonly IRekomerReviewService _reviewService;
    private readonly IHttpContextAccessor _httpContextAccessor;
+   private readonly IRekomerCreatReviewRateLimit _creatReviewRateLimit;
    
-   public RekomerReviewController(IRekomerReviewService reviewService, IHttpContextAccessor httpContextAccessor)
+   public RekomerReviewController(IRekomerReviewService reviewService, IHttpContextAccessor httpContextAccessor, IRekomerCreatReviewRateLimit creatReviewRateLimit)
    {
       _reviewService = reviewService;
       _httpContextAccessor = httpContextAccessor;
+      _creatReviewRateLimit = creatReviewRateLimit;
    }
 
    [HttpGet("restaurants/{restaurantId}/reviews")]
@@ -47,9 +49,11 @@ public class RekomerReviewController : ControllerBase
       {
          var meId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Sid)!;
          var review = await _reviewService.CreateReviewAsync(meId, restaurantId, reviewRequest);
+         
          return Ok(new
          {
-            review
+            review,
+            canReview = await _creatReviewRateLimit.IsAllowedAsync(meId) 
          });
       }
       catch (NotFoundRestaurantException)

@@ -12,7 +12,7 @@ public class RekomerCreatReviewRateLimit : IRekomerCreatReviewRateLimit
    public RekomerCreatReviewRateLimit(IDistributedCache distributedCache)
    {
       _distributedCache = distributedCache;
-      _maxRequest = 10;
+      _maxRequest = 3;
       _expire = DateTime.Today.AddDays(1);
    }
 

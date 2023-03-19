@@ -15,8 +15,8 @@ public class RekomerMailService : IRekomerMailService
    {
       var mail = new MailDataBuilder();
       mail.SendTo(emailAddress);
-      mail.SetBody($"hi, bitch {otp}");
-      mail.SetSubject("yeahhhh");
+      mail.SetBody($"hi, this is your otp: {otp}");
+      mail.SetSubject("REKOM - Confirm Account");
       
       await _mailHelper.SendEmailAsync(mail);
    }
@@ -25,8 +25,8 @@ public class RekomerMailService : IRekomerMailService
    {
       var mail = new MailDataBuilder();
       mail.SendTo(emailAddress);
-      mail.SetBody($"hi, bitch");
-      mail.SetSubject("yeahhhh");
+      mail.SetBody($"hi, welcome");
+      mail.SetSubject("REKOM - Welcome");
       
       await _mailHelper.SendEmailAsync(mail);
    }
