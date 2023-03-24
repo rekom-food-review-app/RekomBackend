@@ -25,11 +25,16 @@ public class RekomerFeedService : IRekomerFeedService
    {
       await using var dbContext = new RekomContext(_configuration);
       
+      var restaurantTableSize = await dbContext.Restaurants.CountAsync();
+
+      getFeedRequest.Page = new Random().Next(0, restaurantTableSize);
+
       var userCurrentLocation = new Point(getFeedRequest.Location.Longitude, getFeedRequest.Location.Latitude);
       
       var restaurantIdList = await dbContext.Restaurants
          // .OrderBy(res => res.Location.Distance(userCurrentLocation))
-         .Skip((getFeedRequest.Page - 1) * getFeedRequest.Size)
+         // .Skip((getFeedRequest.Page - 1) * getFeedRequest.Size)
+         .Skip(getFeedRequest.Page)
          .Take(getFeedRequest.Size)
          .Select(res => res.Id)
          .ToListAsync();

@@ -34,13 +34,15 @@ public class RekomerReviewService : IRekomerReviewService
       var restaurant = await _context.Restaurants.SingleOrDefaultAsync(res => res.Id == restaurantId);
       if (restaurant is null) throw new NotFoundRestaurantException();
       
-      var reviewListQuery = _context.Reviews.Where(rev => rev.RestaurantId == restaurantId).AsQueryable();
+      var reviewListQuery = _context.Reviews
+         .Where(rev => rev.RestaurantId == restaurantId)
+         .OrderByDescending(rev => rev.CreatedAt)
+         .Skip((page - 1) * size)
+         .AsQueryable();
       
       if (lastTimestamp.HasValue) reviewListQuery = reviewListQuery.Where(rev => rev.CreatedAt < lastTimestamp.Value);
 
       var reviewList = await reviewListQuery
-         .OrderByDescending(rev => rev.CreatedAt)
-         .Skip((page - 1) * size)
          .Take(size)
          .Include(rev => rev.Restaurant)
          .Include(rev => rev.Comments)
@@ -123,12 +125,12 @@ public class RekomerReviewService : IRekomerReviewService
          .Where(cmt => cmt.ReviewId == reviewId)
          .Include(cmt => cmt.Rekomer)
          .OrderByDescending(cmt => cmt.CreatedAt)
+         .Skip((page - 1) * size)
          .AsQueryable();
       
       if (lastTimestamp.HasValue) commentListQuery = commentListQuery.Where(cmt => cmt.CreatedAt < lastTimestamp.Value);
       
-      return commentListQuery        
-         .Skip((page - 1) * size)
+      return commentListQuery
          .Take(size)
          .Select(cmt => _mapper.Map<RekomerCommentResponseDto>(cmt));
    }
@@ -144,7 +146,7 @@ public class RekomerReviewService : IRekomerReviewService
       var canReview = await _creatReviewRateLimit.IsAllowedAsync(meId);
       if (!canReview) throw new TooManyRequestException();
       
-      var mediaUrlList = reviewRequest.Images.Select(image => _s3Helper.UploadOneFile(image));
+      var mediaUrlList = await _s3Helper.UploadManyFileAsync(reviewRequest.Images);
 
       var newReview = new Review
       {
@@ -174,13 +176,13 @@ public class RekomerReviewService : IRekomerReviewService
    
       var reactionListQuery = _context.ReviewReactions
          .Where(rea => rea.ReviewId == reviewId && rea.ReactionId == reactionId)
+         .OrderByDescending(cmt => cmt.CreatedAt)
+         .Skip((page - 1) * size)
          .AsQueryable();
       
       if (lastTimestamp.HasValue) reactionListQuery = reactionListQuery.Where(rea => rea.CreatedAt < lastTimestamp);
 
       var reactionList = await reactionListQuery
-         .OrderByDescending(cmt => cmt.CreatedAt)
-         .Skip((page - 1) * size)
          .Take(size)
          .Include(rea => rea.Rekomer)
          .ToListAsync();
@@ -252,13 +254,15 @@ public class RekomerReviewService : IRekomerReviewService
       var rekomer = await _context.Rekomers.SingleOrDefaultAsync(rek => rek.Id == rekomerId);
       if (rekomer is null) throw new NotFoundRekomerException();
       
-      var reviewListQuery = _context.Reviews.Where(rev => rev.RekomerId == rekomerId).AsQueryable();
+      var reviewListQuery = _context.Reviews
+         .Where(rev => rev.RekomerId == rekomerId)
+         .OrderByDescending(rev => rev.CreatedAt)
+         .Skip((page - 1) * size)
+         .AsQueryable();
       
       if (lastTimestamp.HasValue) reviewListQuery = reviewListQuery.Where(rev => rev.CreatedAt < lastTimestamp.Value);
 
       var reviewList = await reviewListQuery
-         .OrderByDescending(rev => rev.CreatedAt)
-         .Skip((page - 1) * size)
          .Take(size)
          .Include(rev => rev.Restaurant)
          .Include(rev => rev.Comments)

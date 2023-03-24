@@ -11,5 +11,5 @@ public class RekomerCreateReviewRequestDto
    public string Content { get; set; } = null!;
    
    [MinLength(1, ErrorMessage = "Please provide at least one image")]
-   public IEnumerable<IFormFile> Images { get; set; } = null!;
+   public List<IFormFile> Images { get; set; } = null!;
 }

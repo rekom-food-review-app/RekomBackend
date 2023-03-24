@@ -26,6 +26,9 @@ public class RekomerSearchService : IRekomerSearchService
          .Where(res => res.FullTextSearch.Matches(EF.Functions.ToTsQuery("english",
             string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) +
             ":*")))
+         .OrderByDescending(res => res.FullTextSearch.Rank(EF.Functions.ToTsQuery("english",
+            string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) +
+            ":*")))
          .AsQueryable();
 
       Point? userCurrentLocation = null;
@@ -67,7 +70,12 @@ public class RekomerSearchService : IRekomerSearchService
       await using var dbContext = new RekomContext(_configuration);
       
       var foodList = await dbContext.Foods
-         .Where(fod => fod.FullTextSearch.Matches(EF.Functions.ToTsQuery("english", string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) + ":*" )))
+         .Where(fod => fod.FullTextSearch.Matches(EF.Functions.ToTsQuery("english", 
+            string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) + 
+            ":*" )))
+         .OrderByDescending(fod => fod.FullTextSearch.Rank(EF.Functions.ToTsQuery("english",
+            string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) +
+            ":*")))
          .Skip((searchRequest.Page - 1) * searchRequest.Size)
          .Take(searchRequest.Size)
          .ToListAsync();
@@ -82,9 +90,13 @@ public class RekomerSearchService : IRekomerSearchService
       await using var dbContext = new RekomContext(_configuration); 
       
       var rekomerList = await dbContext.Rekomers
-         .Where(rek => 
-            rek.FullTextSearch.Matches(EF.Functions.ToTsQuery("english", string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) + ":*" ))
-            && rek.Id != meId)
+         .Where(rek => rek.FullTextSearch.Matches(EF.Functions.ToTsQuery("english", 
+                          string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) + 
+                          ":*" ))
+                       && rek.Id != meId)
+         .OrderByDescending(fod => fod.FullTextSearch.Rank(EF.Functions.ToTsQuery("english",
+            string.Join(":* | ", searchRequest.Keyword.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)) +
+            ":*")))
          .Skip((searchRequest.Page - 1) * searchRequest.Size)
          .Take(searchRequest.Size)
          .ToListAsync();

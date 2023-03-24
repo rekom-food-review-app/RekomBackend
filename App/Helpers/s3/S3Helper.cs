@@ -22,80 +22,38 @@ public class S3Helper : IS3Helper
       _baseUrl = "https://rekom-bucket.s3.ap-northeast-1.amazonaws.com";
    }
 
-   // public Task UploadOneFileAsync(IFormFile file, out string url)
-   // {
-   //    throw new NotImplementedException();
-   // }
-
-   public string UploadOneFile(IFormFile file)
+   public async Task<string> UploadOneFileAsync(IFormFile file)
    {
       var imgPath = $"{Guid.NewGuid()}.{Path.GetExtension(file.Name)}";
       
-      Task.Run(async () =>
+      var credentials = new BasicAWSCredentials(_key, _secretKey);
+      var s3Config = new AmazonS3Config() { RegionEndpoint = _region };
+   
+      await using var memoryStr = new MemoryStream();
+      await file.CopyToAsync(memoryStr);
+   
+      var uploadRequest = new TransferUtilityUploadRequest()
       {
-         var credentials = new BasicAWSCredentials(_key, _secretKey);
-         var s3Config = new AmazonS3Config() { RegionEndpoint = _region };
-      
-         await using var memoryStr = new MemoryStream();
-         await file.CopyToAsync(memoryStr);
-      
-         var uploadRequest = new TransferUtilityUploadRequest()
-         {
-            InputStream = memoryStr,
-            Key = imgPath,
-            BucketName = _bucketName,
-            CannedACL = S3CannedACL.NoACL
-         };
-      
-         using var s3Client = new AmazonS3Client(credentials, s3Config);
-         var transferUtility = new TransferUtility(s3Client);
+         InputStream = memoryStr,
+         Key = imgPath,
+         BucketName = _bucketName,
+         CannedACL = S3CannedACL.NoACL
+      };
+   
+      using var s3Client = new AmazonS3Client(credentials, s3Config);
+      var transferUtility = new TransferUtility(s3Client);
 
-         await transferUtility.UploadAsync(uploadRequest);
-      });
+      await transferUtility.UploadAsync(uploadRequest);
 
       return _baseUrl + "/" + imgPath;
    }
 
-   // public async Task<S3ResponseDto> UploadFileAsync(S3Object obj, AwsCredentials awsCredentials)
-   // {
-   //    var credentials = new BasicAWSCredentials(awsCredentials.Key, awsCredentials.SecretKey);
-   //
-   //    var config = new AmazonS3Config()
-   //    {
-   //       RegionEndpoint = Amazon.RegionEndpoint.APNortheast1
-   //    };
-   //
-   //    var response = new S3ResponseDto();
-   //
-   //    try
-   //    {
-   //       var uploadRequest = new TransferUtilityUploadRequest()
-   //       {
-   //          InputStream = obj.InputStream,
-   //          Key = obj.Name,
-   //          BucketName = obj.BucketName,
-   //          CannedACL = S3CannedACL.NoACL
-   //       };
-   //
-   //       using var client = new AmazonS3Client(credentials, config);
-   //
-   //       var transferUtility = new TransferUtility(client);
-   //
-   //       await transferUtility.UploadAsync(uploadRequest);
-   //
-   //       // response.StatusCode = 200
-   //    }
-   //    catch (AmazonS3Exception e)
-   //    {
-   //       response.StatusCode = (int)e.StatusCode;
-   //       response.Message = e.Message;
-   //    }
-   //    catch (Exception e)
-   //    {
-   //       response.StatusCode = 500;
-   //       response.Message = e.Message;
-   //    }
-   //
-   //    return response;
-   // }
+   public async Task<List<string>> UploadManyFileAsync(List<IFormFile> fileList)
+   {
+      var uploadTaskList = fileList.Select(file => Task.Run(async () => await UploadOneFileAsync(file))).ToList();
+
+      await Task.WhenAll(uploadTaskList);
+
+      return uploadTaskList.Select(t => t.Result).ToList();
+   }
 }

@@ -32,7 +32,7 @@ public class RekomerProfileService : IRekomerProfileService
       var me = await _context.Rekomers.Include(rek => rek.Account).SingleOrDefaultAsync(rek => rek.Id == meId);
       if (me is null) throw new InvalidAccessTokenException();
 
-      var avatarUrl = _s3Helper.UploadOneFile(updateRequest.Avatar);
+      var avatarUrl = await _s3Helper.UploadOneFileAsync(updateRequest.Avatar);
       me.FullName = updateRequest.FullName;
       me.AvatarUrl = avatarUrl;
       me.Description = updateRequest.Description;
